@@ -1,21 +1,20 @@
 "use client";
 import {
   ApiPath,
-  Alibaba,
-  ALIBABA_BASE_URL,
+  IFLYTEK_BASE_URL,
+  Iflytek,
   REQUEST_TIMEOUT_MS,
 } from "@/app/constant";
 import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
 
 import {
+  AgentChatOptions,
   ChatOptions,
+  CreateRAGStoreOptions,
   getHeaders,
   LLMApi,
   LLMModel,
   SpeechOptions,
-  MultimodalContent,
-  AgentChatOptions,
-  CreateRAGStoreOptions,
   TranscriptionOptions,
 } from "../api";
 import Locale from "../../locales";
@@ -28,36 +27,9 @@ import { getClientConfig } from "@/app/config/client";
 import { getMessageTextContent } from "@/app/utils";
 import { fetch } from "@/app/utils/stream";
 
-export interface OpenAIListModelResponse {
-  object: string;
-  data: Array<{
-    id: string;
-    object: string;
-    root: string;
-  }>;
-}
+import { RequestPayload } from "./openai";
 
-interface RequestInput {
-  messages: {
-    role: "system" | "user" | "assistant";
-    content: string | MultimodalContent[];
-  }[];
-}
-interface RequestParam {
-  result_format: string;
-  incremental_output?: boolean;
-  temperature: number;
-  repetition_penalty?: number;
-  top_p: number;
-  max_tokens?: number;
-}
-interface RequestPayload {
-  model: string;
-  input: RequestInput;
-  parameters: RequestParam;
-}
-
-export class QwenApi implements LLMApi {
+export class SparkApi implements LLMApi {
   transcription(options: TranscriptionOptions): Promise<string> {
     throw new Error("Method not implemented.");
   }
@@ -67,24 +39,27 @@ export class QwenApi implements LLMApi {
   createRAGStore(options: CreateRAGStoreOptions): Promise<string> {
     throw new Error("Method not implemented.");
   }
+  private disableListModels = true;
+
   path(path: string): string {
     const accessStore = useAccessStore.getState();
 
     let baseUrl = "";
 
     if (accessStore.useCustomConfig) {
-      baseUrl = accessStore.alibabaUrl;
+      baseUrl = accessStore.iflytekUrl;
     }
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
-      baseUrl = isApp ? ALIBABA_BASE_URL : ApiPath.Alibaba;
+      const apiPath = ApiPath.Iflytek;
+      baseUrl = isApp ? IFLYTEK_BASE_URL : apiPath;
     }
 
     if (baseUrl.endsWith("/")) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
     }
-    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.Alibaba)) {
+    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.Iflytek)) {
       baseUrl = "https://" + baseUrl;
     }
 
@@ -94,7 +69,7 @@ export class QwenApi implements LLMApi {
   }
 
   extractMessage(res: any) {
-    return res?.output?.choices?.at(0)?.message?.content ?? "";
+    return res.choices?.at(0)?.message?.content ?? "";
   }
 
   speech(options: SpeechOptions): Promise<ArrayBuffer> {
@@ -102,50 +77,49 @@ export class QwenApi implements LLMApi {
   }
 
   async chat(options: ChatOptions) {
-    const messages = options.messages.map((v) => ({
-      role: v.role,
-      content: getMessageTextContent(v),
-    }));
+    const messages: ChatOptions["messages"] = [];
+    for (const v of options.messages) {
+      const content = getMessageTextContent(v);
+      messages.push({ role: v.role, content });
+    }
 
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
       ...useChatStore.getState().currentSession().mask.modelConfig,
       ...{
         model: options.config.model,
+        providerName: options.config.providerName,
       },
     };
+
+    const requestPayload: RequestPayload = {
+      messages,
+      stream: options.config.stream,
+      model: modelConfig.model,
+      temperature: modelConfig.temperature,
+      presence_penalty: modelConfig.presence_penalty,
+      frequency_penalty: modelConfig.frequency_penalty,
+      top_p: modelConfig.top_p,
+      // max_tokens: Math.max(modelConfig.max_tokens, 1024),
+      // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
+    };
+
+    console.log("[Request] Spark payload: ", requestPayload);
 
     const shouldStream = !!options.config.stream;
-    const requestPayload: RequestPayload = {
-      model: modelConfig.model,
-      input: {
-        messages,
-      },
-      parameters: {
-        result_format: "message",
-        incremental_output: shouldStream,
-        temperature: modelConfig.temperature,
-        // max_tokens: modelConfig.max_tokens,
-        top_p: modelConfig.top_p === 1 ? 0.99 : modelConfig.top_p, // qwen top_p is should be < 1
-      },
-    };
-
     const controller = new AbortController();
     options.onController?.(controller);
 
     try {
-      const chatPath = this.path(Alibaba.ChatPath);
+      const chatPath = this.path(Iflytek.ChatPath);
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
-        headers: {
-          ...getHeaders(),
-          "X-DashScope-SSE": shouldStream ? "enable" : "disable",
-        },
+        headers: getHeaders(),
       };
 
-      // make a fetch request
+      // Make a fetch request
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
         REQUEST_TIMEOUT_MS,
@@ -157,14 +131,11 @@ export class QwenApi implements LLMApi {
         let finished = false;
         let responseRes: Response;
 
-        // animate response to make it looks smooth
+        // Animate response text to make it look smooth
         function animateResponseText() {
           if (finished || controller.signal.aborted) {
             responseText += remainText;
             console.log("[Response Animation] finished");
-            if (responseText?.length === 0) {
-              options.onError?.(new Error("empty response from server"));
-            }
             return;
           }
 
@@ -179,7 +150,7 @@ export class QwenApi implements LLMApi {
           requestAnimationFrame(animateResponseText);
         }
 
-        // start animaion
+        // Start animation
         animateResponseText();
 
         const finish = () => {
@@ -197,17 +168,14 @@ export class QwenApi implements LLMApi {
           async onopen(res) {
             clearTimeout(requestTimeoutId);
             const contentType = res.headers.get("content-type");
-            console.log(
-              "[Alibaba] request response content type: ",
-              contentType,
-            );
+            console.log("[Spark] request response content type: ", contentType);
             responseRes = res;
-
             if (contentType?.startsWith("text/plain")) {
               responseText = await res.clone().text();
               return finish();
             }
 
+            // Handle different error scenarios
             if (
               !res.ok ||
               !res.headers
@@ -215,7 +183,6 @@ export class QwenApi implements LLMApi {
                 ?.startsWith(EventStreamContentType) ||
               res.status !== 200
             ) {
-              const responseTexts = [responseText];
               let extraInfo = await res.clone().text();
               try {
                 const resJson = await res.clone().json();
@@ -223,15 +190,14 @@ export class QwenApi implements LLMApi {
               } catch {}
 
               if (res.status === 401) {
-                responseTexts.push(Locale.Error.Unauthorized);
+                extraInfo = Locale.Error.Unauthorized;
               }
 
-              if (extraInfo) {
-                responseTexts.push(extraInfo);
-              }
-
-              responseText = responseTexts.join("\n\n");
-
+              options.onError?.(
+                new Error(
+                  `Request failed with status ${res.status}: ${extraInfo}`,
+                ),
+              );
               return finish();
             }
           },
@@ -242,15 +208,17 @@ export class QwenApi implements LLMApi {
             const text = msg.data;
             try {
               const json = JSON.parse(text);
-              const choices = json.output.choices as Array<{
-                message: { content: string };
+              const choices = json.choices as Array<{
+                delta: { content: string };
               }>;
-              const delta = choices[0]?.message?.content;
+              const delta = choices[0]?.delta?.content;
+
               if (delta) {
                 remainText += delta;
               }
             } catch (e) {
-              console.error("[Request] parse error", text, msg);
+              console.error("[Request] parse error", text);
+              options.onError?.(new Error(`Failed to parse response: ${text}`));
             }
           },
           onclose() {
@@ -266,6 +234,14 @@ export class QwenApi implements LLMApi {
         const res = await fetch(chatPath, chatPayload);
         clearTimeout(requestTimeoutId);
 
+        if (!res.ok) {
+          const errorText = await res.text();
+          options.onError?.(
+            new Error(`Request failed with status ${res.status}: ${errorText}`),
+          );
+          return;
+        }
+
         const resJson = await res.json();
         const message = this.extractMessage(resJson);
         options.onFinish(message, res);
@@ -275,6 +251,7 @@ export class QwenApi implements LLMApi {
       options.onError?.(e as Error);
     }
   }
+
   async usage() {
     return {
       used: 0,
@@ -286,4 +263,3 @@ export class QwenApi implements LLMApi {
     return [];
   }
 }
-export { Alibaba };

@@ -18,6 +18,8 @@ export type Mask = {
   lang: Lang;
   builtin: boolean;
   usePlugins?: boolean;
+  // 上游插件业务参数
+  plugin?: string[];
   enableArtifacts?: boolean;
   enableCodeFold?: boolean;
 };

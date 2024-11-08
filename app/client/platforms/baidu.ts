@@ -27,6 +27,7 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { getMessageTextContent } from "@/app/utils";
+import { fetch } from "@/app/utils/stream";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -52,9 +53,6 @@ interface RequestPayload {
 }
 
 export class ErnieApi implements LLMApi {
-  speech(options: SpeechOptions): Promise<ArrayBuffer> {
-    throw new Error("Method not implemented.");
-  }
   transcription(options: TranscriptionOptions): Promise<string> {
     throw new Error("Method not implemented.");
   }
@@ -91,18 +89,30 @@ export class ErnieApi implements LLMApi {
     return [baseUrl, path].join("/");
   }
 
+  speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
+  }
+
   async chat(options: ChatOptions) {
     const messages = options.messages.map((v) => ({
-      role: v.role,
+      // "error_code": 336006, "error_msg": "the role of message with even index in the messages must be user or function",
+      role: v.role === "system" ? "user" : v.role,
       content: getMessageTextContent(v),
     }));
 
     // "error_code": 336006, "error_msg": "the length of messages must be an odd number",
     if (messages.length % 2 === 0) {
-      messages.unshift({
-        role: "user",
-        content: " ",
-      });
+      if (messages.at(0)?.role === "user") {
+        messages.splice(1, 0, {
+          role: "assistant",
+          content: " ",
+        });
+      } else {
+        messages.unshift({
+          role: "user",
+          content: " ",
+        });
+      }
     }
 
     const modelConfig = {
@@ -164,6 +174,7 @@ export class ErnieApi implements LLMApi {
         let responseText = "";
         let remainText = "";
         let finished = false;
+        let responseRes: Response;
 
         // animate response to make it looks smooth
         function animateResponseText() {
@@ -193,19 +204,20 @@ export class ErnieApi implements LLMApi {
         const finish = () => {
           if (!finished) {
             finished = true;
-            options.onFinish(responseText + remainText);
+            options.onFinish(responseText + remainText, responseRes);
           }
         };
 
         controller.signal.onabort = finish;
 
         fetchEventSource(chatPath, {
+          fetch: fetch as any,
           ...chatPayload,
           async onopen(res) {
             clearTimeout(requestTimeoutId);
             const contentType = res.headers.get("content-type");
             console.log("[Baidu] request response content type: ", contentType);
-
+            responseRes = res;
             if (contentType?.startsWith("text/plain")) {
               responseText = await res.clone().text();
               return finish();
@@ -268,7 +280,7 @@ export class ErnieApi implements LLMApi {
 
         const resJson = await res.json();
         const message = resJson?.result;
-        options.onFinish(message);
+        options.onFinish(message, res);
       }
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);

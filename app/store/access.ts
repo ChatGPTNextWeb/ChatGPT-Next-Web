@@ -1,45 +1,55 @@
 import {
-  ApiPath,
-  DEFAULT_API_HOST,
   GoogleSafetySettingsThreshold,
   ServiceProvider,
   StoreKey,
+  ApiPath,
+  OPENAI_BASE_URL,
+  ANTHROPIC_BASE_URL,
+  GEMINI_BASE_URL,
+  BAIDU_BASE_URL,
+  BYTEDANCE_BASE_URL,
+  ALIBABA_BASE_URL,
+  TENCENT_BASE_URL,
+  MOONSHOT_BASE_URL,
+  STABILITY_BASE_URL,
+  IFLYTEK_BASE_URL,
+  XAI_BASE_URL,
+  CHATGLM_BASE_URL,
 } from "../constant";
 import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
 import { createPersistStore } from "../utils/store";
 import { ensure } from "../utils/clone";
 import { DEFAULT_CONFIG } from "./config";
+import { getModelProvider } from "../utils/model";
 
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 
 const isApp = getClientConfig()?.buildMode === "export";
 
-const DEFAULT_OPENAI_URL = isApp
-  ? DEFAULT_API_HOST + "/api/proxy/openai"
-  : ApiPath.OpenAI;
+const DEFAULT_OPENAI_URL = isApp ? OPENAI_BASE_URL : ApiPath.OpenAI;
 
-const DEFAULT_GOOGLE_URL = isApp
-  ? DEFAULT_API_HOST + "/api/proxy/google"
-  : ApiPath.Google;
+const DEFAULT_GOOGLE_URL = isApp ? GEMINI_BASE_URL : ApiPath.Google;
 
-const DEFAULT_ANTHROPIC_URL = isApp
-  ? DEFAULT_API_HOST + "/api/proxy/anthropic"
-  : ApiPath.Anthropic;
+const DEFAULT_ANTHROPIC_URL = isApp ? ANTHROPIC_BASE_URL : ApiPath.Anthropic;
 
-const DEFAULT_BAIDU_URL = isApp
-  ? DEFAULT_API_HOST + "/api/proxy/baidu"
-  : ApiPath.Baidu;
+const DEFAULT_BAIDU_URL = isApp ? BAIDU_BASE_URL : ApiPath.Baidu;
 
-const DEFAULT_BYTEDANCE_URL = isApp
-  ? DEFAULT_API_HOST + "/api/proxy/bytedance"
-  : ApiPath.ByteDance;
+const DEFAULT_BYTEDANCE_URL = isApp ? BYTEDANCE_BASE_URL : ApiPath.ByteDance;
 
-const DEFAULT_ALIBABA_URL = isApp
-  ? DEFAULT_API_HOST + "/api/proxy/alibaba"
-  : ApiPath.Alibaba;
+const DEFAULT_ALIBABA_URL = isApp ? ALIBABA_BASE_URL : ApiPath.Alibaba;
 
-console.log("DEFAULT_ANTHROPIC_URL", DEFAULT_ANTHROPIC_URL);
+const DEFAULT_TENCENT_URL = isApp ? TENCENT_BASE_URL : ApiPath.Tencent;
+
+const DEFAULT_MOONSHOT_URL = isApp ? MOONSHOT_BASE_URL : ApiPath.Moonshot;
+
+const DEFAULT_STABILITY_URL = isApp ? STABILITY_BASE_URL : ApiPath.Stability;
+
+const DEFAULT_IFLYTEK_URL = isApp ? IFLYTEK_BASE_URL : ApiPath.Iflytek;
+
+const DEFAULT_XAI_URL = isApp ? XAI_BASE_URL : ApiPath.XAI;
+
+const DEFAULT_CHATGLM_URL = isApp ? CHATGLM_BASE_URL : ApiPath.ChatGLM;
 
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
@@ -54,7 +64,7 @@ const DEFAULT_ACCESS_STATE = {
   // azure
   azureUrl: "",
   azureApiKey: "",
-  azureApiVersion: "2024-02-15-preview",
+  azureApiVersion: "2023-08-01-preview",
 
   // google ai studio
   googleUrl: DEFAULT_GOOGLE_URL,
@@ -79,6 +89,32 @@ const DEFAULT_ACCESS_STATE = {
   // alibaba
   alibabaUrl: DEFAULT_ALIBABA_URL,
   alibabaApiKey: "",
+
+  // moonshot
+  moonshotUrl: DEFAULT_MOONSHOT_URL,
+  moonshotApiKey: "",
+
+  //stability
+  stabilityUrl: DEFAULT_STABILITY_URL,
+  stabilityApiKey: "",
+
+  // tencent
+  tencentUrl: DEFAULT_TENCENT_URL,
+  tencentSecretKey: "",
+  tencentSecretId: "",
+
+  // iflytek
+  iflytekUrl: DEFAULT_IFLYTEK_URL,
+  iflytekApiKey: "",
+  iflytekApiSecret: "",
+
+  // xai
+  xaiUrl: DEFAULT_XAI_URL,
+  xaiApiKey: "",
+
+  // chatglm
+  chatglmUrl: DEFAULT_CHATGLM_URL,
+  chatglmApiKey: "",
 
   // server config
   needCode: true,
@@ -160,6 +196,25 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["alibabaApiKey"]);
     },
 
+    isValidTencent() {
+      return ensure(get(), ["tencentSecretKey", "tencentSecretId"]);
+    },
+
+    isValidMoonshot() {
+      return ensure(get(), ["moonshotApiKey"]);
+    },
+    isValidIflytek() {
+      return ensure(get(), ["iflytekApiKey"]);
+    },
+
+    isValidXAI() {
+      return ensure(get(), ["xaiApiKey"]);
+    },
+
+    isValidChatGLM() {
+      return ensure(get(), ["chatglmApiKey"]);
+    },
+
     isAuthorized() {
       this.fetch();
 
@@ -172,6 +227,11 @@ export const useAccessStore = createPersistStore(
         this.isValidBaidu() ||
         this.isValidByteDance() ||
         this.isValidAlibaba() ||
+        this.isValidTencent() ||
+        this.isValidMoonshot() ||
+        this.isValidIflytek() ||
+        this.isValidXAI() ||
+        this.isValidChatGLM() ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );
@@ -188,10 +248,13 @@ export const useAccessStore = createPersistStore(
       })
         .then((res) => res.json())
         .then((res) => {
-          // Set default model from env request
-          let defaultModel = res.defaultModel ?? "";
-          DEFAULT_CONFIG.modelConfig.model =
-            defaultModel !== "" ? defaultModel : "gpt-3.5-turbo";
+          const defaultModel = res.defaultModel ?? "";
+          if (defaultModel !== "") {
+            const [model, providerName] = getModelProvider(defaultModel);
+            DEFAULT_CONFIG.modelConfig.model = model;
+            DEFAULT_CONFIG.modelConfig.providerName = providerName as any;
+          }
+
           return res;
         })
         .then((res: DangerConfig) => {
@@ -218,8 +281,7 @@ export const useAccessStore = createPersistStore(
           googleApiKey: string;
         };
         state.openaiApiKey = state.token;
-        state.azureApiVersion = "2024-02-15-preview";
-        state.googleApiKey = state.token;
+        state.azureApiVersion = "2023-08-01-preview";
       }
 
       return persistedState as any;

@@ -1,11 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import {
-  ChatMessage,
-  ModelType,
-  useAccessStore,
-  useAppConfig,
-  useChatStore,
-} from "../store";
+import { ChatMessage, useAppConfig, useChatStore } from "../store";
 import Locale from "../locales";
 import styles from "./exporter.module.scss";
 import {
@@ -524,18 +518,6 @@ export function ImagePreviewer(props: {
     }
   };
 
-  const markdownImageUrlCorsProcess = (markdownContent: string) => {
-    const updatedContent = markdownContent.replace(
-      /!\[.*?\]\((.*?)\)/g,
-      (match, url) => {
-        if (!url.startsWith("http")) return `![image](${url})`;
-        const updatedURL = `/api/cors?url=${encodeURIComponent(url)}`;
-        return `![image](${updatedURL})`;
-      },
-    );
-    return updatedContent;
-  };
-
   return (
     <div className={styles["image-previewer"]}>
       <PreviewActions
@@ -561,7 +543,7 @@ export function ImagePreviewer(props: {
           <div>
             <div className={styles["main-title"]}>NextChat</div>
             <div className={styles["sub-title"]}>
-              github.com/Yidadaa/ChatGPT-Next-Web
+              github.com/ChatGPTNextWeb/ChatGPT-Next-Web
             </div>
             <div className={styles["icons"]}>
               <ExportAvatar avatar={config.avatar} />
@@ -603,6 +585,7 @@ export function ImagePreviewer(props: {
                 <Markdown
                   content={getMessageTextContent(m)}
                   fontSize={config.fontSize}
+                  fontFamily={config.fontFamily}
                   defaultShow
                 />
                 {getMessageImages(m).length == 1 && (

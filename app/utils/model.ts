@@ -1,11 +1,52 @@
 import { DEFAULT_MODELS } from "../constant";
 import { LLMModel } from "../client/api";
 
+const CustomSeq = {
+  val: -1000, //To ensure the custom model located at front, start from -1000, refer to constant.ts
+  cache: new Map<string, number>(),
+  next: (id: string) => {
+    if (CustomSeq.cache.has(id)) {
+      return CustomSeq.cache.get(id) as number;
+    } else {
+      let seq = CustomSeq.val++;
+      CustomSeq.cache.set(id, seq);
+      return seq;
+    }
+  },
+};
+
 const customProvider = (providerName: string) => ({
   id: providerName.toLowerCase(),
   providerName: providerName,
   providerType: "custom",
+  sorted: CustomSeq.next(providerName),
 });
+
+/**
+ * Sorts an array of models based on specified rules.
+ *
+ * First, sorted by provider; if the same, sorted by model
+ */
+const sortModelTable = (models: ReturnType<typeof collectModels>) =>
+  models.sort((a, b) => {
+    if (a.provider && b.provider) {
+      let cmp = a.provider.sorted - b.provider.sorted;
+      return cmp === 0 ? a.sorted - b.sorted : cmp;
+    } else {
+      return a.sorted - b.sorted;
+    }
+  });
+
+/**
+ * get model name and provider from a formatted string,
+ * e.g. `gpt-4@OpenAi` or `claude-3-5-sonnet@20240620@Google`
+ * @param modelWithProvider model name with provider separated by last `@` char,
+ * @returns [model, provider] tuple, if no `@` char found, provider is undefined
+ */
+export function getModelProvider(modelWithProvider: string): [string, string?] {
+  const [model, provider] = modelWithProvider.split(/@(?!.*@)/);
+  return [model, provider];
+}
 
 export function collectModelTable(
   models: readonly LLMModel[],
@@ -17,6 +58,7 @@ export function collectModelTable(
       available: boolean;
       name: string;
       displayName: string;
+      sorted: number;
       provider?: LLMModel["provider"]; // Marked as optional
       isDefault?: boolean;
     }
@@ -48,10 +90,10 @@ export function collectModelTable(
         );
       } else {
         // 1. find model by name, and set available value
-        const [customModelName, customProviderName] = name.split("@");
+        const [customModelName, customProviderName] = getModelProvider(name);
         let count = 0;
         for (const fullName in modelTable) {
-          const [modelName, providerName] = fullName.split("@");
+          const [modelName, providerName] = getModelProvider(fullName);
           if (
             customModelName == modelName &&
             (customProviderName === undefined ||
@@ -71,7 +113,7 @@ export function collectModelTable(
         }
         // 2. if model not exists, create new model with available value
         if (count === 0) {
-          let [customModelName, customProviderName] = name.split("@");
+          let [customModelName, customProviderName] = getModelProvider(name);
           const provider = customProvider(
             customProviderName || customModelName,
           );
@@ -84,6 +126,7 @@ export function collectModelTable(
             displayName: displayName || customModelName,
             available,
             provider, // Use optional chaining
+            sorted: CustomSeq.next(`${customModelName}@${provider?.id}`),
           };
         }
       }
@@ -99,13 +142,16 @@ export function collectModelTableWithDefaultModel(
 ) {
   let modelTable = collectModelTable(models, customModels);
   if (defaultModel && defaultModel !== "") {
-    if (defaultModel.includes('@')) {
+    if (defaultModel.includes("@")) {
       if (defaultModel in modelTable) {
         modelTable[defaultModel].isDefault = true;
       }
     } else {
       for (const key of Object.keys(modelTable)) {
-        if (modelTable[key].available && key.split('@').shift() == defaultModel) {
+        if (
+          modelTable[key].available &&
+          getModelProvider(key)[0] == defaultModel
+        ) {
           modelTable[key].isDefault = true;
           break;
         }
@@ -123,7 +169,9 @@ export function collectModels(
   customModels: string,
 ) {
   const modelTable = collectModelTable(models, customModels);
-  const allModels = Object.values(modelTable);
+  let allModels = Object.values(modelTable);
+
+  allModels = sortModelTable(allModels);
 
   return allModels;
 }
@@ -138,7 +186,10 @@ export function collectModelsWithDefaultModel(
     customModels,
     defaultModel,
   );
-  const allModels = Object.values(modelTable);
+  let allModels = Object.values(modelTable);
+
+  allModels = sortModelTable(allModels);
+
   return allModels;
 }
 

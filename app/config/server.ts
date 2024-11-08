@@ -129,6 +129,7 @@ export const getServerSideConfig = () => {
   const isMoonshot = !!process.env.MOONSHOT_API_KEY;
   const isIflytek = !!process.env.IFLYTEK_API_KEY;
   const isXAI = !!process.env.XAI_API_KEY;
+  const isChatGLM = !!process.env.CHATGLM_API_KEY;
   // const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   // const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
   // const randomIndex = Math.floor(Math.random() * apiKeys.length);
@@ -194,6 +195,10 @@ export const getServerSideConfig = () => {
     isXAI,
     xaiUrl: process.env.XAI_URL,
     xaiApiKey: getApiKey(process.env.XAI_API_KEY),
+
+    isChatGLM,
+    chatglmUrl: process.env.CHATGLM_URL,
+    chatglmApiKey: getApiKey(process.env.CHATGLM_API_KEY),
 
     cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID,
     cloudflareKVNamespaceId: process.env.CLOUDFLARE_KV_NAMESPACE_ID,

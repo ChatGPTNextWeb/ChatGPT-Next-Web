@@ -26,6 +26,7 @@ import {
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
 import { getMessageTextContent } from "@/app/utils";
+import { fetch } from "@/app/utils/stream";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -51,9 +52,6 @@ interface RequestPayload {
 }
 
 export class DoubaoApi implements LLMApi {
-  speech(options: SpeechOptions): Promise<ArrayBuffer> {
-    throw new Error("Method not implemented.");
-  }
   transcription(options: TranscriptionOptions): Promise<string> {
     throw new Error("Method not implemented.");
   }
@@ -91,6 +89,10 @@ export class DoubaoApi implements LLMApi {
 
   extractMessage(res: any) {
     return res.choices?.at(0)?.message?.content ?? "";
+  }
+
+  speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
   }
 
   async chat(options: ChatOptions) {
@@ -140,6 +142,7 @@ export class DoubaoApi implements LLMApi {
         let responseText = "";
         let remainText = "";
         let finished = false;
+        let responseRes: Response;
 
         // animate response to make it looks smooth
         function animateResponseText() {
@@ -169,13 +172,14 @@ export class DoubaoApi implements LLMApi {
         const finish = () => {
           if (!finished) {
             finished = true;
-            options.onFinish(responseText + remainText);
+            options.onFinish(responseText + remainText, responseRes);
           }
         };
 
         controller.signal.onabort = finish;
 
         fetchEventSource(chatPath, {
+          fetch: fetch as any,
           ...chatPayload,
           async onopen(res) {
             clearTimeout(requestTimeoutId);
@@ -184,7 +188,7 @@ export class DoubaoApi implements LLMApi {
               "[ByteDance] request response content type: ",
               contentType,
             );
-
+            responseRes = res;
             if (contentType?.startsWith("text/plain")) {
               responseText = await res.clone().text();
               return finish();
@@ -250,7 +254,7 @@ export class DoubaoApi implements LLMApi {
 
         const resJson = await res.json();
         const message = this.extractMessage(resJson);
-        options.onFinish(message);
+        options.onFinish(message, res);
       }
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);

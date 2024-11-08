@@ -1,33 +1,27 @@
-import {
-  ACCESS_CODE_PREFIX,
-  Anthropic,
-  ApiPath,
-  REQUEST_TIMEOUT_MS,
-  ServiceProvider,
-} from "@/app/constant";
+import { Anthropic, ApiPath } from "@/app/constant";
 import {
   AgentChatOptions,
   ChatOptions,
   CreateRAGStoreOptions,
   getHeaders,
   LLMApi,
-  MultimodalContent,
   SpeechOptions,
   TranscriptionOptions,
 } from "../api";
-import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
-import { getClientConfig } from "@/app/config/client";
-import { DEFAULT_API_HOST } from "@/app/constant";
 import {
-  EventStreamContentType,
-  fetchEventSource,
-} from "@fortaine/fetch-event-source";
-
-import Locale from "../../locales";
-import { prettyObject } from "@/app/utils/format";
+  useAccessStore,
+  useAppConfig,
+  useChatStore,
+  usePluginStore,
+  ChatMessageTool,
+} from "@/app/store";
+import { getClientConfig } from "@/app/config/client";
+import { ANTHROPIC_BASE_URL } from "@/app/constant";
 import { getMessageTextContent, isVisionModel } from "@/app/utils";
-import { preProcessImageContent } from "@/app/utils/chat";
+import { preProcessImageContent, stream } from "@/app/utils/chat";
 import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
+import { RequestPayload } from "./openai";
+import { fetch } from "@/app/utils/stream";
 
 export type MultiBlockContent = {
   type: "image" | "text";
@@ -88,173 +82,19 @@ const ClaudeMapper = {
 const keys = ["claude-2, claude-instant-1"];
 
 export class ClaudeApi implements LLMApi {
-  speech(options: SpeechOptions): Promise<ArrayBuffer> {
-    throw new Error("Method not implemented.");
-  }
   transcription(options: TranscriptionOptions): Promise<string> {
     throw new Error("Method not implemented.");
   }
-
-  async toolAgentChat(options: AgentChatOptions) {
-    const visionModel = isVisionModel(options.config.model);
-    const messages: AgentChatOptions["messages"] = [];
-    for (const v of options.messages) {
-      const content = visionModel
-        ? await preProcessImageContent(v.content)
-        : getMessageTextContent(v);
-      messages.push({ role: v.role, content });
-    }
-
-    const modelConfig = {
-      ...useAppConfig.getState().modelConfig,
-      ...useChatStore.getState().currentSession().mask.modelConfig,
-      ...{
-        model: options.config.model,
-      },
-    };
-    const accessStore = useAccessStore.getState();
-    let baseUrl = accessStore.anthropicUrl;
-    const requestPayload = {
-      chatSessionId: options.chatSessionId,
-      messages,
-      isAzure: false,
-      azureApiVersion: accessStore.azureApiVersion,
-      stream: options.config.stream,
-      model: modelConfig.model,
-      temperature: modelConfig.temperature,
-      presence_penalty: modelConfig.presence_penalty,
-      frequency_penalty: modelConfig.frequency_penalty,
-      top_p: modelConfig.top_p,
-      baseUrl: baseUrl,
-      maxIterations: options.agentConfig.maxIterations,
-      returnIntermediateSteps: options.agentConfig.returnIntermediateSteps,
-      useTools: options.agentConfig.useTools,
-      provider: ServiceProvider.Anthropic,
-    };
-
-    console.log("[Request] anthropic payload: ", requestPayload);
-
-    const shouldStream = true;
-    const controller = new AbortController();
-    options.onController?.(controller);
-
-    try {
-      let path = "/api/langchain/tool/agent/";
-      const enableNodeJSPlugin = !!process.env.NEXT_PUBLIC_ENABLE_NODEJS_PLUGIN;
-      path = enableNodeJSPlugin ? path + "nodejs" : path + "edge";
-      const chatPayload = {
-        method: "POST",
-        body: JSON.stringify(requestPayload),
-        signal: controller.signal,
-        headers: getHeaders(),
-      };
-
-      // make a fetch request
-      const requestTimeoutId = setTimeout(
-        () => controller.abort(),
-        REQUEST_TIMEOUT_MS,
-      );
-      // console.log("shouldStream", shouldStream);
-
-      if (shouldStream) {
-        let responseText = "";
-        let finished = false;
-
-        const finish = () => {
-          if (!finished) {
-            options.onFinish(responseText);
-            finished = true;
-          }
-        };
-
-        controller.signal.onabort = finish;
-
-        fetchEventSource(path, {
-          ...chatPayload,
-          async onopen(res) {
-            clearTimeout(requestTimeoutId);
-            const contentType = res.headers.get("content-type");
-            console.log(
-              "[OpenAI] request response content type: ",
-              contentType,
-            );
-
-            if (contentType?.startsWith("text/plain")) {
-              responseText = await res.clone().text();
-              return finish();
-            }
-
-            if (
-              !res.ok ||
-              !res.headers
-                .get("content-type")
-                ?.startsWith(EventStreamContentType) ||
-              res.status !== 200
-            ) {
-              const responseTexts = [responseText];
-              let extraInfo = await res.clone().text();
-              console.warn(`extraInfo: ${extraInfo}`);
-
-              if (res.status === 401) {
-                responseTexts.push(Locale.Error.Unauthorized);
-              }
-
-              if (extraInfo) {
-                responseTexts.push(extraInfo);
-              }
-
-              responseText = responseTexts.join("\n\n");
-
-              return finish();
-            }
-          },
-          onmessage(msg) {
-            let response = JSON.parse(msg.data);
-            if (!response.isSuccess) {
-              console.error("[Request]", msg.data);
-              responseText = msg.data;
-              throw Error(response.message);
-            }
-            if (msg.data === "[DONE]" || finished) {
-              return finish();
-            }
-            try {
-              if (response && !response.isToolMessage) {
-                responseText += response.message;
-                options.onUpdate?.(responseText, response.message);
-              } else {
-                options.onToolUpdate?.(response.toolName!, response.message);
-              }
-            } catch (e) {
-              console.error("[Request] parse error", response, msg);
-            }
-          },
-          onclose() {
-            finish();
-          },
-          onerror(e) {
-            options.onError?.(e);
-            throw e;
-          },
-          openWhenHidden: true,
-        });
-      } else {
-        const res = await fetch(path, chatPayload);
-        clearTimeout(requestTimeoutId);
-
-        const resJson = await res.json();
-        const message = this.extractMessage(resJson);
-        options.onFinish(message);
-      }
-    } catch (e) {
-      console.log("[Request] failed to make a chat reqeust", e);
-      options.onError?.(e as Error);
-    }
+  toolAgentChat(options: AgentChatOptions): Promise<void> {
+    throw new Error("Method not implemented.");
   }
-
   createRAGStore(options: CreateRAGStoreOptions): Promise<string> {
     throw new Error("Method not implemented.");
   }
+  speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
+  }
+
   extractMessage(res: any) {
     console.log("[Response] claude response: ", res);
 
@@ -373,120 +213,136 @@ export class ClaudeApi implements LLMApi {
     const controller = new AbortController();
     options.onController?.(controller);
 
-    const payload = {
-      method: "POST",
-      body: JSON.stringify(requestBody),
-      signal: controller.signal,
-      headers: {
-        ...getHeaders(), // get common headers
-        "anthropic-version": accessStore.anthropicApiVersion,
-        // do not send `anthropicApiKey` in browser!!!
-        // Authorization: getAuthKey(accessStore.anthropicApiKey),
-      },
-    };
-
     if (shouldStream) {
-      try {
-        const context = {
-          text: "",
-          finished: false,
-        };
-
-        const finish = () => {
-          if (!context.finished) {
-            options.onFinish(context.text);
-            context.finished = true;
-          }
-        };
-
-        controller.signal.onabort = finish;
-        fetchEventSource(path, {
-          ...payload,
-          async onopen(res) {
-            const contentType = res.headers.get("content-type");
-            console.log("response content type: ", contentType);
-
-            if (contentType?.startsWith("text/plain")) {
-              context.text = await res.clone().text();
-              return finish();
-            }
-
-            if (
-              !res.ok ||
-              !res.headers
-                .get("content-type")
-                ?.startsWith(EventStreamContentType) ||
-              res.status !== 200
-            ) {
-              const responseTexts = [context.text];
-              let extraInfo = await res.clone().text();
-              try {
-                const resJson = await res.clone().json();
-                extraInfo = prettyObject(resJson);
-              } catch {}
-
-              if (res.status === 401) {
-                responseTexts.push(Locale.Error.Unauthorized);
-              }
-
-              if (extraInfo) {
-                responseTexts.push(extraInfo);
-              }
-
-              context.text = responseTexts.join("\n\n");
-
-              return finish();
-            }
-          },
-          onmessage(msg) {
-            let chunkJson:
-              | undefined
-              | {
-                  type: "content_block_delta" | "content_block_stop";
-                  delta?: {
-                    type: "text_delta";
-                    text: string;
-                  };
-                  index: number;
+      let index = -1;
+      const [tools, funcs] = [{}, {}];
+      // const [tools, funcs] = usePluginStore
+      //   .getState()
+      //   .getAsTools(
+      //     useChatStore.getState().currentSession().mask?.plugin || [],
+      //   );
+      return stream(
+        path,
+        requestBody,
+        {
+          ...getHeaders(),
+          "anthropic-version": accessStore.anthropicApiVersion,
+        },
+        // @ts-ignore
+        tools.map((tool) => ({
+          name: tool?.function?.name,
+          description: tool?.function?.description,
+          input_schema: tool?.function?.parameters,
+        })),
+        funcs,
+        controller,
+        // parseSSE
+        (text: string, runTools: ChatMessageTool[]) => {
+          // console.log("parseSSE", text, runTools);
+          let chunkJson:
+            | undefined
+            | {
+                type: "content_block_delta" | "content_block_stop";
+                content_block?: {
+                  type: "tool_use";
+                  id: string;
+                  name: string;
                 };
-            try {
-              chunkJson = JSON.parse(msg.data);
-            } catch (e) {
-              console.error("[Response] parse error", msg.data);
-            }
+                delta?: {
+                  type: "text_delta" | "input_json_delta";
+                  text?: string;
+                  partial_json?: string;
+                };
+                index: number;
+              };
+          chunkJson = JSON.parse(text);
 
-            if (!chunkJson || chunkJson.type === "content_block_stop") {
-              return finish();
-            }
-
-            const { delta } = chunkJson;
-            if (delta?.text) {
-              context.text += delta.text;
-              options.onUpdate?.(context.text, delta.text);
-            }
-          },
-          onclose() {
-            finish();
-          },
-          onerror(e) {
-            options.onError?.(e);
-            throw e;
-          },
-          openWhenHidden: true,
-        });
-      } catch (e) {
-        console.error("failed to chat", e);
-        options.onError?.(e as Error);
-      }
+          if (chunkJson?.content_block?.type == "tool_use") {
+            index += 1;
+            const id = chunkJson?.content_block.id;
+            const name = chunkJson?.content_block.name;
+            runTools.push({
+              id,
+              type: "function",
+              function: {
+                name,
+                arguments: "",
+              },
+            });
+          }
+          if (
+            chunkJson?.delta?.type == "input_json_delta" &&
+            chunkJson?.delta?.partial_json
+          ) {
+            // @ts-ignore
+            runTools[index]["function"]["arguments"] +=
+              chunkJson?.delta?.partial_json;
+          }
+          return chunkJson?.delta?.text;
+        },
+        // processToolMessage, include tool_calls message and tool call results
+        (
+          requestPayload: RequestPayload,
+          toolCallMessage: any,
+          toolCallResult: any[],
+        ) => {
+          // reset index value
+          index = -1;
+          // @ts-ignore
+          requestPayload?.messages?.splice(
+            // @ts-ignore
+            requestPayload?.messages?.length,
+            0,
+            {
+              role: "assistant",
+              content: toolCallMessage.tool_calls.map(
+                (tool: ChatMessageTool) => ({
+                  type: "tool_use",
+                  id: tool.id,
+                  name: tool?.function?.name,
+                  input: tool?.function?.arguments
+                    ? JSON.parse(tool?.function?.arguments)
+                    : {},
+                }),
+              ),
+            },
+            // @ts-ignore
+            ...toolCallResult.map((result) => ({
+              role: "user",
+              content: [
+                {
+                  type: "tool_result",
+                  tool_use_id: result.tool_call_id,
+                  content: result.content,
+                },
+              ],
+            })),
+          );
+        },
+        options,
+      );
     } else {
+      const payload = {
+        method: "POST",
+        body: JSON.stringify(requestBody),
+        signal: controller.signal,
+        headers: {
+          ...getHeaders(), // get common headers
+          "anthropic-version": accessStore.anthropicApiVersion,
+          // do not send `anthropicApiKey` in browser!!!
+          // Authorization: getAuthKey(accessStore.anthropicApiKey),
+        },
+      };
+
       try {
-        controller.signal.onabort = () => options.onFinish("");
+        controller.signal.onabort = () =>
+          options.onFinish("", new Response(null, { status: 400 }));
 
         const res = await fetch(path, payload);
         const resJson = await res.json();
 
         const message = this.extractMessage(resJson);
-        options.onFinish(message);
+        options.onFinish(message, res);
       } catch (e) {
         console.error("failed to chat", e);
         options.onError?.(e as Error);
@@ -552,9 +408,7 @@ export class ClaudeApi implements LLMApi {
     if (baseUrl.trim().length === 0) {
       const isApp = !!getClientConfig()?.isApp;
 
-      baseUrl = isApp
-        ? DEFAULT_API_HOST + "/api/proxy/anthropic"
-        : ApiPath.Anthropic;
+      baseUrl = isApp ? ANTHROPIC_BASE_URL : ApiPath.Anthropic;
     }
 
     if (!baseUrl.startsWith("http") && !baseUrl.startsWith("/api")) {

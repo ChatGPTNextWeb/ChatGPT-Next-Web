@@ -2,12 +2,12 @@
 // azure and openai, using same models. so using same LLMApi.
 import {
   ApiPath,
-  DEFAULT_API_HOST,
   DEFAULT_MODELS,
   OpenaiPath,
   Azure,
   REQUEST_TIMEOUT_MS,
   ServiceProvider,
+  OPENAI_BASE_URL,
 } from "@/app/constant";
 import {
   ChatMessageTool,
@@ -101,7 +101,7 @@ export class ChatGPTApi implements LLMApi {
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
       const apiPath = isAzure ? ApiPath.Azure : ApiPath.OpenAI;
-      baseUrl = isApp ? DEFAULT_API_HOST + "/proxy" + apiPath : apiPath;
+      baseUrl = isApp ? OPENAI_BASE_URL : apiPath;
     }
 
     if (baseUrl.endsWith("/")) {
@@ -383,7 +383,7 @@ export class ChatGPTApi implements LLMApi {
 
         const resJson = await res.json();
         const message = await this.extractMessage(resJson);
-        options.onFinish(message);
+        options.onFinish(message, res);
       }
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);
@@ -663,20 +663,26 @@ export class ChatGPTApi implements LLMApi {
     });
 
     const resJson = (await res.json()) as OpenAIListModelResponse;
-    const chatModels = resJson.data?.filter((m) => m.id.startsWith("gpt-"));
+    const chatModels = resJson.data?.filter(
+      (m) => m.id.startsWith("gpt-") || m.id.startsWith("chatgpt-"),
+    );
     console.log("[Models]", chatModels);
 
     if (!chatModels) {
       return [];
     }
 
+    //由于目前 OpenAI 的 disableListModels 默认为 true，所以当前实际不会运行到这场
+    let seq = 1000; //同 Constant.ts 中的排序保持一致
     return chatModels.map((m) => ({
       name: m.id,
       available: true,
+      sorted: seq++,
       provider: {
         id: "openai",
         providerName: "OpenAI",
         providerType: "openai",
+        sorted: 1,
       },
     }));
   }
