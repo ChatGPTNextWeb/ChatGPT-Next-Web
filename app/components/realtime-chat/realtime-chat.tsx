@@ -85,27 +85,28 @@ export function RealtimeChat({
         startResponseListener();
 
         setIsConnected(true);
-        try {
-          const recentMessages = chatStore.getMessagesWithMemory();
-          for (const message of recentMessages) {
-            const { role, content } = message;
-            if (typeof content === "string") {
-              await clientRef.current.sendItem({
-                type: "message",
-                role: role as any,
-                content: [
-                  {
-                    type: (role === "assistant" ? "text" : "input_text") as any,
-                    text: content as string,
-                  },
-                ],
-              });
-            }
-          }
-          // await clientRef.current.generateResponse();
-        } catch (error) {
-          console.error("Set message failed:", error);
-        }
+        // TODO
+        // try {
+        //   const recentMessages = chatStore.getMessagesWithMemory();
+        //   for (const message of recentMessages) {
+        //     const { role, content } = message;
+        //     if (typeof content === "string") {
+        //       await clientRef.current.sendItem({
+        //         type: "message",
+        //         role: role as any,
+        //         content: [
+        //           {
+        //             type: (role === "assistant" ? "text" : "input_text") as any,
+        //             text: content as string,
+        //           },
+        //         ],
+        //       });
+        //     }
+        //   }
+        //   // await clientRef.current.generateResponse();
+        // } catch (error) {
+        //   console.error("Set message failed:", error);
+        // }
       } catch (error) {
         console.error("Connection failed:", error);
         setStatus("Connection failed");
