@@ -44,6 +44,10 @@ declare global {
       ANTHROPIC_API_KEY?: string;
       ANTHROPIC_API_VERSION?: string;
 
+      // google cloud vertex ai only
+      VERTEX_AI_URL?: string; // https://{loc}-aiaiplatfor.googleapis.com/v1/{project}/locations/{loc}/models/{model}/versions/{version}:predict
+      GOOGLE_CLOUD_JSON_KEY?: string; // service account json key content
+
       // baidu only
       BAIDU_URL?: string;
       BAIDU_API_KEY?: string;
@@ -148,6 +152,7 @@ export const getServerSideConfig = () => {
   const isGoogle = !!process.env.GOOGLE_API_KEY;
   const isAnthropic = !!process.env.ANTHROPIC_API_KEY;
   const isTencent = !!process.env.TENCENT_API_KEY;
+  const isVertexAI = !!process.env.VERTEX_AI_URL;
 
   const isBaidu = !!process.env.BAIDU_API_KEY;
   const isBytedance = !!process.env.BYTEDANCE_API_KEY;
@@ -190,6 +195,10 @@ export const getServerSideConfig = () => {
     anthropicApiKey: getApiKey(process.env.ANTHROPIC_API_KEY),
     anthropicApiVersion: process.env.ANTHROPIC_API_VERSION,
     anthropicUrl: process.env.ANTHROPIC_URL,
+
+    isVertexAI,
+    vertexAIUrl: process.env.VERTEX_AI_URL,
+    googleCloudJsonKey: process.env.GOOGLE_CLOUD_JSON_KEY,
 
     isBaidu,
     baiduUrl: process.env.BAIDU_URL,

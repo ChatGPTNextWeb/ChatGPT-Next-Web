@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSideConfig } from "../config/server";
 import { OPENAI_BASE_URL, ServiceProvider } from "../constant";
 import { cloudflareAIGatewayUrl } from "../utils/cloudflare";
+import { GoogleToken } from "../utils/gtoken";
 import { getModelProvider, isModelAvailableInServer } from "../utils/model";
 
 const serverConfig = getServerSideConfig();
@@ -184,4 +185,26 @@ export async function requestOpenai(req: NextRequest) {
   } finally {
     clearTimeout(timeoutId);
   }
+}
+
+let gTokenClient: GoogleToken | undefined;
+
+/**
+ * Get access token for google cloud,
+ * requires GOOGLE_CLOUD_JSON_KEY to be set
+ * @returns access token for google cloud
+ */
+export async function getGCloudToken() {
+  if (!gTokenClient) {
+    if (!serverConfig.googleCloudJsonKey)
+      throw new Error("GOOGLE_CLOUD_JSON_KEY is not set");
+    const keys = JSON.parse(serverConfig.googleCloudJsonKey);
+    gTokenClient = new GoogleToken({
+      email: keys.client_email,
+      key: keys.private_key,
+      scope: ["https://www.googleapis.com/auth/cloud-platform"],
+    });
+  }
+  const credentials = await gTokenClient?.getToken();
+  return credentials?.access_token;
 }

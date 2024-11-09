@@ -33,6 +33,7 @@
     "heic2any": "^0.0.4",
     "html-to-image": "^1.11.11",
     "idb-keyval": "^6.2.1",
+    "jose": "^5.9.6",
     "lodash-es": "^4.17.21",
     "markdown-to-txt": "^2.0.1",
     "mermaid": "^10.6.1",

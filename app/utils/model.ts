@@ -200,5 +200,6 @@ export function isModelAvailableInServer(
 ) {
   const fullName = `${modelName}@${providerName}`;
   const modelTable = collectModelTable(DEFAULT_MODELS, customModels);
+  //TODO: this always return false, because providerName's first letter is capitalized, but the providerName in modelTable is lowercase
   return modelTable[fullName]?.available === false;
 }
