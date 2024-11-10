@@ -54,6 +54,7 @@ export default function RootLayout({
         {serverConfig?.isVercel && (
           <>
             <SpeedInsights />
+            <Analytics />
           </>
         )}
         {serverConfig?.gtmId && (
@@ -66,7 +67,6 @@ export default function RootLayout({
             <GoogleAnalytics gaId={serverConfig.gaId} />
           </>
         )}
-        <Analytics />
       </body>
     </html>
   );
