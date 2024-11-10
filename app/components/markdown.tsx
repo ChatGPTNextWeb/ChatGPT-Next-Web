@@ -23,6 +23,7 @@ import { useChatStore } from "../store";
 import { IconButton } from "./button";
 
 import { useAppConfig } from "../store/config";
+import clsx from "clsx";
 
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -57,7 +58,7 @@ export function Mermaid(props: { code: string }) {
 
   return (
     <div
-      className="no-dark mermaid"
+      className={clsx("no-dark", "mermaid")}
       style={{
         cursor: "pointer",
         overflow: "auto",
@@ -169,6 +170,12 @@ export function PreCode(props: { children: any }) {
 }
 
 function CustomCode(props: { children: any; className?: string }) {
+  const chatStore = useChatStore();
+  const session = chatStore.currentSession();
+  const config = useAppConfig();
+  const enableCodeFold =
+    session.mask?.enableCodeFold !== false && config.enableCodeFold;
+
   const ref = useRef<HTMLPreElement>(null);
   const [collapsed, setCollapsed] = useState(true);
   const [showToggle, setShowToggle] = useState(false);
@@ -184,25 +191,35 @@ function CustomCode(props: { children: any; className?: string }) {
   const toggleCollapsed = () => {
     setCollapsed((collapsed) => !collapsed);
   };
+  const renderShowMoreButton = () => {
+    if (showToggle && enableCodeFold && collapsed) {
+      return (
+        <div
+          className={clsx("show-hide-button", {
+            collapsed,
+            expanded: !collapsed,
+          })}
+        >
+          <button onClick={toggleCollapsed}>{Locale.NewChat.More}</button>
+        </div>
+      );
+    }
+    return null;
+  };
   return (
     <>
       <code
-        className={props?.className}
+        className={clsx(props?.className)}
         ref={ref}
         style={{
-          maxHeight: collapsed ? "400px" : "none",
+          maxHeight: enableCodeFold && collapsed ? "400px" : "none",
           overflowY: "hidden",
         }}
       >
         {props.children}
       </code>
-      {showToggle && collapsed && (
-        <div
-          className={`show-hide-button ${collapsed ? "collapsed" : "expanded"}`}
-        >
-          <button onClick={toggleCollapsed}>{Locale.NewChat.More}</button>
-        </div>
-      )}
+
+      {renderShowMoreButton()}
     </>
   );
 }

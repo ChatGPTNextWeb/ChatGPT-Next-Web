@@ -10,6 +10,8 @@ import { handle as alibabaHandler } from "../../alibaba";
 import { handle as moonshotHandler } from "../../moonshot";
 import { handle as stabilityHandler } from "../../stability";
 import { handle as iflytekHandler } from "../../iflytek";
+import { handle as xaiHandler } from "../../xai";
+import { handle as chatglmHandler } from "../../glm";
 import { handle as proxyHandler } from "../../proxy";
 
 async function handle(
@@ -38,6 +40,10 @@ async function handle(
       return stabilityHandler(req, { params });
     case ApiPath.Iflytek:
       return iflytekHandler(req, { params });
+    case ApiPath.XAI:
+      return xaiHandler(req, { params });
+    case ApiPath.ChatGLM:
+      return chatglmHandler(req, { params });
     case ApiPath.OpenAI:
       return openaiHandler(req, { params });
     default:

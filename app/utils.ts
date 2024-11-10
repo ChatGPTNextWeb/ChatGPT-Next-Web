@@ -266,7 +266,9 @@ export function isVisionModel(model: string) {
     model.includes("gpt-4-turbo") && !model.includes("preview");
 
   return (
-    visionKeywords.some((keyword) => model.includes(keyword)) || isGpt4Turbo
+    visionKeywords.some((keyword) => model.includes(keyword)) ||
+    isGpt4Turbo ||
+    isDalle3(model)
   );
 }
 
@@ -278,7 +280,8 @@ export function showPlugins(provider: ServiceProvider, model: string) {
   if (
     provider == ServiceProvider.OpenAI ||
     provider == ServiceProvider.Azure ||
-    provider == ServiceProvider.Moonshot
+    provider == ServiceProvider.Moonshot ||
+    provider == ServiceProvider.ChatGLM
   ) {
     return true;
   }
@@ -385,4 +388,38 @@ export function getOperationId(operation: {
     operation?.operationId ||
     `${operation.method.toUpperCase()}${operation.path.replaceAll("/", "_")}`
   );
+}
+
+export function clientUpdate() {
+  // this a wild for updating client app
+  return window.__TAURI__?.updater
+    .checkUpdate()
+    .then((updateResult) => {
+      if (updateResult.shouldUpdate) {
+        window.__TAURI__?.updater
+          .installUpdate()
+          .then((result) => {
+            showToast(Locale.Settings.Update.Success);
+          })
+          .catch((e) => {
+            console.error("[Install Update Error]", e);
+            showToast(Locale.Settings.Update.Failed);
+          });
+      }
+    })
+    .catch((e) => {
+      console.error("[Check Update Error]", e);
+      showToast(Locale.Settings.Update.Failed);
+    });
+}
+
+// https://gist.github.com/iwill/a83038623ba4fef6abb9efca87ae9ccb
+export function semverCompare(a: string, b: string) {
+  if (a.startsWith(b + "-")) return -1;
+  if (b.startsWith(a + "-")) return 1;
+  return a.localeCompare(b, undefined, {
+    numeric: true,
+    sensitivity: "case",
+    caseFirst: "upper",
+  });
 }

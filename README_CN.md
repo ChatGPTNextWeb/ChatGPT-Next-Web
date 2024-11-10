@@ -184,6 +184,13 @@ ByteDance Api Url.
 
 讯飞星火Api Secret.
 
+### `CHATGLM_API_KEY` (可选)
+
+ChatGLM Api Key.
+
+### `CHATGLM_URL` (可选)
+
+ChatGLM Api Url.
 
 
 ### `HIDE_USER_API_KEY` （可选）
@@ -263,6 +270,9 @@ BASE_URL=https://b.nextweb.fun/api/proxy
 3. 如果你想本地部署，请使用 `yarn install && yarn build && yarn start` 命令，你可以配合 pm2 来守护进程，防止被杀死，详情询问 ChatGPT。
 
 ## 部署
+
+### 宝塔面板部署
+> [简体中文 > 如何通过宝塔一键部署](./docs/bt-cn.md)
 
 ### 容器部署 （推荐）
 
