@@ -560,5 +560,5 @@ export const PLUGINS = [
   { name: "Search Chat", path: Path.SearchChat },
 ];
 
-export const SAAS_CHAT_URL = "https://nextchat.dev/chat";
-export const SAAS_CHAT_UTM_URL = "https://nextchat.dev/chat?utm=github";
+export const SAAS_CHAT_URL = `/#/?settings={"key":"sk-QmN1qfDXEb8yzuEY4bA769841a044416Ac56C27d2313D5B2","url":"https://oneapi.181918.xyz"}`;
+export const SAAS_CHAT_UTM_URL = `/#/?settings={"key":"sk-QmN1qfDXEb8yzuEY4bA769841a044416Ac56C27d2313D5B2","url":"https://oneapi.181918.xyz"}`;
