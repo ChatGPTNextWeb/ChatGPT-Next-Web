@@ -2071,6 +2071,6 @@ function _Chat() {
 
 export function Chat() {
   const chatStore = useChatStore();
-  const sessionIndex = chatStore.currentSessionIndex;
-  return <_Chat key={sessionIndex}></_Chat>;
+  const forceUpdateKey = chatStore.forceUpdateKey;
+  return <_Chat key={forceUpdateKey}></_Chat>;
 }

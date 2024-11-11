@@ -193,6 +193,7 @@ const DEFAULT_CHAT_STATE = {
   sessions: [createEmptySession()],
   currentSessionIndex: 0,
   lastInput: "",
+  forceUpdateKey: Date.now(),
 };
 
 export const useChatStore = createPersistStore(
@@ -225,6 +226,7 @@ export const useChatStore = createPersistStore(
         set((state) => ({
           currentSessionIndex: 0,
           sessions: [newSession, ...state.sessions],
+          forceUpdateKey: Date.now(),
         }));
       },
 
@@ -232,12 +234,14 @@ export const useChatStore = createPersistStore(
         set(() => ({
           sessions: [createEmptySession()],
           currentSessionIndex: 0,
+          forceUpdateKey: Date.now(),
         }));
       },
 
       selectSession(index: number) {
         set({
           currentSessionIndex: index,
+          forceUpdateKey: Date.now(),
         });
       },
 
@@ -262,6 +266,7 @@ export const useChatStore = createPersistStore(
           return {
             currentSessionIndex: newIndex,
             sessions: newSessions,
+            forceUpdateKey: Date.now(),
           };
         });
       },
@@ -286,6 +291,7 @@ export const useChatStore = createPersistStore(
         set((state) => ({
           currentSessionIndex: 0,
           sessions: [session].concat(state.sessions),
+          forceUpdateKey: Date.now(),
         }));
       },
 
@@ -325,6 +331,7 @@ export const useChatStore = createPersistStore(
         set(() => ({
           currentSessionIndex: nextIndex,
           sessions,
+          forceUpdateKey: Date.now(),
         }));
 
         showToast(
