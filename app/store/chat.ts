@@ -52,6 +52,7 @@ export type ChatMessage = RequestMessage & {
   id: string;
   model?: ModelType;
   tools?: ChatMessageTool[];
+  audio_url?: string;
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
@@ -357,7 +358,7 @@ export const useChatStore = createPersistStore(
           session.messages = session.messages.concat();
           session.lastUpdate = Date.now();
         });
-        get().updateStat(message);
+        get().updateStat(message, targetSession);
         get().summarizeSession(false, targetSession);
       },
 
@@ -396,10 +397,10 @@ export const useChatStore = createPersistStore(
         // get recent messages
         const recentMessages = get().getMessagesWithMemory();
         const sendMessages = recentMessages.concat(userMessage);
-        const messageIndex = get().currentSession().messages.length + 1;
+        const messageIndex = session.messages.length + 1;
 
         // save user's and bot's message
-        get().updateCurrentSession((session) => {
+        get().updateTargetSession(session, (session) => {
           const savedUserMessage = {
             ...userMessage,
             content: mContent,
@@ -420,7 +421,7 @@ export const useChatStore = createPersistStore(
             if (message) {
               botMessage.content = message;
             }
-            get().updateCurrentSession((session) => {
+            get().updateTargetSession(session, (session) => {
               session.messages = session.messages.concat();
             });
           },
@@ -428,13 +429,14 @@ export const useChatStore = createPersistStore(
             botMessage.streaming = false;
             if (message) {
               botMessage.content = message;
+              botMessage.date = new Date().toLocaleString();
               get().onNewMessage(botMessage, session);
             }
             ChatControllerPool.remove(session.id, botMessage.id);
           },
           onBeforeTool(tool: ChatMessageTool) {
             (botMessage.tools = botMessage?.tools || []).push(tool);
-            get().updateCurrentSession((session) => {
+            get().updateTargetSession(session, (session) => {
               session.messages = session.messages.concat();
             });
           },
@@ -444,7 +446,7 @@ export const useChatStore = createPersistStore(
                 tools[i] = { ...tool };
               }
             });
-            get().updateCurrentSession((session) => {
+            get().updateTargetSession(session, (session) => {
               session.messages = session.messages.concat();
             });
           },
@@ -459,7 +461,7 @@ export const useChatStore = createPersistStore(
             botMessage.streaming = false;
             userMessage.isError = !isAborted;
             botMessage.isError = !isAborted;
-            get().updateCurrentSession((session) => {
+            get().updateTargetSession(session, (session) => {
               session.messages = session.messages.concat();
             });
             ChatControllerPool.remove(
@@ -591,8 +593,8 @@ export const useChatStore = createPersistStore(
         set(() => ({ sessions }));
       },
 
-      resetSession() {
-        get().updateCurrentSession((session) => {
+      resetSession(session: ChatSession) {
+        get().updateTargetSession(session, (session) => {
           session.messages = [];
           session.memoryPrompt = "";
         });
@@ -736,18 +738,11 @@ export const useChatStore = createPersistStore(
         }
       },
 
-      updateStat(message: ChatMessage) {
-        get().updateCurrentSession((session) => {
+      updateStat(message: ChatMessage, session: ChatSession) {
+        get().updateTargetSession(session, (session) => {
           session.stat.charCount += message.content.length;
           // TODO: should update chat count and word count
         });
-      },
-
-      updateCurrentSession(updater: (session: ChatSession) => void) {
-        const sessions = get().sessions;
-        const index = get().currentSessionIndex;
-        updater(sessions[index]);
-        set(() => ({ sessions }));
       },
       updateTargetSession(
         targetSession: ChatSession,
