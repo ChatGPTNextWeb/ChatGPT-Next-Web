@@ -994,9 +994,14 @@ export function Settings() {
           type="text"
           placeholder={Locale.Settings.Access.Bedrock.AccessKey.Placeholder}
           onChange={(e) => {
-            accessStore.update(
-              (access) => (access.awsAccessKey = e.currentTarget.value),
-            );
+             accessStore.update((access) => {
+              const accessKey = e.currentTarget.value;
+              if (accessKey && accessKey.length !== 20) {
+                showToast(Locale.Settings.Access.Bedrock.AccessKey.Invalid);
+                return;
+              }
+              access.awsAccessKey = accessKey;
+            });
           }}
           maskWhenShow={true}
         />
