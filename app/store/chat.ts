@@ -52,6 +52,7 @@ export type ChatMessage = RequestMessage & {
   id: string;
   model?: ModelType;
   tools?: ChatMessageTool[];
+  audio_url?: string;
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
