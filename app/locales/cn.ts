@@ -562,6 +562,39 @@ const cn = {
         SubTitle: "生成语音的速度",
       },
     },
+    Realtime: {
+      Enable: {
+        Title: "实时聊天",
+        SubTitle: "开启实时聊天功能",
+      },
+      Provider: {
+        Title: "模型服务商",
+        SubTitle: "切换不同的服务商",
+      },
+      Model: {
+        Title: "模型",
+        SubTitle: "选择一个模型",
+      },
+      ApiKey: {
+        Title: "API Key",
+        SubTitle: "API Key",
+        Placeholder: "API Key",
+      },
+      Azure: {
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "接口地址",
+        },
+        Deployment: {
+          Title: "部署名称",
+          SubTitle: "部署名称",
+        },
+      },
+      Temperature: {
+        Title: "随机性 (temperature)",
+        SubTitle: "值越大，回复越随机",
+      },
+    },
   },
   Store: {
     DefaultTopic: "新的聊天",

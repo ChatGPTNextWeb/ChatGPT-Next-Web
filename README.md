@@ -96,10 +96,11 @@ For enterprise inquiries, please contact: **business@nextchat.dev**
 - [x] Artifacts: Easily preview, copy and share generated content/webpages through a separate window [#5092](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/pull/5092)
 - [x] Plugins: support network search, calculator, any other apis etc. [#165](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/165) [#5353](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/issues/5353)
   - [x] network search, calculator, any other apis etc. [#165](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/165) [#5353](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/issues/5353)
+- [x] Supports Realtime Chat [#5672](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/issues/5672)
 - [ ] local knowledge base
 
 ## What's New
-
+- 🚀 v2.15.8 Now supports Realtime Chat [#5672](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/issues/5672)
 - 🚀 v2.15.4 The Application supports using Tauri fetch LLM API, MORE SECURITY! [#5379](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/issues/5379)
 - 🚀 v2.15.0 Now supports Plugins! Read this: [NextChat-Awesome-Plugins](https://github.com/ChatGPTNextWeb/NextChat-Awesome-Plugins)
 - 🚀 v2.14.0 Now supports  Artifacts & SD 
@@ -134,10 +135,11 @@ For enterprise inquiries, please contact: **business@nextchat.dev**
 - [x] Artifacts: 通过独立窗口，轻松预览、复制和分享生成的内容/可交互网页 [#5092](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/pull/5092)
 - [x] 插件机制，支持`联网搜索`、`计算器`、调用其他平台 api [#165](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/165) [#5353](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/issues/5353)
    - [x] 支持联网搜索、计算器、调用其他平台 api [#165](https://github.com/Yidadaa/ChatGPT-Next-Web/issues/165) [#5353](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/issues/5353)
+ - [x] 支持 Realtime Chat [#5672](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/issues/5672)
  - [ ] 本地知识库
 
 ## 最新动态
-
+- 🚀 v2.15.8 现在支持Realtime Chat [#5672](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/issues/5672)
 - 🚀 v2.15.4 客户端支持Tauri本地直接调用大模型API，更安全！[#5379](https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web/issues/5379)
 - 🚀 v2.15.0 现在支持插件功能了！了解更多：[NextChat-Awesome-Plugins](https://github.com/ChatGPTNextWeb/NextChat-Awesome-Plugins)
 - 🚀 v2.14.0 现在支持 Artifacts & SD 了。
