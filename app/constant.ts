@@ -242,6 +242,8 @@ export const ChatGLM = {
 
 export const Bedrock = {
   ChatPath: "converse",
+  ApiVersion: "2023-11-01",
+  getEndpoint: (region: string = "us-west-2") =>`https://bedrock-runtime.${region}.amazonaws.com`,
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
