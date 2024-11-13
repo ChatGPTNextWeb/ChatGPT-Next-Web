@@ -978,9 +978,14 @@ export function Settings() {
           value={accessStore.awsRegion}
           placeholder="us-west-2"
           onChange={(e) =>
-            accessStore.update(
-              (access) => (access.awsRegion = e.currentTarget.value),
-            )
+            accessStore.update((access) => {
+              const region = e.currentTarget.value;
+               if (!/^[a-z]{2}-[a-z]+-\d+$/.test(region)) {
+                 showToast(Locale.Settings.Access.Bedrock.Region.Invalid);
+                 return;
+                }
+              access.awsRegion = region;
+              })
           }
         />
       </ListItem>
