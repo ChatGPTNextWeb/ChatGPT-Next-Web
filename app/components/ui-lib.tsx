@@ -272,19 +272,20 @@ export function Input(props: InputProps) {
 export function PasswordInput(
   props: HTMLProps<HTMLInputElement> & {
     aria?: string;
-    maskWhenShow?: boolean; // New prop to control masking behavior
+    maskWhenShow?: boolean;
   },
 ) {
   const [visible, setVisible] = useState(false);
   const [displayValue, setDisplayValue] = useState(props.value as string);
+  const { maskWhenShow, ...inputProps } = props;
 
   useEffect(() => {
-    if (props.maskWhenShow && visible && props.value) {
+    if (maskWhenShow && visible && props.value) {
       setDisplayValue(maskSensitiveValue(props.value as string));
     } else {
       setDisplayValue(props.value as string);
     }
-  }, [visible, props.value, props.maskWhenShow]);
+  }, [visible, props.value, maskWhenShow]);
 
   function changeVisibility() {
     setVisible(!visible);
@@ -305,7 +306,7 @@ export function PasswordInput(
         className={"password-eye"}
       />
       <input
-        {...props}
+        {...inputProps}
         value={displayValue}
         onChange={handleChange}
         type={visible ? "text" : "password"}

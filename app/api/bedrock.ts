@@ -190,7 +190,6 @@ export async function handle(
     }
 
     // If stream is false, accumulate the response and return as JSON
-    console.log("Body.stream==========" + body.stream);
     if (body.stream === false) {
       let fullResponse = {
         content: "",
