@@ -1021,9 +1021,14 @@ export function Settings() {
           type="text"
           placeholder={Locale.Settings.Access.Bedrock.SecretKey.Placeholder}
           onChange={(e) => {
-            accessStore.update(
-              (access) => (access.awsSecretKey = e.currentTarget.value),
-            );
+            accessStore.update((access) => {
+            const secretKey = e.currentTarget.value;
+            if (secretKey && secretKey.length !== 40) {
+              showToast(Locale.Settings.Access.Bedrock.SecretKey.Invalid);
+              return;
+            }
+              access.awsSecretKey = secretKey;
+            });
           }}
           maskWhenShow={true}
         />
