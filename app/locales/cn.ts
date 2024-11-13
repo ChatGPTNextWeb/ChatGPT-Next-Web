@@ -348,16 +348,19 @@ const cn = {
           Title: "AWS Region",
           SubTitle: "The AWS region where Bedrock service is located",
           Placeholder: "us-west-2",
+          Invalid: "无效的 AWS 区域格式。示例：us-west-2",
         },
         AccessKey: {
           Title: "AWS Access Key ID",
           SubTitle: "Your AWS access key ID for Bedrock service",
           Placeholder: "AKIA...",
+          Invalid: "无效的 AWS Access Key 格式。必须为20个字符。",
         },
         SecretKey: {
           Title: "AWS Secret Access Key",
           SubTitle: "Your AWS secret access key for Bedrock service",
           Placeholder: "****",
+          Invalid: "无效的 AWS Secret Key 格式。必须为40个字符。",
         },
         SessionToken: {
           Title: "AWS Session Token (Optional)",

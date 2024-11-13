@@ -352,16 +352,19 @@ const en: LocaleType = {
           Title: "AWS Region",
           SubTitle: "The AWS region where Bedrock service is located",
           Placeholder: "us-west-2",
+          Invalid: "Invalid AWS region format. Example: us-west-2",
         },
         AccessKey: {
           Title: "AWS Access Key ID",
           SubTitle: "Your AWS access key ID for Bedrock service",
           Placeholder: "AKIA...",
+          Invalid: "Invalid AWS access key format. Must be 20 characters long.",
         },
         SecretKey: {
           Title: "AWS Secret Access Key",
           SubTitle: "Your AWS secret access key for Bedrock service",
           Placeholder: "****",
+          Invalid: "Invalid AWS secret key format. Must be 40 characters long.",
         },
         SessionToken: {
           Title: "AWS Session Token (Optional)",
