@@ -90,7 +90,11 @@ export function PreCode(props: { children: any }) {
     const refText = ref.current.querySelector("code")?.innerText;
     if (htmlDom) {
       setHtmlCode((htmlDom as HTMLElement).innerText);
-    } else if (refText?.startsWith("<!DOCTYPE")) {
+    } else if (
+      refText?.startsWith("<!DOCTYPE") ||
+      refText?.startsWith("<svg") ||
+      refText?.startsWith("<?xml")
+    ) {
       setHtmlCode(refText);
     }
   }, 600);
