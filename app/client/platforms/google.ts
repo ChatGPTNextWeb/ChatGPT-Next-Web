@@ -29,7 +29,7 @@ import { RequestPayload } from "./openai";
 import { fetch } from "@/app/utils/stream";
 
 export class GeminiProApi implements LLMApi {
-  path(path: string): string {
+  path(path: string, shouldStream = false): string {
     const accessStore = useAccessStore.getState();
 
     let baseUrl = "";
@@ -51,8 +51,10 @@ export class GeminiProApi implements LLMApi {
     console.log("[Proxy Endpoint] ", baseUrl, path);
 
     let chatPath = [baseUrl, path].join("/");
+    if (shouldStream) {
+      chatPath += chatPath.includes("?") ? "&alt=sse" : "?alt=sse";
+    }
 
-    chatPath += chatPath.includes("?") ? "&alt=sse" : "?alt=sse";
     return chatPath;
   }
   extractMessage(res: any) {
@@ -60,6 +62,7 @@ export class GeminiProApi implements LLMApi {
 
     return (
       res?.candidates?.at(0)?.content?.parts.at(0)?.text ||
+      res?.at(0)?.candidates?.at(0)?.content?.parts.at(0)?.text ||
       res?.error?.message ||
       ""
     );
@@ -166,7 +169,10 @@ export class GeminiProApi implements LLMApi {
     options.onController?.(controller);
     try {
       // https://github.com/google-gemini/cookbook/blob/main/quickstarts/rest/Streaming_REST.ipynb
-      const chatPath = this.path(Google.ChatPath(modelConfig.model));
+      const chatPath = this.path(
+        Google.ChatPath(modelConfig.model),
+        shouldStream,
+      );
 
       const chatPayload = {
         method: "POST",
