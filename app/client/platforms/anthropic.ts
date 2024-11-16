@@ -1,17 +1,19 @@
-import { ACCESS_CODE_PREFIX, Anthropic, ApiPath } from "@/app/constant";
-import { ChatOptions, LLMApi, MultimodalContent } from "../api";
-import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
-import { getClientConfig } from "@/app/config/client";
-import { DEFAULT_API_HOST } from "@/app/constant";
-import { RequestMessage } from "@/app/typing";
+import { Anthropic, ApiPath } from "@/app/constant";
+import { ChatOptions, getHeaders, LLMApi, SpeechOptions } from "../api";
 import {
-  EventStreamContentType,
-  fetchEventSource,
-} from "@fortaine/fetch-event-source";
-
-import Locale from "../../locales";
-import { prettyObject } from "@/app/utils/format";
+  useAccessStore,
+  useAppConfig,
+  useChatStore,
+  usePluginStore,
+  ChatMessageTool,
+} from "@/app/store";
+import { getClientConfig } from "@/app/config/client";
+import { ANTHROPIC_BASE_URL } from "@/app/constant";
 import { getMessageTextContent, isVisionModel } from "@/app/utils";
+import { preProcessImageContent, stream } from "@/app/utils/chat";
+import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
+import { RequestPayload } from "./openai";
+import { fetch } from "@/app/utils/stream";
 
 export type MultiBlockContent = {
   type: "image" | "text";
@@ -72,6 +74,10 @@ const ClaudeMapper = {
 const keys = ["claude-2, claude-instant-1"];
 
 export class ClaudeApi implements LLMApi {
+  speech(options: SpeechOptions): Promise<ArrayBuffer> {
+    throw new Error("Method not implemented.");
+  }
+
   extractMessage(res: any) {
     console.log("[Response] claude response: ", res);
 
@@ -92,7 +98,12 @@ export class ClaudeApi implements LLMApi {
       },
     };
 
-    const messages = [...options.messages];
+    // try get base64image from local cache image_url
+    const messages: ChatOptions["messages"] = [];
+    for (const v of options.messages) {
+      const content = await preProcessImageContent(v.content);
+      messages.push({ role: v.role, content });
+    }
 
     const keys = ["system", "user"];
 
@@ -185,121 +196,135 @@ export class ClaudeApi implements LLMApi {
     const controller = new AbortController();
     options.onController?.(controller);
 
-    const payload = {
-      method: "POST",
-      body: JSON.stringify(requestBody),
-      signal: controller.signal,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        "x-api-key": accessStore.anthropicApiKey,
-        "anthropic-version": accessStore.anthropicApiVersion,
-        Authorization: getAuthKey(accessStore.anthropicApiKey),
-      },
-    };
-
     if (shouldStream) {
-      try {
-        const context = {
-          text: "",
-          finished: false,
-        };
-
-        const finish = () => {
-          if (!context.finished) {
-            options.onFinish(context.text);
-            context.finished = true;
-          }
-        };
-
-        controller.signal.onabort = finish;
-        fetchEventSource(path, {
-          ...payload,
-          async onopen(res) {
-            const contentType = res.headers.get("content-type");
-            console.log("response content type: ", contentType);
-
-            if (contentType?.startsWith("text/plain")) {
-              context.text = await res.clone().text();
-              return finish();
-            }
-
-            if (
-              !res.ok ||
-              !res.headers
-                .get("content-type")
-                ?.startsWith(EventStreamContentType) ||
-              res.status !== 200
-            ) {
-              const responseTexts = [context.text];
-              let extraInfo = await res.clone().text();
-              try {
-                const resJson = await res.clone().json();
-                extraInfo = prettyObject(resJson);
-              } catch {}
-
-              if (res.status === 401) {
-                responseTexts.push(Locale.Error.Unauthorized);
-              }
-
-              if (extraInfo) {
-                responseTexts.push(extraInfo);
-              }
-
-              context.text = responseTexts.join("\n\n");
-
-              return finish();
-            }
-          },
-          onmessage(msg) {
-            let chunkJson:
-              | undefined
-              | {
-                  type: "content_block_delta" | "content_block_stop";
-                  delta?: {
-                    type: "text_delta";
-                    text: string;
-                  };
-                  index: number;
+      let index = -1;
+      const [tools, funcs] = usePluginStore
+        .getState()
+        .getAsTools(
+          useChatStore.getState().currentSession().mask?.plugin || [],
+        );
+      return stream(
+        path,
+        requestBody,
+        {
+          ...getHeaders(),
+          "anthropic-version": accessStore.anthropicApiVersion,
+        },
+        // @ts-ignore
+        tools.map((tool) => ({
+          name: tool?.function?.name,
+          description: tool?.function?.description,
+          input_schema: tool?.function?.parameters,
+        })),
+        funcs,
+        controller,
+        // parseSSE
+        (text: string, runTools: ChatMessageTool[]) => {
+          // console.log("parseSSE", text, runTools);
+          let chunkJson:
+            | undefined
+            | {
+                type: "content_block_delta" | "content_block_stop";
+                content_block?: {
+                  type: "tool_use";
+                  id: string;
+                  name: string;
                 };
-            try {
-              chunkJson = JSON.parse(msg.data);
-            } catch (e) {
-              console.error("[Response] parse error", msg.data);
-            }
+                delta?: {
+                  type: "text_delta" | "input_json_delta";
+                  text?: string;
+                  partial_json?: string;
+                };
+                index: number;
+              };
+          chunkJson = JSON.parse(text);
 
-            if (!chunkJson || chunkJson.type === "content_block_stop") {
-              return finish();
-            }
-
-            const { delta } = chunkJson;
-            if (delta?.text) {
-              context.text += delta.text;
-              options.onUpdate?.(context.text, delta.text);
-            }
-          },
-          onclose() {
-            finish();
-          },
-          onerror(e) {
-            options.onError?.(e);
-            throw e;
-          },
-          openWhenHidden: true,
-        });
-      } catch (e) {
-        console.error("failed to chat", e);
-        options.onError?.(e as Error);
-      }
+          if (chunkJson?.content_block?.type == "tool_use") {
+            index += 1;
+            const id = chunkJson?.content_block.id;
+            const name = chunkJson?.content_block.name;
+            runTools.push({
+              id,
+              type: "function",
+              function: {
+                name,
+                arguments: "",
+              },
+            });
+          }
+          if (
+            chunkJson?.delta?.type == "input_json_delta" &&
+            chunkJson?.delta?.partial_json
+          ) {
+            // @ts-ignore
+            runTools[index]["function"]["arguments"] +=
+              chunkJson?.delta?.partial_json;
+          }
+          return chunkJson?.delta?.text;
+        },
+        // processToolMessage, include tool_calls message and tool call results
+        (
+          requestPayload: RequestPayload,
+          toolCallMessage: any,
+          toolCallResult: any[],
+        ) => {
+          // reset index value
+          index = -1;
+          // @ts-ignore
+          requestPayload?.messages?.splice(
+            // @ts-ignore
+            requestPayload?.messages?.length,
+            0,
+            {
+              role: "assistant",
+              content: toolCallMessage.tool_calls.map(
+                (tool: ChatMessageTool) => ({
+                  type: "tool_use",
+                  id: tool.id,
+                  name: tool?.function?.name,
+                  input: tool?.function?.arguments
+                    ? JSON.parse(tool?.function?.arguments)
+                    : {},
+                }),
+              ),
+            },
+            // @ts-ignore
+            ...toolCallResult.map((result) => ({
+              role: "user",
+              content: [
+                {
+                  type: "tool_result",
+                  tool_use_id: result.tool_call_id,
+                  content: result.content,
+                },
+              ],
+            })),
+          );
+        },
+        options,
+      );
     } else {
+      const payload = {
+        method: "POST",
+        body: JSON.stringify(requestBody),
+        signal: controller.signal,
+        headers: {
+          ...getHeaders(), // get common headers
+          "anthropic-version": accessStore.anthropicApiVersion,
+          // do not send `anthropicApiKey` in browser!!!
+          // Authorization: getAuthKey(accessStore.anthropicApiKey),
+        },
+      };
+
       try {
-        controller.signal.onabort = () => options.onFinish("");
+        controller.signal.onabort = () =>
+          options.onFinish("", new Response(null, { status: 400 }));
 
         const res = await fetch(path, payload);
         const resJson = await res.json();
 
         const message = this.extractMessage(resJson);
-        options.onFinish(message);
+        options.onFinish(message, res);
       } catch (e) {
         console.error("failed to chat", e);
         options.onError?.(e as Error);
@@ -365,9 +390,7 @@ export class ClaudeApi implements LLMApi {
     if (baseUrl.trim().length === 0) {
       const isApp = !!getClientConfig()?.isApp;
 
-      baseUrl = isApp
-        ? DEFAULT_API_HOST + "/api/proxy/anthropic"
-        : ApiPath.Anthropic;
+      baseUrl = isApp ? ANTHROPIC_BASE_URL : ApiPath.Anthropic;
     }
 
     if (!baseUrl.startsWith("http") && !baseUrl.startsWith("/api")) {
@@ -376,7 +399,8 @@ export class ClaudeApi implements LLMApi {
 
     baseUrl = trimEnd(baseUrl, "/");
 
-    return `${baseUrl}/${path}`;
+    // try rebuild url, when using cloudflare ai gateway in client
+    return cloudflareAIGatewayUrl(`${baseUrl}/${path}`);
   }
 }
 
@@ -388,28 +412,4 @@ function trimEnd(s: string, end = " ") {
   }
 
   return s;
-}
-
-function bearer(value: string) {
-  return `Bearer ${value.trim()}`;
-}
-
-function getAuthKey(apiKey = "") {
-  const accessStore = useAccessStore.getState();
-  const isApp = !!getClientConfig()?.isApp;
-  let authKey = "";
-
-  if (apiKey) {
-    // use user's api key first
-    authKey = bearer(apiKey);
-  } else if (
-    accessStore.enabledAccessControl() &&
-    !isApp &&
-    !!accessStore.accessCode
-  ) {
-    // or use access code
-    authKey = bearer(ACCESS_CODE_PREFIX + accessStore.accessCode);
-  }
-
-  return authKey;
 }

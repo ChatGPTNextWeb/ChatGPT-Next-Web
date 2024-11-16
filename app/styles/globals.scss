@@ -118,7 +118,7 @@ body {
 }
 
 ::-webkit-scrollbar {
-  --bar-width: 5px;
+  --bar-width: 10px;
   width: var(--bar-width);
   height: var(--bar-width);
 }
@@ -272,7 +272,7 @@ div.math {
 
 pre {
   position: relative;
-
+  
   &:hover .copy-code-button {
     pointer-events: all;
     transform: translateX(0px);
@@ -301,6 +301,39 @@ pre {
     &:hover {
       opacity: 1;
     }
+  }
+}
+
+pre {
+  .show-hide-button {
+    border-radius: 10px;
+    position: absolute;
+    inset: 0 0 auto 0;
+    width: 100%;
+    margin: auto;
+    height: fit-content;
+    display: inline-flex;
+    justify-content: center;
+    pointer-events: none;
+    button{
+      pointer-events: auto;
+      margin-top: 3em;
+      margin-bottom: 4em;
+      padding: 5px 16px;
+      border: 0;
+      cursor: pointer;
+      border-radius: 14px;
+      text-align: center;
+      color: white;
+      background: #464e4e;
+    } 
+  }
+  
+  .expanded {
+    background-image: none;
+  }
+  .collapsed {
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.06));
   }
 }
 
