@@ -231,8 +231,8 @@ export function SideBar(props: { className?: string }) {
       {...props}
     >
       <SideBarHeader
-        title="NextChat"
-        subTitle="Build your own AI assistant."
+        title="代码龙少儿编程"
+        subTitle="无限成长"
         logo={<ChatGptIcon />}
         shouldNarrow={shouldNarrow}
       >
@@ -250,13 +250,13 @@ export function SideBar(props: { className?: string }) {
             }}
             shadow
           />
-          <IconButton
+          <!--<IconButton
             icon={<DiscoveryIcon />}
             text={shouldNarrow ? undefined : Locale.Discovery.Name}
             className={styles["sidebar-bar-button"]}
             onClick={() => setShowPluginSelector(true)}
             shadow
-          />
+          />-->
         </div>
         {showPluginSelector && (
           <Selector
