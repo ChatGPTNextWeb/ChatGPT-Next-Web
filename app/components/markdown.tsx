@@ -248,6 +248,10 @@ function escapeBrackets(text: string) {
 
 function tryWrapHtmlCode(text: string) {
   // try add wrap html code (fixed: html codeblock include 2 newline)
+  // ignore embed codeblock
+  if (text.includes("```")) {
+    return text;
+  }
   return text
     .replace(
       /([`]*?)(\w*?)([\n\r]*?)(<!DOCTYPE html>)/g,
