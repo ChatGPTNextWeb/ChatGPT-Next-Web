@@ -6,15 +6,12 @@ import { EN_MASKS } from "./en";
 
 import { type BuiltinMask } from "./typing";
 
-// const BUILTIN_MASKS: Record<string, BuiltinMask[]> = {
-//   cn: CN_MASKS,
-//   tw: TW_MASKS,
-//   en: EN_MASKS,
-// };
-
 const BUILTIN_MASKS: Record<string, BuiltinMask[]> = {
   cn: CN_MASKS,
+  tw: TW_MASKS,
+  en: EN_MASKS,
 };
+
 
 const dirname = path.dirname(__filename);
 
