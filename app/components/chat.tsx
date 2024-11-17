@@ -960,9 +960,24 @@ function _Chat() {
           (scrollRef.current.scrollTop + scrollRef.current.clientHeight),
       ) <= 1
     : false;
+  const isAttachWithTop = useMemo(() => {
+    const lastMessage = scrollRef.current?.lastElementChild as HTMLElement;
+    // if scrolllRef is not ready or no message, return false
+    if (!scrollRef?.current || !lastMessage) return false;
+    const topDistance =
+      lastMessage!.getBoundingClientRect().top -
+      scrollRef.current.getBoundingClientRect().top;
+    // leave some space for user question
+    return topDistance < 100;
+  }, [scrollRef?.current?.scrollHeight]);
+
+  const isTyping = userInput !== "";
+
+  // if user is typing, should auto scroll to bottom
+  // if user is not typing, should auto scroll to bottom only if already at bottom
   const { setAutoScroll, scrollDomToBottom } = useScrollToBottom(
     scrollRef,
-    isScrolledToBottom,
+    (isScrolledToBottom || isAttachWithTop) && !isTyping,
   );
   const [hitBottom, setHitBottom] = useState(true);
   const isMobileScreen = useMobileScreen();
