@@ -12,7 +12,6 @@ import {
   useChatStore,
 } from "../store";
 import { ChatGPTApi, DalleRequestPayload } from "./platforms/openai";
-import { BedrockApi } from "./platforms/bedrock";
 import { GeminiProApi } from "./platforms/google";
 import { ClaudeApi } from "./platforms/anthropic";
 import { ErnieApi } from "./platforms/baidu";
@@ -23,6 +22,7 @@ import { MoonshotApi } from "./platforms/moonshot";
 import { SparkApi } from "./platforms/iflytek";
 import { XAIApi } from "./platforms/xai";
 import { ChatGLMApi } from "./platforms/glm";
+import { BedrockApi } from "./platforms/bedrock";
 import { encrypt } from "../utils/encryption";
 
 export const ROLES = ["system", "user", "assistant"] as const;
@@ -33,18 +33,10 @@ export const TTSModels = ["tts-1", "tts-1-hd"] as const;
 export type ChatModel = ModelType;
 
 export interface MultimodalContent {
-  type: "text" | "image_url" | "document";
+  type: "text" | "image_url";
   text?: string;
   image_url?: {
     url: string;
-  };
-  document?: {
-    format: string;
-    name: string;
-    source: {
-      bytes: string;
-      media_type?: string;
-    };
   };
 }
 
