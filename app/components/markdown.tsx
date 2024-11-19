@@ -90,7 +90,11 @@ export function PreCode(props: { children: any }) {
     const refText = ref.current.querySelector("code")?.innerText;
     if (htmlDom) {
       setHtmlCode((htmlDom as HTMLElement).innerText);
-    } else if (refText?.startsWith("<!DOCTYPE")) {
+    } else if (
+      refText?.startsWith("<!DOCTYPE") ||
+      refText?.startsWith("<svg") ||
+      refText?.startsWith("<?xml")
+    ) {
       setHtmlCode(refText);
     }
   }, 600);
@@ -244,6 +248,10 @@ function escapeBrackets(text: string) {
 
 function tryWrapHtmlCode(text: string) {
   // try add wrap html code (fixed: html codeblock include 2 newline)
+  // ignore embed codeblock
+  if (text.includes("```")) {
+    return text;
+  }
   return text
     .replace(
       /([`]*?)(\w*?)([\n\r]*?)(<!DOCTYPE html>)/g,
