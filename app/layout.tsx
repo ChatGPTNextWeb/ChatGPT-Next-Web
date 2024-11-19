@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   title: "RevoChat",
   description: "Your personal Revo Chat Bot.",
   appleWebApp: {
-    title: "NextChat",
+    title: "RevoChat",
     statusBarStyle: "default",
   },
 };
