@@ -1,30 +1,13 @@
-import { ApiPath } from "../../constant";
-import { ChatOptions, getHeaders, LLMApi, SpeechOptions } from "../api";
+import { ChatOptions, LLMApi, SpeechOptions } from "../api";
 import {
   useAppConfig,
   usePluginStore,
   useChatStore,
+  useAccessStore,
   ChatMessageTool,
 } from "../../store";
-import { getMessageTextContent, isVisionModel } from "../../utils";
-import { fetch } from "../../utils/stream";
 import { preProcessImageContent, stream } from "../../utils/chat";
-import { RequestPayload } from "./openai";
-
-export type MultiBlockContent = {
-  type: "image" | "text";
-  source?: {
-    type: string;
-    media_type: string;
-    data: string;
-  };
-  text?: string;
-};
-
-export type AnthropicMessage = {
-  role: (typeof ClaudeMapper)[keyof typeof ClaudeMapper];
-  content: string | MultiBlockContent[];
-};
+import { getMessageTextContent, isVisionModel } from "../../utils";
 
 const ClaudeMapper = {
   assistant: "assistant",
@@ -32,62 +15,52 @@ const ClaudeMapper = {
   system: "user",
 } as const;
 
+interface ToolDefinition {
+  function?: {
+    name: string;
+    description?: string;
+    parameters?: any;
+  };
+}
+
 export class BedrockApi implements LLMApi {
   speech(options: SpeechOptions): Promise<ArrayBuffer> {
     throw new Error("Speech not implemented for Bedrock.");
   }
 
   extractMessage(res: any) {
-    console.log("[Response] Bedrock not stream response: ", res);
-    if (res.error) {
-      return "```\n" + JSON.stringify(res, null, 4) + "\n```";
-    }
-    return res?.content ?? res;
+    if (res?.content?.[0]?.text) return res.content[0].text;
+    if (res?.messages?.[0]?.content?.[0]?.text)
+      return res.messages[0].content[0].text;
+    if (res?.delta?.text) return res.delta.text;
+    return "";
   }
 
-  async chat(options: ChatOptions): Promise<void> {
+  async chat(options: ChatOptions) {
     const visionModel = isVisionModel(options.config.model);
-    const shouldStream = !!options.config.stream;
+    const isClaude3 = options.config.model.startsWith("anthropic.claude-3");
+
     const modelConfig = {
       ...useAppConfig.getState().modelConfig,
       ...useChatStore.getState().currentSession().mask.modelConfig,
-      ...{
-        model: options.config.model,
-      },
+      model: options.config.model,
     };
 
-    // try get base64image from local cache image_url
-    const messages: ChatOptions["messages"] = [];
-    for (const v of options.messages) {
-      const content = await preProcessImageContent(v.content);
-      messages.push({ role: v.role, content });
-    }
-
-    const keys = ["system", "user"];
-
-    // roles must alternate between "user" and "assistant" in claude, so add a fake assistant message between two user messages
-    for (let i = 0; i < messages.length - 1; i++) {
-      const message = messages[i];
-      const nextMessage = messages[i + 1];
-
-      if (keys.includes(message.role) && keys.includes(nextMessage.role)) {
-        messages[i] = [
-          message,
-          {
-            role: "assistant",
-            content: ";",
-          },
-        ] as any;
+    let systemMessage = "";
+    const messages = [];
+    for (const msg of options.messages) {
+      const content = await preProcessImageContent(msg.content);
+      if (msg.role === "system") {
+        systemMessage = getMessageTextContent(msg);
+      } else {
+        messages.push({ role: msg.role, content });
       }
     }
 
-    const prompt = messages
-      .flat()
-      .filter((v) => {
-        if (!v.content) return false;
-        if (typeof v.content === "string" && !v.content.trim()) return false;
-        return true;
-      })
+    const formattedMessages = messages
+      .filter(
+        (v) => v.content && (typeof v.content !== "string" || v.content.trim()),
+      )
       .map((v) => {
         const { role, content } = v;
         const insideRole = ClaudeMapper[role] ?? "user";
@@ -95,200 +68,201 @@ export class BedrockApi implements LLMApi {
         if (!visionModel || typeof content === "string") {
           return {
             role: insideRole,
-            content: getMessageTextContent(v),
+            content: [{ type: "text", text: getMessageTextContent(v) }],
           };
         }
+
         return {
           role: insideRole,
           content: content
             .filter((v) => v.image_url || v.text)
             .map(({ type, text, image_url }) => {
-              if (type === "text") {
-                return {
-                  type,
-                  text: text!,
-                };
-              }
+              if (type === "text") return { type, text: text! };
+
               const { url = "" } = image_url || {};
               const colonIndex = url.indexOf(":");
               const semicolonIndex = url.indexOf(";");
               const comma = url.indexOf(",");
 
-              const mimeType = url.slice(colonIndex + 1, semicolonIndex);
-              const encodeType = url.slice(semicolonIndex + 1, comma);
-              const data = url.slice(comma + 1);
-
               return {
-                type: "image" as const,
+                type: "image",
                 source: {
-                  type: encodeType,
-                  media_type: mimeType,
-                  data,
+                  type: url.slice(semicolonIndex + 1, comma),
+                  media_type: url.slice(colonIndex + 1, semicolonIndex),
+                  data: url.slice(comma + 1),
                 },
               };
             }),
         };
       });
 
-    if (prompt[0]?.role === "assistant") {
-      prompt.unshift({
-        role: "user",
-        content: ";",
-      });
-    }
-
     const requestBody = {
-      modelId: options.config.model,
-      messages: prompt,
-      inferenceConfig: {
-        maxTokens: modelConfig.max_tokens,
+      anthropic_version: "bedrock-2023-05-31",
+      max_tokens: modelConfig.max_tokens,
+      messages: formattedMessages,
+      ...(systemMessage && { system: systemMessage }),
+      ...(modelConfig.temperature !== undefined && {
         temperature: modelConfig.temperature,
-        topP: modelConfig.top_p,
-        stopSequences: [],
-      },
-      stream: shouldStream,
+      }),
+      ...(modelConfig.top_p !== undefined && { top_p: modelConfig.top_p }),
+      ...(isClaude3 && { top_k: 5 }),
     };
 
-    const conversePath = `${ApiPath.Bedrock}/converse`;
     const controller = new AbortController();
     options.onController?.(controller);
 
-    if (shouldStream) {
-      let currentToolUse: ChatMessageTool | null = null;
-      let index = -1;
-      const [tools, funcs] = usePluginStore
-        .getState()
-        .getAsTools(
-          useChatStore.getState().currentSession().mask?.plugin || [],
-        );
-      return stream(
-        conversePath,
-        requestBody,
-        getHeaders(),
-        // @ts-ignore
-        tools.map((tool) => ({
-          name: tool?.function?.name,
-          description: tool?.function?.description,
-          input_schema: tool?.function?.parameters,
-        })),
-        funcs,
-        controller,
-        // parseSSE
-        (text: string, runTools: ChatMessageTool[]) => {
-          // console.log("parseSSE", text, runTools);
-          let chunkJson:
-            | undefined
-            | {
-                type: "content_block_delta" | "content_block_stop";
-                content_block?: {
-                  type: "tool_use";
-                  id: string;
-                  name: string;
-                };
-                delta?: {
-                  type: "text_delta" | "input_json_delta";
-                  text?: string;
-                  partial_json?: string;
-                };
-                index: number;
-              };
-          chunkJson = JSON.parse(text);
-
-          if (chunkJson?.content_block?.type == "tool_use") {
-            index += 1;
-            const id = chunkJson?.content_block.id;
-            const name = chunkJson?.content_block.name;
-            runTools.push({
-              id,
-              type: "function",
-              function: {
-                name,
-                arguments: "",
-              },
-            });
-          }
-          if (
-            chunkJson?.delta?.type == "input_json_delta" &&
-            chunkJson?.delta?.partial_json
-          ) {
-            // @ts-ignore
-            runTools[index]["function"]["arguments"] +=
-              chunkJson?.delta?.partial_json;
-          }
-          return chunkJson?.delta?.text;
-        },
-        // processToolMessage, include tool_calls message and tool call results
-        (
-          requestPayload: RequestPayload,
-          toolCallMessage: any,
-          toolCallResult: any[],
-        ) => {
-          // reset index value
-          index = -1;
-          // @ts-ignore
-          requestPayload?.messages?.splice(
-            // @ts-ignore
-            requestPayload?.messages?.length,
-            0,
-            {
-              role: "assistant",
-              content: toolCallMessage.tool_calls.map(
-                (tool: ChatMessageTool) => ({
-                  type: "tool_use",
-                  id: tool.id,
-                  name: tool?.function?.name,
-                  input: tool?.function?.arguments
-                    ? JSON.parse(tool?.function?.arguments)
-                    : {},
-                }),
-              ),
-            },
-            // @ts-ignore
-            ...toolCallResult.map((result) => ({
-              role: "user",
-              content: [
-                {
-                  type: "tool_result",
-                  tool_use_id: result.tool_call_id,
-                  content: result.content,
-                },
-              ],
-            })),
-          );
-        },
-        options,
+    const accessStore = useAccessStore.getState();
+    if (!accessStore.isValidBedrock()) {
+      throw new Error(
+        "Invalid AWS credentials. Please check your configuration.",
       );
-    } else {
-      const payload = {
-        method: "POST",
-        body: JSON.stringify(requestBody),
-        signal: controller.signal,
-        headers: {
-          ...getHeaders(), // get common headers
-        },
+    }
+
+    try {
+      const apiEndpoint = "/api/bedrock/chat";
+      const headers = {
+        "Content-Type": "application/json",
+        "X-Region": accessStore.awsRegion,
+        "X-Access-Key": accessStore.awsAccessKey,
+        "X-Secret-Key": accessStore.awsSecretKey,
+        "X-Model-Id": modelConfig.model,
+        ...(accessStore.awsSessionToken && {
+          "X-Session-Token": accessStore.awsSessionToken,
+        }),
       };
 
-      try {
-        controller.signal.onabort = () =>
-          options.onFinish("", new Response(null, { status: 400 }));
+      if (options.config.stream) {
+        let index = -1;
+        let currentToolArgs = "";
+        const [tools, funcs] = usePluginStore
+          .getState()
+          .getAsTools(
+            useChatStore.getState().currentSession().mask?.plugin || [],
+          );
 
-        const res = await fetch(conversePath, payload);
+        return stream(
+          apiEndpoint,
+          requestBody,
+          headers,
+          (tools as ToolDefinition[]).map((tool) => ({
+            name: tool?.function?.name,
+            description: tool?.function?.description,
+            input_schema: tool?.function?.parameters,
+          })),
+          funcs,
+          controller,
+          (text: string, runTools: ChatMessageTool[]) => {
+            try {
+              const chunkJson = JSON.parse(text);
+              if (chunkJson?.content_block?.type === "tool_use") {
+                index += 1;
+                currentToolArgs = "";
+                const id = chunkJson.content_block?.id;
+                const name = chunkJson.content_block?.name;
+                if (id && name) {
+                  runTools.push({
+                    id,
+                    type: "function",
+                    function: { name, arguments: "" },
+                  });
+                }
+              } else if (
+                chunkJson?.delta?.type === "input_json_delta" &&
+                chunkJson.delta?.partial_json
+              ) {
+                currentToolArgs += chunkJson.delta.partial_json;
+                try {
+                  JSON.parse(currentToolArgs);
+                  if (index >= 0 && index < runTools.length) {
+                    runTools[index].function!.arguments = currentToolArgs;
+                  }
+                } catch (e) {}
+              } else if (
+                chunkJson?.type === "content_block_stop" &&
+                currentToolArgs &&
+                index >= 0 &&
+                index < runTools.length
+              ) {
+                try {
+                  if (currentToolArgs.trim().endsWith(",")) {
+                    currentToolArgs = currentToolArgs.slice(0, -1) + "}";
+                  } else if (!currentToolArgs.endsWith("}")) {
+                    currentToolArgs += "}";
+                  }
+                  JSON.parse(currentToolArgs);
+                  runTools[index].function!.arguments = currentToolArgs;
+                } catch (e) {}
+              }
+              return this.extractMessage(chunkJson);
+            } catch (e) {
+              return "";
+            }
+          },
+          (
+            requestPayload: any,
+            toolCallMessage: any,
+            toolCallResult: any[],
+          ) => {
+            index = -1;
+            currentToolArgs = "";
+            if (requestPayload?.messages) {
+              requestPayload.messages.splice(
+                requestPayload.messages.length,
+                0,
+                {
+                  role: "assistant",
+                  content: [
+                    {
+                      type: "text",
+                      text: JSON.stringify(
+                        toolCallMessage.tool_calls.map(
+                          (tool: ChatMessageTool) => ({
+                            type: "tool_use",
+                            id: tool.id,
+                            name: tool?.function?.name,
+                            input: tool?.function?.arguments
+                              ? JSON.parse(tool?.function?.arguments)
+                              : {},
+                          }),
+                        ),
+                      ),
+                    },
+                  ],
+                },
+                ...toolCallResult.map((result) => ({
+                  role: "user",
+                  content: [
+                    {
+                      type: "text",
+                      text: `Tool '${result.tool_call_id}' returned: ${result.content}`,
+                    },
+                  ],
+                })),
+              );
+            }
+          },
+          options,
+        );
+      } else {
+        const res = await fetch(apiEndpoint, {
+          method: "POST",
+          headers,
+          body: JSON.stringify(requestBody),
+        });
+
         const resJson = await res.json();
-
         const message = this.extractMessage(resJson);
         options.onFinish(message, res);
-      } catch (e) {
-        console.error("failed to chat", e);
-        options.onError?.(e as Error);
       }
+    } catch (e) {
+      options.onError?.(e as Error);
     }
   }
+
   async usage() {
-    return {
-      used: 0,
-      total: 0,
-    };
+    return { used: 0, total: 0 };
   }
+
   async models() {
     return [];
   }

@@ -23,7 +23,7 @@ import { SparkApi } from "./platforms/iflytek";
 import { XAIApi } from "./platforms/xai";
 import { ChatGLMApi } from "./platforms/glm";
 import { BedrockApi } from "./platforms/bedrock";
-import { encrypt } from "../utils/encryption";
+import { encrypt } from "../utils/aws";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];

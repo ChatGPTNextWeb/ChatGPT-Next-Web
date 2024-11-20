@@ -11,7 +11,7 @@ import MaxIcon from "../icons/max.svg";
 import MinIcon from "../icons/min.svg";
 
 import Locale from "../locales";
-import { maskSensitiveValue } from "../utils/encryption";
+import { maskSensitiveValue } from "../utils/aws";
 
 import { createRoot } from "react-dom/client";
 import React, {
