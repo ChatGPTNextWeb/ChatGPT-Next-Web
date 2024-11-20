@@ -19,29 +19,33 @@ export function trimTopic(topic: string) {
 }
 
 export async function copyToClipboard(text: string) {
+  const trimmedText = text.trim(); // Remove any leading or trailing whitespace
+
   try {
     if (window.__TAURI__) {
-      window.__TAURI__.writeText(text);
+      await window.__TAURI__.writeText(trimmedText);
     } else {
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(trimmedText);
     }
 
     showToast(Locale.Copy.Success);
   } catch (error) {
     const textArea = document.createElement("textarea");
-    textArea.value = text;
+    textArea.value = trimmedText;
     document.body.appendChild(textArea);
-    textArea.focus();
     textArea.select();
+
     try {
       document.execCommand("copy");
       showToast(Locale.Copy.Success);
     } catch (error) {
       showToast(Locale.Copy.Failed);
+    } finally {
+      document.body.removeChild(textArea);
     }
-    document.body.removeChild(textArea);
   }
 }
+
 
 export async function downloadAs(text: string, filename: string) {
   if (window.__TAURI__) {
