@@ -1,18 +1,15 @@
 @mixin container {
   background-color: var(--white);
   border: var(--border-in-light);
-  border-radius: 20px;
+  border-radius: 16px;
   box-shadow: var(--shadow);
   color: var(--black);
-  background-color: var(--white);
   min-width: 600px;
   min-height: 370px;
   max-width: 1200px;
-
   display: flex;
   overflow: hidden;
   box-sizing: border-box;
-
   width: var(--window-width);
   height: var(--window-height);
 }
@@ -21,23 +18,21 @@
   @include container();
 }
 
-@media only screen and (min-width: 600px) {
+@media (min-width: 600px) {
   .tight-container {
     --window-width: 100vw;
     --window-height: var(--full-height);
     --window-content-width: calc(100% - var(--sidebar-width));
-
     @include container();
-
     max-width: 100vw;
     max-height: var(--full-height);
-
     border-radius: 0;
-    border: 0;
+    border: none;
   }
 }
 
 .sidebar {
+  position: relative;
   top: 0;
   width: var(--sidebar-width);
   box-sizing: border-box;
@@ -45,9 +40,8 @@
   background-color: var(--second);
   display: flex;
   flex-direction: column;
-  box-shadow: inset -2px 0px 2px 0px rgb(0, 0, 0, 0.05);
-  position: relative;
-  transition: width ease 0.05s;
+  box-shadow: inset -2px 0px 2px rgba(0, 0, 0, 0.05);
+  transition: width 0.3s ease;
 
   .sidebar-header-bar {
     display: flex;
@@ -62,10 +56,9 @@
     }
   }
 
-  &:hover,
-  &:active {
+  &:hover, &:active {
     .sidebar-drag {
-      background-color: rgba($color: #000000, $alpha: 0.01);
+      background-color: rgba(0, 0, 0, 0.01);
 
       svg {
         opacity: 0.2;
@@ -75,16 +68,14 @@
 }
 
 .sidebar-drag {
-  $width: 14px;
-
   position: absolute;
   top: 0;
   right: 0;
   height: 100%;
-  width: $width;
-  background-color: rgba($color: #000000, $alpha: 0);
+  width: 14px;
+  background-color: transparent;
   cursor: ew-resize;
-  transition: all ease 0.3s;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
 
@@ -105,13 +96,13 @@
   display: none;
 }
 
-@media only screen and (max-width: 600px) {
+@media (max-width: 600px) {
   .container {
     min-height: unset;
     min-width: unset;
     max-height: unset;
     min-width: unset;
-    border: 0;
+    border: none;
     border-radius: 0;
   }
 
@@ -120,7 +111,7 @@
     left: -100%;
     z-index: 1000;
     height: var(--full-height);
-    transition: all ease 0.3s;
+    transition: all 0.3s ease;
     box-shadow: none;
   }
 
@@ -135,11 +126,11 @@
 
 .sidebar-header {
   position: relative;
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding: 20px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   &-narrow {
     justify-content: center;
   }
@@ -157,18 +148,18 @@
 .sidebar-title {
   font-size: 20px;
   font-weight: bold;
-  animation: slide-in ease 0.3s;
+  animation: slide-in 0.3s ease;
 }
 
 .sidebar-sub-title {
   font-size: 12px;
   font-weight: 400;
-  animation: slide-in ease 0.3s;
+  animation: slide-in 0.3s ease;
 }
 
 .sidebar-body {
   flex: 1;
-  overflow: auto;
+  overflow-y: auto;
   overflow-x: hidden;
 }
 
@@ -184,59 +175,59 @@
   border: 2px solid transparent;
   position: relative;
   content-visibility: auto;
-}
 
-.chat-item:hover {
-  background-color: var(--hover-color);
-}
+  &:hover {
+    background-color: var(--hover-color);
+  }
 
-.chat-item-selected {
-  border-color: var(--primary);
-}
+  &-selected {
+    border-color: var(--primary);
+  }
 
-.chat-item-title {
-  font-size: 14px;
-  font-weight: bolder;
-  display: block;
-  width: calc(100% - 15px);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  animation: slide-in ease 0.3s;
-}
+  &-title {
+    font-size: 14px;
+    font-weight: bolder;
+    display: block;
+    width: calc(100% - 15px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    animation: slide-in 0.3s ease;
+  }
 
-.chat-item-delete {
-  position: absolute;
-  top: 0;
-  right: 0;
-  transition: all ease 0.3s;
-  opacity: 0;
-  cursor: pointer;
-}
+  &-delete {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transition: all 0.3s ease;
+    opacity: 0;
+    cursor: pointer;
 
-.chat-item:hover > .chat-item-delete {
-  opacity: 0.5;
-  transform: translateX(-4px);
-}
+    &:hover {
+      opacity: 1;
+    }
+  }
 
-.chat-item:hover > .chat-item-delete:hover {
-  opacity: 1;
-}
+  &:hover > .chat-item-delete {
+    opacity: 0.5;
+    transform: translateX(-4px);
+  }
 
-.chat-item-info {
-  display: flex;
-  justify-content: space-between;
-  color: rgb(166, 166, 166);
-  font-size: 12px;
-  margin-top: 8px;
-  animation: slide-in ease 0.3s;
-}
+  &-info {
+    display: flex;
+    justify-content: space-between;
+    color: rgb(166, 166, 166);
+    font-size: 12px;
+    margin-top: 8px;
+    animation: slide-in 0.3s ease;
+  }
 
-.chat-item-count,
-.chat-item-date {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  &-count,
+  &-date {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }
 
 .narrow-sidebar {
@@ -244,6 +235,7 @@
   .sidebar-sub-title {
     display: none;
   }
+
   .sidebar-logo {
     position: relative;
     display: flex;
@@ -267,7 +259,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: all ease 0.3s;
+    transition: all 0.3s ease;
     overflow: hidden;
 
     &:hover {
@@ -282,7 +274,7 @@
     font-weight: lighter;
     color: var(--black);
     transform: translateX(0);
-    transition: all ease 0.3s;
+    transition: all 0.3s ease;
     padding: 4px;
     display: flex;
     flex-direction: column;
@@ -329,10 +321,10 @@
 
 .sidebar-actions {
   display: inline-flex;
-}
 
-.sidebar-action:not(:last-child) {
-  margin-right: 15px;
+  .sidebar-action:not(:last-child) {
+    margin-right: 15px;
+  }
 }
 
 .loading-content {
