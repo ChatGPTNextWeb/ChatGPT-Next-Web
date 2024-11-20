@@ -1,9 +1,9 @@
 @mixin container {
-  background-color: var(--white);
-  border: var(--border-in-light);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  color: var(--black);
+  background-color: var(--light-gray);
+  border: 1px solid var(--medium-gray);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  color: var(--dark-gray);
   min-width: 600px;
   min-height: 370px;
   max-width: 1200px;
@@ -37,7 +37,8 @@
   width: var(--sidebar-width);
   box-sizing: border-box;
   padding: 20px;
-  background-color: var(--second);
+  background-color: var(--dark-blue);
+  color: var(--white);
   display: flex;
   flex-direction: column;
   box-shadow: inset -2px 0px 2px rgba(0, 0, 0, 0.05);
@@ -58,10 +59,10 @@
 
   &:hover, &:active {
     .sidebar-drag {
-      background-color: rgba(0, 0, 0, 0.01);
+      background-color: rgba(255, 255, 255, 0.05);
 
       svg {
-        opacity: 0.2;
+        opacity: 0.3;
       }
     }
   }
@@ -90,6 +91,7 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  background-color: var(--light-gray);
 }
 
 .mobile {
@@ -168,7 +170,7 @@
   background-color: var(--white);
   border-radius: 10px;
   margin-bottom: 10px;
-  box-shadow: var(--card-shadow);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s ease;
   cursor: pointer;
   user-select: none;
@@ -177,7 +179,7 @@
   content-visibility: auto;
 
   &:hover {
-    background-color: var(--hover-color);
+    background-color: var(--light-blue);
   }
 
   &-selected {
