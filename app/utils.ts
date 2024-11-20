@@ -19,7 +19,7 @@ export function trimTopic(topic: string) {
 }
 
 export async function copyToClipboard(text: string) {
-  const trimmedText = text.trim(); // Remove any leading or trailing whitespace
+  const trimmedText = text.trim(); // Ensure no extra spaces or newlines
 
   try {
     if (window.__TAURI__) {
@@ -31,6 +31,8 @@ export async function copyToClipboard(text: string) {
     showToast(Locale.Copy.Success);
   } catch (error) {
     const textArea = document.createElement("textarea");
+    textArea.style.position = 'fixed';  // Avoid scrolling to the bottom
+    textArea.style.opacity = '0';       // Hide the textarea
     textArea.value = trimmedText;
     document.body.appendChild(textArea);
     textArea.select();
@@ -45,7 +47,6 @@ export async function copyToClipboard(text: string) {
     }
   }
 }
-
 
 export async function downloadAs(text: string, filename: string) {
   if (window.__TAURI__) {
