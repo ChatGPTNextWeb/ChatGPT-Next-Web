@@ -271,6 +271,7 @@ export const KnowledgeCutOffDate: Record<string, string> = {
   // it's now easier to add "KnowledgeCutOffDate" instead of stupid hardcoding it, as was done previously.
   "gemini-pro": "2023-12",
   "gemini-pro-vision": "2023-12",
+  "gemini-exp-1114": "2024-11",
 };
 
 export const DEFAULT_TTS_ENGINE = "OpenAI-TTS";
@@ -319,6 +320,7 @@ const googleModels = [
   "gemini-1.5-pro-latest",
   "gemini-1.5-flash-latest",
   "gemini-pro-vision",
+  "gemini-exp-1114",
 ];
 
 const anthropicModels = [
