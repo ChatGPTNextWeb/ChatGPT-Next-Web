@@ -1,4 +1,11 @@
-import { ChatOptions, LLMApi, SpeechOptions } from "../api";
+import {
+  ChatOptions,
+  LLMApi,
+  SpeechOptions,
+  RequestMessage,
+  MultimodalContent,
+  MessageRole,
+} from "../api";
 import {
   useAppConfig,
   usePluginStore,
@@ -15,6 +22,8 @@ const ClaudeMapper = {
   system: "user",
 } as const;
 
+type ClaudeRole = keyof typeof ClaudeMapper;
+
 interface ToolDefinition {
   function?: {
     name: string;
@@ -28,44 +37,131 @@ export class BedrockApi implements LLMApi {
     throw new Error("Speech not implemented for Bedrock.");
   }
 
-  extractMessage(res: any) {
-    if (res?.content?.[0]?.text) return res.content[0].text;
-    if (res?.messages?.[0]?.content?.[0]?.text)
-      return res.messages[0].content[0].text;
-    if (res?.delta?.text) return res.delta.text;
-    return "";
+  extractMessage(res: any, modelId: string = "") {
+    try {
+      // Handle Titan models
+      if (modelId.startsWith("amazon.titan")) {
+        if (res?.delta?.text) return res.delta.text;
+        return res?.outputText || "";
+      }
+
+      // Handle LLaMA models
+      if (modelId.startsWith("us.meta.llama3")) {
+        if (res?.delta?.text) return res.delta.text;
+        if (res?.generation) return res.generation;
+        if (typeof res?.output === "string") return res.output;
+        if (typeof res === "string") return res;
+        return "";
+      }
+
+      // Handle Mistral models
+      if (modelId.startsWith("mistral.mistral")) {
+        if (res?.delta?.text) return res.delta.text;
+        return res?.outputs?.[0]?.text || res?.output || res?.completion || "";
+      }
+
+      // Handle Claude models and fallback cases
+      if (res?.content?.[0]?.text) return res.content[0].text;
+      if (res?.messages?.[0]?.content?.[0]?.text)
+        return res.messages[0].content[0].text;
+      if (res?.delta?.text) return res.delta.text;
+      if (res?.completion) return res.completion;
+      if (res?.generation) return res.generation;
+      if (res?.outputText) return res.outputText;
+      if (res?.output) return res.output;
+
+      if (typeof res === "string") return res;
+
+      return "";
+    } catch (e) {
+      console.error("Error extracting message:", e);
+      return "";
+    }
   }
 
-  async chat(options: ChatOptions) {
-    const visionModel = isVisionModel(options.config.model);
-    const isClaude3 = options.config.model.startsWith("anthropic.claude-3");
+  formatRequestBody(
+    messages: RequestMessage[],
+    systemMessage: string,
+    modelConfig: any,
+  ) {
+    const model = modelConfig.model;
 
-    const modelConfig = {
-      ...useAppConfig.getState().modelConfig,
-      ...useChatStore.getState().currentSession().mask.modelConfig,
-      model: options.config.model,
-    };
-
-    let systemMessage = "";
-    const messages = [];
-    for (const msg of options.messages) {
-      const content = await preProcessImageContent(msg.content);
-      if (msg.role === "system") {
-        systemMessage = getMessageTextContent(msg);
-      } else {
-        messages.push({ role: msg.role, content });
-      }
+    // Handle Titan models
+    if (model.startsWith("amazon.titan")) {
+      const allMessages = systemMessage
+        ? [
+            { role: "system" as MessageRole, content: systemMessage },
+            ...messages,
+          ]
+        : messages;
+      const inputText = allMessages
+        .map((m) => `${m.role}: ${getMessageTextContent(m)}`)
+        .join("\n");
+      return {
+        body: {
+          inputText,
+          textGenerationConfig: {
+            maxTokenCount: modelConfig.max_tokens,
+            temperature: modelConfig.temperature,
+            stopSequences: [],
+          },
+        },
+      };
     }
 
+    // Handle LLaMA3 models - simplified format
+    if (model.startsWith("us.meta.llama3")) {
+      const allMessages = systemMessage
+        ? [
+            { role: "system" as MessageRole, content: systemMessage },
+            ...messages,
+          ]
+        : messages;
+
+      const prompt = allMessages
+        .map((m) => `${m.role}: ${getMessageTextContent(m)}`)
+        .join("\n");
+
+      return {
+        contentType: "application/json",
+        accept: "application/json",
+        body: {
+          prompt,
+        },
+      };
+    }
+
+    // Handle Mistral models
+    if (model.startsWith("mistral.mistral")) {
+      const allMessages = systemMessage
+        ? [
+            { role: "system" as MessageRole, content: systemMessage },
+            ...messages,
+          ]
+        : messages;
+      const prompt = allMessages
+        .map((m) => `${m.role}: ${getMessageTextContent(m)}`)
+        .join("\n");
+      return {
+        body: {
+          prompt,
+          temperature: modelConfig.temperature || 0.7,
+          max_tokens: modelConfig.max_tokens || 4096,
+        },
+      };
+    }
+
+    // Handle Claude models (existing implementation)
+    const isClaude3 = model.startsWith("anthropic.claude-3");
     const formattedMessages = messages
       .filter(
         (v) => v.content && (typeof v.content !== "string" || v.content.trim()),
       )
       .map((v) => {
         const { role, content } = v;
-        const insideRole = ClaudeMapper[role] ?? "user";
+        const insideRole = ClaudeMapper[role as ClaudeRole] ?? "user";
 
-        if (!visionModel || typeof content === "string") {
+        if (!isVisionModel(model) || typeof content === "string") {
           return {
             role: insideRole,
             content: [{ type: "text", text: getMessageTextContent(v) }],
@@ -74,7 +170,7 @@ export class BedrockApi implements LLMApi {
 
         return {
           role: insideRole,
-          content: content
+          content: (content as MultimodalContent[])
             .filter((v) => v.image_url || v.text)
             .map(({ type, text, image_url }) => {
               if (type === "text") return { type, text: text! };
@@ -96,17 +192,40 @@ export class BedrockApi implements LLMApi {
         };
       });
 
-    const requestBody = {
+    return {
       anthropic_version: "bedrock-2023-05-31",
       max_tokens: modelConfig.max_tokens,
       messages: formattedMessages,
       ...(systemMessage && { system: systemMessage }),
-      ...(modelConfig.temperature !== undefined && {
-        temperature: modelConfig.temperature,
-      }),
-      ...(modelConfig.top_p !== undefined && { top_p: modelConfig.top_p }),
+      temperature: modelConfig.temperature,
       ...(isClaude3 && { top_k: 5 }),
     };
+  }
+
+  async chat(options: ChatOptions) {
+    const modelConfig = {
+      ...useAppConfig.getState().modelConfig,
+      ...useChatStore.getState().currentSession().mask.modelConfig,
+      model: options.config.model,
+    };
+
+    let systemMessage = "";
+    const messages = [];
+    for (const msg of options.messages) {
+      const content = await preProcessImageContent(msg.content);
+      if (msg.role === "system") {
+        systemMessage = getMessageTextContent(msg);
+      } else {
+        messages.push({ role: msg.role, content });
+      }
+    }
+
+    const requestBody = this.formatRequestBody(
+      messages,
+      systemMessage,
+      modelConfig,
+    );
+    // console.log("Request body:", JSON.stringify(requestBody, null, 2));
 
     const controller = new AbortController();
     options.onController?.(controller);
@@ -121,7 +240,8 @@ export class BedrockApi implements LLMApi {
     try {
       const apiEndpoint = "/api/bedrock/chat";
       const headers = {
-        "Content-Type": "application/json",
+        "Content-Type": requestBody.contentType || "application/json",
+        Accept: requestBody.accept || "application/json",
         "X-Region": accessStore.awsRegion,
         "X-Access-Key": accessStore.awsAccessKey,
         "X-Secret-Key": accessStore.awsSecretKey,
@@ -154,6 +274,7 @@ export class BedrockApi implements LLMApi {
           (text: string, runTools: ChatMessageTool[]) => {
             try {
               const chunkJson = JSON.parse(text);
+              // console.log("Received chunk:", JSON.stringify(chunkJson, null, 2));
               if (chunkJson?.content_block?.type === "tool_use") {
                 index += 1;
                 currentToolArgs = "";
@@ -193,8 +314,11 @@ export class BedrockApi implements LLMApi {
                   runTools[index].function!.arguments = currentToolArgs;
                 } catch (e) {}
               }
-              return this.extractMessage(chunkJson);
+              const message = this.extractMessage(chunkJson, modelConfig.model);
+              // console.log("Extracted message:", message);
+              return message;
             } catch (e) {
+              console.error("Error parsing chunk:", e);
               return "";
             }
           },
@@ -251,10 +375,13 @@ export class BedrockApi implements LLMApi {
         });
 
         const resJson = await res.json();
-        const message = this.extractMessage(resJson);
+        // console.log("Response:", JSON.stringify(resJson, null, 2));
+        const message = this.extractMessage(resJson, modelConfig.model);
+        // console.log("Extracted message:", message);
         options.onFinish(message, res);
       }
     } catch (e) {
+      console.error("Chat error:", e);
       options.onError?.(e as Error);
     }
   }
