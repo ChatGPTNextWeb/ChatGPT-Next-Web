@@ -384,6 +384,8 @@ NodeJS >= 18, Docker >= 20
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
 
+[![Open in Codeanywhere](https://codeanywhere.com/img/open-in-codeanywhere-btn.svg)](https://app.codeanywhere.com/#https://github.com/ChatGPTNextWeb/ChatGPT-Next-Web)
+
 Before starting development, you must create a new `.env.local` file at project root, and place your api key into it:
 
 ```
