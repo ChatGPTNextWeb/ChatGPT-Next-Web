@@ -3,14 +3,14 @@ import HmacSHA256 from "crypto-js/hmac-sha256";
 import Hex from "crypto-js/enc-hex";
 import Utf8 from "crypto-js/enc-utf8";
 import { AES, enc } from "crypto-js";
+import { getServerSideConfig } from "../config/server";
 
-const SECRET_KEY =
-  process.env.ENCRYPTION_KEY ||
-  "your-secret-key-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
-if (!SECRET_KEY || SECRET_KEY.length < 32) {
-  throw new Error(
-    "ENCRYPTION_KEY environment variable must be set with at least 32 characters",
-  );
+const serverConfig = getServerSideConfig();
+// console.info(serverConfig);
+const SECRET_KEY = serverConfig.bedrockEncryptionKey || "";
+// console.info("======SECRET_KEY:"+SECRET_KEY);
+if (serverConfig.isBedrock && !SECRET_KEY) {
+  console.error("When use Bedrock modle,ENCRYPTION_KEY should been set!");
 }
 
 export function encrypt(data: string): string {
@@ -54,7 +54,6 @@ export interface SignParams {
   region: string;
   accessKeyId: string;
   secretAccessKey: string;
-  sessionToken?: string;
   body: string;
   service: string;
 }
@@ -143,7 +142,6 @@ export async function sign({
   region,
   accessKeyId,
   secretAccessKey,
-  sessionToken,
   body,
   service,
 }: SignParams): Promise<Record<string, string>> {
@@ -168,11 +166,6 @@ export async function sign({
     "x-amz-date": amzDate,
     "x-amzn-bedrock-accept": "*/*",
   };
-
-  // Add session token if present
-  if (sessionToken) {
-    headers["x-amz-security-token"] = sessionToken;
-  }
 
   // Get sorted header keys (case-insensitive)
   const sortedHeaderKeys = Object.keys(headers).sort((a, b) =>
@@ -230,7 +223,6 @@ export async function sign({
     "X-Amz-Content-Sha256": headers["x-amz-content-sha256"],
     "X-Amz-Date": headers["x-amz-date"],
     "X-Amzn-Bedrock-Accept": headers["x-amzn-bedrock-accept"],
-    ...(sessionToken && { "X-Amz-Security-Token": sessionToken }),
     Authorization: authorization,
   };
 }

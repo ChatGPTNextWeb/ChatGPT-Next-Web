@@ -980,12 +980,12 @@ export function Settings() {
           onChange={(e) =>
             accessStore.update((access) => {
               const region = e.currentTarget.value;
-               if (!/^[a-z]{2}-[a-z]+-\d+$/.test(region)) {
-                 showToast(Locale.Settings.Access.Bedrock.Region.Invalid);
-                 return;
-                }
+              if (!/^[a-z]{2}-[a-z]+-\d+$/.test(region)) {
+                showToast(Locale.Settings.Access.Bedrock.Region.Invalid);
+                return;
+              }
               access.awsRegion = region;
-              })
+            })
           }
         />
       </ListItem>
@@ -999,7 +999,7 @@ export function Settings() {
           type="text"
           placeholder={Locale.Settings.Access.Bedrock.AccessKey.Placeholder}
           onChange={(e) => {
-             accessStore.update((access) => {
+            accessStore.update((access) => {
               const accessKey = e.currentTarget.value;
               if (accessKey && accessKey.length !== 20) {
                 showToast(Locale.Settings.Access.Bedrock.AccessKey.Invalid);
@@ -1022,11 +1022,11 @@ export function Settings() {
           placeholder={Locale.Settings.Access.Bedrock.SecretKey.Placeholder}
           onChange={(e) => {
             accessStore.update((access) => {
-            const secretKey = e.currentTarget.value;
-            if (secretKey && secretKey.length !== 40) {
-              showToast(Locale.Settings.Access.Bedrock.SecretKey.Invalid);
-              return;
-            }
+              const secretKey = e.currentTarget.value;
+              if (secretKey && secretKey.length !== 40) {
+                showToast(Locale.Settings.Access.Bedrock.SecretKey.Invalid);
+                return;
+              }
               access.awsSecretKey = secretKey;
             });
           }}
@@ -1034,17 +1034,17 @@ export function Settings() {
         />
       </ListItem>
       <ListItem
-        title={Locale.Settings.Access.Bedrock.SessionToken.Title}
-        subTitle={Locale.Settings.Access.Bedrock.SessionToken.SubTitle}
+        title={Locale.Settings.Access.Bedrock.EncryptionKey.Title}
+        subTitle={Locale.Settings.Access.Bedrock.EncryptionKey.SubTitle}
       >
         <PasswordInput
-          aria-label={Locale.Settings.Access.Bedrock.SessionToken.Title}
-          value={accessStore.awsSessionToken}
+          aria-label={Locale.Settings.Access.Bedrock.EncryptionKey.Title}
+          value={accessStore.bedrockEncryptionKey}
           type="text"
-          placeholder={Locale.Settings.Access.Bedrock.SessionToken.Placeholder}
+          placeholder={Locale.Settings.Access.Bedrock.EncryptionKey.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.awsSessionToken = e.currentTarget.value),
+              (access) => (access.bedrockEncryptionKey = e.currentTarget.value),
             );
           }}
           maskWhenShow={true}

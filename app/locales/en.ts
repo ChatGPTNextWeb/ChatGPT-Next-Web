@@ -365,14 +365,10 @@ const en: LocaleType = {
           Placeholder: "****",
           Invalid: "Invalid AWS secret key format. Must be 40 characters long.",
         },
-        SessionToken: {
-          Title: "AWS Session Token (Optional)",
-          SubTitle: "Your AWS session token if using temporary credentials",
-          Placeholder: "Optional session token",
-        },
-        Endpoint: {
-          Title: "AWS Bedrock Endpoint",
-          SubTitle: "Custom endpoint for AWS Bedrock API. Default: ",
+        EncryptionKey: {
+          Title: "Encryption Key",
+          SubTitle: "Your encryption key for configuration data",
+          Placeholder: "Enter encryption key",
         },
       },
       Azure: {

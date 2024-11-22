@@ -23,7 +23,6 @@ import { SparkApi } from "./platforms/iflytek";
 import { XAIApi } from "./platforms/xai";
 import { ChatGLMApi } from "./platforms/glm";
 import { BedrockApi } from "./platforms/bedrock";
-import { encrypt } from "../utils/aws";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -258,8 +257,6 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     const isEnabledAccessControl = accessStore.enabledAccessControl();
     const apiKey = isGoogle
       ? accessStore.googleApiKey
-      : isBedrock
-      ? accessStore.awsAccessKey // Use AWS access key for Bedrock
       : isAzure
       ? accessStore.azureApiKey
       : isAnthropic
@@ -277,6 +274,18 @@ export function getHeaders(ignoreHeaders: boolean = false) {
       : isIflytek
       ? accessStore.iflytekApiKey && accessStore.iflytekApiSecret
         ? accessStore.iflytekApiKey + ":" + accessStore.iflytekApiSecret
+        : ""
+      : isBedrock
+      ? accessStore.awsRegion &&
+        accessStore.awsAccessKey &&
+        accessStore.awsSecretKey
+        ? accessStore.awsRegion +
+          "," +
+          accessStore.awsAccessKey +
+          "," +
+          accessStore.awsSecretKey +
+          "," +
+          modelConfig.model
         : ""
       : accessStore.openaiApiKey;
     return {
@@ -303,13 +312,10 @@ export function getHeaders(ignoreHeaders: boolean = false) {
       ? "x-api-key"
       : isGoogle
       ? "x-goog-api-key"
-      : isBedrock
-      ? "x-api-key"
       : "Authorization";
   }
 
   const {
-    isBedrock,
     isGoogle,
     isAzure,
     isAnthropic,
@@ -322,28 +328,23 @@ export function getHeaders(ignoreHeaders: boolean = false) {
 
   const authHeader = getAuthHeader();
 
-  if (isBedrock) {
-    // Secure encryption of AWS credentials using the new encryption utility
-    headers["X-Region"] = encrypt(accessStore.awsRegion);
-    headers["X-Access-Key"] = encrypt(accessStore.awsAccessKey);
-    headers["X-Secret-Key"] = encrypt(accessStore.awsSecretKey);
+  // if (isBedrock) {
+  //   // Secure encryption of AWS credentials using the new encryption utility
+  //   headers["X-Region"] = encrypt(accessStore.awsRegion);
+  //   headers["X-Access-Key"] = encrypt(accessStore.awsAccessKey);
+  //   headers["X-Secret-Key"] = encrypt(accessStore.awsSecretKey);
+  // } else {
+  const bearerToken = getBearerToken(
+    apiKey,
+    isAzure || isAnthropic || isGoogle,
+  );
 
-    if (accessStore.awsSessionToken) {
-      headers["X-Session-Token"] = encrypt(accessStore.awsSessionToken);
-    }
-  } else {
-    const bearerToken = getBearerToken(
-      apiKey,
-      isAzure || isAnthropic || isGoogle,
+  if (bearerToken) {
+    headers[authHeader] = bearerToken;
+  } else if (isEnabledAccessControl && validString(accessStore.accessCode)) {
+    headers["Authorization"] = getBearerToken(
+      ACCESS_CODE_PREFIX + accessStore.accessCode,
     );
-
-    if (bearerToken) {
-      headers[authHeader] = bearerToken;
-    } else if (isEnabledAccessControl && validString(accessStore.accessCode)) {
-      headers["Authorization"] = getBearerToken(
-        ACCESS_CODE_PREFIX + accessStore.accessCode,
-      );
-    }
   }
 
   return headers;

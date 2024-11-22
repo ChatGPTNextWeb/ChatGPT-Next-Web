@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { sign, decrypt } from "../utils/aws";
+import { sign } from "../utils/aws";
+import { getServerSideConfig } from "../config/server";
 
 const ALLOWED_PATH = new Set(["chat", "models"]);
 
@@ -18,7 +19,7 @@ function parseEventData(chunk: Uint8Array): any {
     }
     return parsed.body || parsed;
   } catch (e) {
-    console.error("Error parsing event data:", e);
+    // console.error("Error parsing event data:", e);
     try {
       // Handle base64 encoded responses
       const base64Match = text.match(/:"([A-Za-z0-9+/=]+)"/);
@@ -76,7 +77,7 @@ async function* transformBedrockStream(
       const parsed = parseEventData(value);
       if (!parsed) continue;
 
-      console.log("Parsed response:", JSON.stringify(parsed, null, 2));
+      // console.log("Parsed response:", JSON.stringify(parsed, null, 2));
 
       // Handle Titan models
       if (modelId.startsWith("amazon.titan")) {
@@ -182,24 +183,36 @@ function validateRequest(body: any, modelId: string): void {
 
 async function requestBedrock(req: NextRequest) {
   const controller = new AbortController();
-  const awsRegion = req.headers.get("X-Region") ?? "";
-  const awsAccessKey = req.headers.get("X-Access-Key") ?? "";
-  const awsSecretKey = req.headers.get("X-Secret-Key") ?? "";
-  const awsSessionToken = req.headers.get("X-Session-Token");
-  const modelId = req.headers.get("X-Model-Id") ?? "";
+
+  // Get AWS credentials from server config first
+  const config = getServerSideConfig();
+  let awsRegion = config.awsRegion;
+  let awsAccessKey = config.awsAccessKey;
+  let awsSecretKey = config.awsSecretKey;
+  let modelId = "";
+
+  // If server-side credentials are not available, parse from Authorization header
+  if (!awsRegion || !awsAccessKey || !awsSecretKey) {
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      throw new Error("Missing or invalid Authorization header");
+    }
+
+    const [_, credentials] = authHeader.split("Bearer ");
+    const [region, accessKey, secretKey, model] = credentials.split(",");
+
+    if (!region || !accessKey || !secretKey || !model) {
+      throw new Error("Invalid Authorization header format");
+    }
+
+    awsRegion = region;
+    awsAccessKey = accessKey;
+    awsSecretKey = secretKey;
+    modelId = model;
+  }
 
   if (!awsRegion || !awsAccessKey || !awsSecretKey || !modelId) {
     throw new Error("Missing required AWS credentials or model ID");
-  }
-
-  const decryptedAccessKey = decrypt(awsAccessKey);
-  const decryptedSecretKey = decrypt(awsSecretKey);
-  const decryptedSessionToken = awsSessionToken
-    ? decrypt(awsSessionToken)
-    : undefined;
-
-  if (!decryptedAccessKey || !decryptedSecretKey) {
-    throw new Error("Failed to decrypt AWS credentials");
   }
 
   // Construct the base endpoint
@@ -236,9 +249,8 @@ async function requestBedrock(req: NextRequest) {
       method: "POST",
       url: endpoint,
       region: awsRegion,
-      accessKeyId: decryptedAccessKey,
-      secretAccessKey: decryptedSecretKey,
-      sessionToken: decryptedSessionToken,
+      accessKeyId: awsAccessKey,
+      secretAccessKey: awsSecretKey,
       body: requestBody,
       service: "bedrock",
     });

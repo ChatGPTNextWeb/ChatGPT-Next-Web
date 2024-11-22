@@ -361,14 +361,10 @@ const cn = {
           Placeholder: "****",
           Invalid: "无效的 AWS Secret Key 格式。必须为40个字符。",
         },
-        SessionToken: {
-          Title: "AWS Session Token (Optional)",
-          SubTitle: "Your AWS session token if using temporary credentials",
-          Placeholder: "Optional session token",
-        },
-        Endpoint: {
-          Title: "AWS Bedrock Endpoint",
-          SubTitle: "Custom endpoint for AWS Bedrock API. Default: ",
+        EncryptionKey: {
+          Title: "加密密钥",
+          SubTitle: "用于配置数据的加密密钥",
+          Placeholder: "输入加密密钥",
         },
       },
       Azure: {

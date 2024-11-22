@@ -1,5 +1,6 @@
 import {
   ChatOptions,
+  getHeaders,
   LLMApi,
   SpeechOptions,
   RequestMessage,
@@ -233,23 +234,22 @@ export class BedrockApi implements LLMApi {
     const accessStore = useAccessStore.getState();
     if (!accessStore.isValidBedrock()) {
       throw new Error(
-        "Invalid AWS credentials. Please check your configuration.",
+        "Invalid AWS credentials. Please check your configuration and ensure ENCRYPTION_KEY is set.",
       );
     }
 
     try {
       const apiEndpoint = "/api/bedrock/chat";
-      const headers = {
-        "Content-Type": requestBody.contentType || "application/json",
-        Accept: requestBody.accept || "application/json",
-        "X-Region": accessStore.awsRegion,
-        "X-Access-Key": accessStore.awsAccessKey,
-        "X-Secret-Key": accessStore.awsSecretKey,
-        "X-Model-Id": modelConfig.model,
-        ...(accessStore.awsSessionToken && {
-          "X-Session-Token": accessStore.awsSessionToken,
-        }),
-      };
+      // const headers = {
+      //   "Content-Type": requestBody.contentType || "application/json",
+      //   Accept: requestBody.accept || "application/json",
+      //   "X-Region": accessStore.awsRegion,
+      //   "X-Access-Key": accessStore.awsAccessKey,
+      //   "X-Secret-Key": accessStore.awsSecretKey,
+      //   "X-Model-Id": modelConfig.model,
+      //   "X-Encryption-Key": accessStore.bedrockEncryptionKey,
+      // };
+      const headers = getHeaders();
 
       if (options.config.stream) {
         let index = -1;
@@ -274,7 +274,6 @@ export class BedrockApi implements LLMApi {
           (text: string, runTools: ChatMessageTool[]) => {
             try {
               const chunkJson = JSON.parse(text);
-              // console.log("Received chunk:", JSON.stringify(chunkJson, null, 2));
               if (chunkJson?.content_block?.type === "tool_use") {
                 index += 1;
                 currentToolArgs = "";
@@ -375,7 +374,6 @@ export class BedrockApi implements LLMApi {
         });
 
         const resJson = await res.json();
-        // console.log("Response:", JSON.stringify(resJson, null, 2));
         const message = this.extractMessage(resJson, modelConfig.model);
         // console.log("Extracted message:", message);
         options.onFinish(message, res);

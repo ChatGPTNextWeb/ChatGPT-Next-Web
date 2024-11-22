@@ -15,6 +15,7 @@ import {
   IFLYTEK_BASE_URL,
   XAI_BASE_URL,
   CHATGLM_BASE_URL,
+  BEDROCK_BASE_URL,
 } from "../constant";
 import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
@@ -50,6 +51,8 @@ const DEFAULT_IFLYTEK_URL = isApp ? IFLYTEK_BASE_URL : ApiPath.Iflytek;
 const DEFAULT_XAI_URL = isApp ? XAI_BASE_URL : ApiPath.XAI;
 
 const DEFAULT_CHATGLM_URL = isApp ? CHATGLM_BASE_URL : ApiPath.ChatGLM;
+
+const DEFAULT_BEDROCK_URL = isApp ? BEDROCK_BASE_URL : ApiPath.Bedrock;
 
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
@@ -117,10 +120,11 @@ const DEFAULT_ACCESS_STATE = {
   chatglmApiKey: "",
 
   // aws bedrock
+  bedrokUrl: DEFAULT_BEDROCK_URL,
   awsRegion: "",
   awsAccessKey: "",
   awsSecretKey: "",
-  awsSessionToken: "",
+  bedrockEncryptionKey: "",
 
   // server config
   needCode: true,
@@ -200,7 +204,12 @@ export const useAccessStore = createPersistStore(
     },
 
     isValidBedrock() {
-      return ensure(get(), ["awsRegion", "awsAccessKey", "awsSecretKey"]);
+      return ensure(get(), [
+        "awsRegion",
+        "awsAccessKey",
+        "awsSecretKey",
+        "bedrockEncryptionKey",
+      ]);
     },
 
     isAuthorized() {
