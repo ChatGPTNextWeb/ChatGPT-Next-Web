@@ -215,7 +215,8 @@ export class ClaudeApi implements LLMApi {
 
     if (shouldStream) {
       let index = -1;
-      const [tools, funcs] = [[], {}];
+      const tools = [] as any;
+      const funcs = {};
       // const [tools, funcs] = usePluginStore
       //   .getState()
       //   .getAsTools(
