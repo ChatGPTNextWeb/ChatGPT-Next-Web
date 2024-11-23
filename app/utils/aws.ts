@@ -50,6 +50,8 @@ export interface SignParams {
   secretAccessKey: string;
   body: string;
   service: string;
+  isStreaming?: boolean;
+  additionalHeaders?: Record<string, string>;
 }
 
 function hmac(
@@ -133,6 +135,8 @@ export async function sign({
   secretAccessKey,
   body,
   service,
+  isStreaming = true,
+  additionalHeaders = {},
 }: SignParams): Promise<Record<string, string>> {
   const endpoint = new URL(url);
   const canonicalUri = "/" + encodeURI_RFC3986(endpoint.pathname.slice(1));
@@ -145,13 +149,19 @@ export async function sign({
   const payloadHash = SHA256(body).toString(Hex);
 
   const headers: Record<string, string> = {
-    accept: "application/vnd.amazon.eventstream",
+    accept: isStreaming
+      ? "application/vnd.amazon.eventstream"
+      : "application/json",
     "content-type": "application/json",
     host: endpoint.host,
     "x-amz-content-sha256": payloadHash,
     "x-amz-date": amzDate,
-    "x-amzn-bedrock-accept": "*/*",
+    ...additionalHeaders,
   };
+
+  if (isStreaming) {
+    headers["x-amzn-bedrock-accept"] = "*/*";
+  }
 
   const sortedHeaderKeys = Object.keys(headers).sort((a, b) =>
     a.toLowerCase().localeCompare(b.toLowerCase()),
@@ -195,12 +205,7 @@ export async function sign({
   ].join(", ");
 
   return {
-    Accept: headers.accept,
-    "Content-Type": headers["content-type"],
-    Host: headers.host,
-    "X-Amz-Content-Sha256": headers["x-amz-content-sha256"],
-    "X-Amz-Date": headers["x-amz-date"],
-    "X-Amzn-Bedrock-Accept": headers["x-amzn-bedrock-accept"],
+    ...headers,
     Authorization: authorization,
   };
 }

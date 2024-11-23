@@ -391,6 +391,7 @@ export class BedrockApi implements LLMApi {
           options,
         );
       } else {
+        headers.ShouldStream = "false";
         const res = await fetch(chatPath, {
           method: "POST",
           headers,

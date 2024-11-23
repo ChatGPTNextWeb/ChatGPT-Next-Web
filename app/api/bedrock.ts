@@ -199,7 +199,6 @@ async function requestBedrock(req: NextRequest) {
     }
 
     const [_, credentials] = authHeader.split("Bearer ");
-    console.log("credentials===============" + credentials);
     const [encryptedRegion, encryptedAccessKey, encryptedSecretKey] =
       credentials.split(":");
 
@@ -218,6 +217,7 @@ async function requestBedrock(req: NextRequest) {
   }
 
   let modelId = req.headers.get("ModelID");
+  let shouldStream = req.headers.get("ShouldStream");
   if (!awsRegion || !awsAccessKey || !awsSecretKey || !modelId) {
     throw new Error("Missing required AWS credentials or model ID");
   }
@@ -232,7 +232,6 @@ async function requestBedrock(req: NextRequest) {
     // Determine the endpoint and request body based on model type
     let endpoint;
     let requestBody;
-    let additionalHeaders = {};
 
     const bodyText = await req.clone().text();
     if (!bodyText) {
@@ -242,15 +241,19 @@ async function requestBedrock(req: NextRequest) {
     const bodyJson = JSON.parse(bodyText);
     validateRequest(bodyJson, modelId);
 
-    // For all other models, use standard endpoint
-    endpoint = `${baseEndpoint}/model/${modelId}/invoke-with-response-stream`;
+    // For all models, use standard endpoints
+    if (shouldStream === "false") {
+      endpoint = `${baseEndpoint}/model/${modelId}/invoke`;
+    } else {
+      endpoint = `${baseEndpoint}/model/${modelId}/invoke-with-response-stream`;
+    }
     requestBody = JSON.stringify(bodyJson.body || bodyJson);
 
-    console.log("Request to AWS Bedrock:", {
-      endpoint,
-      modelId,
-      body: requestBody,
-    });
+    // console.log("Request to AWS Bedrock:", {
+    //   endpoint,
+    //   modelId,
+    //   body: requestBody,
+    // });
 
     const headers = await sign({
       method: "POST",
@@ -260,14 +263,12 @@ async function requestBedrock(req: NextRequest) {
       secretAccessKey: awsSecretKey,
       body: requestBody,
       service: "bedrock",
+      isStreaming: shouldStream !== "false",
     });
 
     const res = await fetch(endpoint, {
       method: "POST",
-      headers: {
-        ...headers,
-        ...additionalHeaders,
-      },
+      headers,
       body: requestBody,
       redirect: "manual",
       // @ts-ignore
@@ -290,6 +291,15 @@ async function requestBedrock(req: NextRequest) {
       throw new Error("Empty response from Bedrock");
     }
 
+    // Handle non-streaming response
+    if (shouldStream === "false") {
+      const responseText = await res.text();
+      console.error("AWS Bedrock shouldStream === false:", responseText);
+      const parsed = parseEventData(new TextEncoder().encode(responseText));
+      return NextResponse.json(parsed);
+    }
+
+    // Handle streaming response
     const transformedStream = transformBedrockStream(res.body, modelId);
     const stream = new ReadableStream({
       async start(controller) {
