@@ -1,6 +1,7 @@
 export const OWNER = "";
 export const REPO = "";
 export const REPO_URL = `https://github.com/`;
+export const PLUGINS_REPO_URL = `https://github.com/${OWNER}/NextChat-Awesome-Plugins`;
 export const ISSUE_URL = `https://github.com/`;
 export const UPDATE_URL = `${REPO_URL}#keep-updated`;
 export const RELEASE_URL = `${REPO_URL}/releases`;
