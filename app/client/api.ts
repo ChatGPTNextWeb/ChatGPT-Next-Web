@@ -280,12 +280,10 @@ export function getHeaders(ignoreHeaders: boolean = false) {
         accessStore.awsAccessKey &&
         accessStore.awsSecretKey
         ? accessStore.awsRegion +
-          "," +
+          ":" +
           accessStore.awsAccessKey +
-          "," +
-          accessStore.awsSecretKey +
-          "," +
-          modelConfig.model
+          ":" +
+          accessStore.awsSecretKey
         : ""
       : accessStore.openaiApiKey;
     return {
@@ -316,6 +314,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
   }
 
   const {
+    isBedrock,
     isGoogle,
     isAzure,
     isAnthropic,
@@ -328,23 +327,23 @@ export function getHeaders(ignoreHeaders: boolean = false) {
 
   const authHeader = getAuthHeader();
 
-  // if (isBedrock) {
-  //   // Secure encryption of AWS credentials using the new encryption utility
-  //   headers["X-Region"] = encrypt(accessStore.awsRegion);
-  //   headers["X-Access-Key"] = encrypt(accessStore.awsAccessKey);
-  //   headers["X-Secret-Key"] = encrypt(accessStore.awsSecretKey);
-  // } else {
-  const bearerToken = getBearerToken(
-    apiKey,
-    isAzure || isAnthropic || isGoogle,
-  );
-
-  if (bearerToken) {
-    headers[authHeader] = bearerToken;
-  } else if (isEnabledAccessControl && validString(accessStore.accessCode)) {
-    headers["Authorization"] = getBearerToken(
-      ACCESS_CODE_PREFIX + accessStore.accessCode,
+  if (isBedrock) {
+    if (apiKey) {
+      headers[authHeader] = getBearerToken(apiKey);
+    }
+  } else {
+    const bearerToken = getBearerToken(
+      apiKey,
+      isAzure || isAnthropic || isGoogle,
     );
+
+    if (bearerToken) {
+      headers[authHeader] = bearerToken;
+    } else if (isEnabledAccessControl && validString(accessStore.accessCode)) {
+      headers["Authorization"] = getBearerToken(
+        ACCESS_CODE_PREFIX + accessStore.accessCode,
+      );
+    }
   }
 
   return headers;

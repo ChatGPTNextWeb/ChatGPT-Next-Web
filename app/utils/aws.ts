@@ -6,9 +6,7 @@ import { AES, enc } from "crypto-js";
 import { getServerSideConfig } from "../config/server";
 
 const serverConfig = getServerSideConfig();
-// console.info(serverConfig);
 const SECRET_KEY = serverConfig.bedrockEncryptionKey || "";
-// console.info("======SECRET_KEY:"+SECRET_KEY);
 if (serverConfig.isBedrock && !SECRET_KEY) {
   console.error("When use Bedrock modle,ENCRYPTION_KEY should been set!");
 }
@@ -26,18 +24,13 @@ export function encrypt(data: string): string {
 export function decrypt(encryptedData: string): string {
   if (!encryptedData) return "";
   try {
-    // Try to decrypt
     const bytes = AES.decrypt(encryptedData, SECRET_KEY);
     const decrypted = bytes.toString(enc.Utf8);
-
-    // If decryption results in empty string but input wasn't empty,
-    // the input might already be decrypted
     if (!decrypted && encryptedData) {
       return encryptedData;
     }
     return decrypted;
   } catch (error) {
-    // If decryption fails, the input might already be decrypted
     return encryptedData;
   }
 }
@@ -91,32 +84,28 @@ function encodeURIComponent_RFC3986(str: string): string {
       /[!'()*]/g,
       (c) => "%" + c.charCodeAt(0).toString(16).toUpperCase(),
     )
-    .replace(/[-_.~]/g, (c) => c); // RFC 3986 unreserved characters
+    .replace(/[-_.~]/g, (c) => c);
 }
 
 function encodeURI_RFC3986(uri: string): string {
-  // Handle empty or root path
   if (!uri || uri === "/") return "";
 
-  // Split the path into segments, preserving empty segments for double slashes
   const segments = uri.split("/");
 
   return segments
     .map((segment) => {
       if (!segment) return "";
 
-      // Special handling for Bedrock model paths
       if (segment.includes("model/")) {
         const parts = segment.split(/(model\/)/);
         return parts
           .map((part) => {
             if (part === "model/") return part;
-            // Handle the model identifier part
             if (part.includes(".") || part.includes(":")) {
               return part
                 .split(/([.:])/g)
                 .map((subpart, i) => {
-                  if (i % 2 === 1) return subpart; // Don't encode separators
+                  if (i % 2 === 1) return subpart;
                   return encodeURIComponent_RFC3986(subpart);
                 })
                 .join("");
@@ -126,7 +115,6 @@ function encodeURI_RFC3986(uri: string): string {
           .join("");
       }
 
-      // Handle invoke-with-response-stream without encoding
       if (segment === "invoke-with-response-stream") {
         return segment;
       }
@@ -147,17 +135,14 @@ export async function sign({
 }: SignParams): Promise<Record<string, string>> {
   const endpoint = new URL(url);
   const canonicalUri = "/" + encodeURI_RFC3986(endpoint.pathname.slice(1));
-  const canonicalQueryString = endpoint.search.slice(1); // Remove leading '?'
+  const canonicalQueryString = endpoint.search.slice(1);
 
-  // Create a date stamp and time stamp in ISO8601 format
   const now = new Date();
   const amzDate = now.toISOString().replace(/[:-]|\.\d{3}/g, "");
   const dateStamp = amzDate.slice(0, 8);
 
-  // Calculate the hash of the payload
   const payloadHash = SHA256(body).toString(Hex);
 
-  // Define headers with normalized values
   const headers: Record<string, string> = {
     accept: "application/vnd.amazon.eventstream",
     "content-type": "application/json",
@@ -167,24 +152,20 @@ export async function sign({
     "x-amzn-bedrock-accept": "*/*",
   };
 
-  // Get sorted header keys (case-insensitive)
   const sortedHeaderKeys = Object.keys(headers).sort((a, b) =>
     a.toLowerCase().localeCompare(b.toLowerCase()),
   );
 
-  // Create canonical headers string with normalized values
   const canonicalHeaders = sortedHeaderKeys
     .map(
       (key) => `${key.toLowerCase()}:${normalizeHeaderValue(headers[key])}\n`,
     )
     .join("");
 
-  // Create signed headers string
   const signedHeaders = sortedHeaderKeys
     .map((key) => key.toLowerCase())
     .join(";");
 
-  // Create canonical request
   const canonicalRequest = [
     method.toUpperCase(),
     canonicalUri,
@@ -194,7 +175,6 @@ export async function sign({
     payloadHash,
   ].join("\n");
 
-  // Create the string to sign
   const algorithm = "AWS4-HMAC-SHA256";
   const credentialScope = `${dateStamp}/${region}/${service}/aws4_request`;
   const stringToSign = [
@@ -204,18 +184,15 @@ export async function sign({
     SHA256(canonicalRequest).toString(Hex),
   ].join("\n");
 
-  // Calculate the signature
   const signingKey = getSigningKey(secretAccessKey, dateStamp, region, service);
   const signature = hmac(signingKey, stringToSign).toString(Hex);
 
-  // Create the authorization header
   const authorization = [
     `${algorithm} Credential=${accessKeyId}/${credentialScope}`,
     `SignedHeaders=${signedHeaders}`,
     `Signature=${signature}`,
   ].join(", ");
 
-  // Return headers with proper casing for the request
   return {
     Accept: headers.accept,
     "Content-Type": headers["content-type"],

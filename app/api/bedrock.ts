@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "./auth";
 import { sign } from "../utils/aws";
 import { getServerSideConfig } from "../config/server";
-
+import { ModelProvider } from "@/app/constant";
+import { prettyObject } from "@/app/utils/format";
 const ALLOWED_PATH = new Set(["chat", "models"]);
 
 function parseEventData(chunk: Uint8Array): any {
@@ -189,7 +191,7 @@ async function requestBedrock(req: NextRequest) {
   let awsRegion = config.awsRegion;
   let awsAccessKey = config.awsAccessKey;
   let awsSecretKey = config.awsSecretKey;
-  let modelId = "";
+  let modelId = req.headers.get("ModelID");
 
   // If server-side credentials are not available, parse from Authorization header
   if (!awsRegion || !awsAccessKey || !awsSecretKey) {
@@ -199,16 +201,15 @@ async function requestBedrock(req: NextRequest) {
     }
 
     const [_, credentials] = authHeader.split("Bearer ");
-    const [region, accessKey, secretKey, model] = credentials.split(",");
+    const [region, accessKey, secretKey] = credentials.split(":");
 
-    if (!region || !accessKey || !secretKey || !model) {
+    if (!region || !accessKey || !secretKey) {
       throw new Error("Invalid Authorization header format");
     }
 
     awsRegion = region;
     awsAccessKey = accessKey;
     awsSecretKey = secretKey;
-    modelId = model;
   }
 
   if (!awsRegion || !awsAccessKey || !awsSecretKey || !modelId) {
@@ -329,14 +330,16 @@ export async function handle(
       { status: 403 },
     );
   }
-
+  const authResult = auth(req, ModelProvider.Bedrock);
+  if (authResult.error) {
+    return NextResponse.json(authResult, {
+      status: 401,
+    });
+  }
   try {
     return await requestBedrock(req);
   } catch (e) {
     console.error("Handler error:", e);
-    return NextResponse.json(
-      { error: true, msg: e instanceof Error ? e.message : "Unknown error" },
-      { status: 500 },
-    );
+    return NextResponse.json(prettyObject(e));
   }
 }

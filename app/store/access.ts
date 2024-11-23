@@ -120,7 +120,7 @@ const DEFAULT_ACCESS_STATE = {
   chatglmApiKey: "",
 
   // aws bedrock
-  bedrokUrl: DEFAULT_BEDROCK_URL,
+  bedrockUrl: DEFAULT_BEDROCK_URL,
   awsRegion: "",
   awsAccessKey: "",
   awsSecretKey: "",

@@ -1,3 +1,4 @@
+"use client";
 import {
   ChatOptions,
   getHeaders,
@@ -16,6 +17,8 @@ import {
 } from "../../store";
 import { preProcessImageContent, stream } from "../../utils/chat";
 import { getMessageTextContent, isVisionModel } from "../../utils";
+import { ApiPath, BEDROCK_BASE_URL } from "../../constant";
+import { getClientConfig } from "../../config/client";
 
 const ClaudeMapper = {
   assistant: "assistant",
@@ -34,6 +37,35 @@ interface ToolDefinition {
 }
 
 export class BedrockApi implements LLMApi {
+  private disableListModels = true;
+
+  path(path: string): string {
+    const accessStore = useAccessStore.getState();
+
+    let baseUrl = "";
+
+    if (accessStore.useCustomConfig) {
+      baseUrl = accessStore.bedrockUrl;
+    }
+
+    if (baseUrl.length === 0) {
+      const isApp = !!getClientConfig()?.isApp;
+      const apiPath = ApiPath.Bedrock;
+      baseUrl = isApp ? BEDROCK_BASE_URL : apiPath;
+    }
+
+    if (baseUrl.endsWith("/")) {
+      baseUrl = baseUrl.slice(0, baseUrl.length - 1);
+    }
+    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.Bedrock)) {
+      baseUrl = "https://" + baseUrl;
+    }
+
+    console.log("[Proxy Endpoint] ", baseUrl, path);
+
+    return [baseUrl, path].join("/");
+  }
+
   speech(options: SpeechOptions): Promise<ArrayBuffer> {
     throw new Error("Speech not implemented for Bedrock.");
   }
@@ -239,17 +271,9 @@ export class BedrockApi implements LLMApi {
     }
 
     try {
-      const apiEndpoint = "/api/bedrock/chat";
-      // const headers = {
-      //   "Content-Type": requestBody.contentType || "application/json",
-      //   Accept: requestBody.accept || "application/json",
-      //   "X-Region": accessStore.awsRegion,
-      //   "X-Access-Key": accessStore.awsAccessKey,
-      //   "X-Secret-Key": accessStore.awsSecretKey,
-      //   "X-Model-Id": modelConfig.model,
-      //   "X-Encryption-Key": accessStore.bedrockEncryptionKey,
-      // };
+      const chatPath = this.path("chat");
       const headers = getHeaders();
+      headers.ModelID = modelConfig.model;
 
       if (options.config.stream) {
         let index = -1;
@@ -261,7 +285,7 @@ export class BedrockApi implements LLMApi {
           );
 
         return stream(
-          apiEndpoint,
+          chatPath,
           requestBody,
           headers,
           (tools as ToolDefinition[]).map((tool) => ({
@@ -367,7 +391,7 @@ export class BedrockApi implements LLMApi {
           options,
         );
       } else {
-        const res = await fetch(apiEndpoint, {
+        const res = await fetch(chatPath, {
           method: "POST",
           headers,
           body: JSON.stringify(requestBody),
@@ -375,7 +399,6 @@ export class BedrockApi implements LLMApi {
 
         const resJson = await res.json();
         const message = this.extractMessage(resJson, modelConfig.model);
-        // console.log("Extracted message:", message);
         options.onFinish(message, res);
       }
     } catch (e) {
