@@ -23,6 +23,7 @@ import { SparkApi } from "./platforms/iflytek";
 import { XAIApi } from "./platforms/xai";
 import { ChatGLMApi } from "./platforms/glm";
 import { BedrockApi } from "./platforms/bedrock";
+import { encrypt } from "../utils/aws";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -279,11 +280,11 @@ export function getHeaders(ignoreHeaders: boolean = false) {
       ? accessStore.awsRegion &&
         accessStore.awsAccessKey &&
         accessStore.awsSecretKey
-        ? accessStore.awsRegion +
+        ? encrypt(accessStore.awsRegion) +
           ":" +
-          accessStore.awsAccessKey +
+          encrypt(accessStore.awsAccessKey) +
           ":" +
-          accessStore.awsSecretKey
+          encrypt(accessStore.awsSecretKey)
         : ""
       : accessStore.openaiApiKey;
     return {

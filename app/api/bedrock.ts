@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "./auth";
-import { sign } from "../utils/aws";
+import { sign, decrypt } from "../utils/aws";
 import { getServerSideConfig } from "../config/server";
-import { ModelProvider } from "@/app/constant";
-import { prettyObject } from "@/app/utils/format";
+import { ModelProvider } from "../constant";
+import { prettyObject } from "../utils/format";
+
 const ALLOWED_PATH = new Set(["chat", "models"]);
 
 function parseEventData(chunk: Uint8Array): any {
@@ -78,8 +79,6 @@ async function* transformBedrockStream(
 
       const parsed = parseEventData(value);
       if (!parsed) continue;
-
-      // console.log("Parsed response:", JSON.stringify(parsed, null, 2));
 
       // Handle Titan models
       if (modelId.startsWith("amazon.titan")) {
@@ -191,7 +190,6 @@ async function requestBedrock(req: NextRequest) {
   let awsRegion = config.awsRegion;
   let awsAccessKey = config.awsAccessKey;
   let awsSecretKey = config.awsSecretKey;
-  let modelId = req.headers.get("ModelID");
 
   // If server-side credentials are not available, parse from Authorization header
   if (!awsRegion || !awsAccessKey || !awsSecretKey) {
@@ -201,17 +199,25 @@ async function requestBedrock(req: NextRequest) {
     }
 
     const [_, credentials] = authHeader.split("Bearer ");
-    const [region, accessKey, secretKey] = credentials.split(":");
+    console.log("credentials===============" + credentials);
+    const [encryptedRegion, encryptedAccessKey, encryptedSecretKey] =
+      credentials.split(":");
 
-    if (!region || !accessKey || !secretKey) {
+    if (!encryptedRegion || !encryptedAccessKey || !encryptedSecretKey) {
       throw new Error("Invalid Authorization header format");
     }
 
-    awsRegion = region;
-    awsAccessKey = accessKey;
-    awsSecretKey = secretKey;
+    // Decrypt the credentials
+    awsRegion = decrypt(encryptedRegion);
+    awsAccessKey = decrypt(encryptedAccessKey);
+    awsSecretKey = decrypt(encryptedSecretKey);
+
+    if (!awsRegion || !awsAccessKey || !awsSecretKey) {
+      throw new Error("Failed to decrypt AWS credentials");
+    }
   }
 
+  let modelId = req.headers.get("ModelID");
   if (!awsRegion || !awsAccessKey || !awsSecretKey || !modelId) {
     throw new Error("Missing required AWS credentials or model ID");
   }

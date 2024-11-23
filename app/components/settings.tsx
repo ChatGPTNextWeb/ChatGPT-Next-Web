@@ -980,10 +980,6 @@ export function Settings() {
           onChange={(e) =>
             accessStore.update((access) => {
               const region = e.currentTarget.value;
-              if (!/^[a-z]{2}-[a-z]+-\d+$/.test(region)) {
-                showToast(Locale.Settings.Access.Bedrock.Region.Invalid);
-                return;
-              }
               access.awsRegion = region;
             })
           }
@@ -1001,10 +997,6 @@ export function Settings() {
           onChange={(e) => {
             accessStore.update((access) => {
               const accessKey = e.currentTarget.value;
-              if (accessKey && accessKey.length !== 20) {
-                showToast(Locale.Settings.Access.Bedrock.AccessKey.Invalid);
-                return;
-              }
               access.awsAccessKey = accessKey;
             });
           }}
@@ -1023,10 +1015,6 @@ export function Settings() {
           onChange={(e) => {
             accessStore.update((access) => {
               const secretKey = e.currentTarget.value;
-              if (secretKey && secretKey.length !== 40) {
-                showToast(Locale.Settings.Access.Bedrock.SecretKey.Invalid);
-                return;
-              }
               access.awsSecretKey = secretKey;
             });
           }}

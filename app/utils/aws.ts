@@ -17,7 +17,7 @@ export function encrypt(data: string): string {
     return AES.encrypt(data, SECRET_KEY).toString();
   } catch (error) {
     console.error("Encryption failed:", error);
-    return data;
+    return "";
   }
 }
 
@@ -31,7 +31,8 @@ export function decrypt(encryptedData: string): string {
     }
     return decrypted;
   } catch (error) {
-    return encryptedData;
+    console.error("Decryption failed:", error);
+    return "";
   }
 }
 
