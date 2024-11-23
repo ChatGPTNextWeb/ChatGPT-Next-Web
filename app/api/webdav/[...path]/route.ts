@@ -6,7 +6,7 @@ const config = getServerSideConfig();
 
 const mergedAllowedWebDavEndpoints = [
   ...internalAllowedWebDavEndpoints,
-  ...config.allowedWebDevEndpoints,
+  ...config.allowedWebDavEndpoints,
 ].filter((domain) => Boolean(domain.trim()));
 
 const normalizeUrl = (url: string) => {
@@ -29,6 +29,7 @@ async function handle(
 
   const requestUrl = new URL(req.url);
   let endpoint = requestUrl.searchParams.get("endpoint");
+  let proxy_method = requestUrl.searchParams.get("proxy_method") || req.method;
 
   // Validate the endpoint to prevent potential SSRF attacks
   if (
@@ -37,9 +38,13 @@ async function handle(
       const normalizedAllowedEndpoint = normalizeUrl(allowedEndpoint);
       const normalizedEndpoint = normalizeUrl(endpoint as string);
 
-      return normalizedEndpoint &&
+      return (
+        normalizedEndpoint &&
         normalizedEndpoint.hostname === normalizedAllowedEndpoint?.hostname &&
-        normalizedEndpoint.pathname.startsWith(normalizedAllowedEndpoint.pathname);
+        normalizedEndpoint.pathname.startsWith(
+          normalizedAllowedEndpoint.pathname,
+        )
+      );
     })
   ) {
     return NextResponse.json(
@@ -61,7 +66,11 @@ async function handle(
   const targetPath = `${endpoint}${endpointPath}`;
 
   // only allow MKCOL, GET, PUT
-  if (req.method !== "MKCOL" && req.method !== "GET" && req.method !== "PUT") {
+  if (
+    proxy_method !== "MKCOL" &&
+    proxy_method !== "GET" &&
+    proxy_method !== "PUT"
+  ) {
     return NextResponse.json(
       {
         error: true,
@@ -74,7 +83,7 @@ async function handle(
   }
 
   // for MKCOL request, only allow request ${folder}
-  if (req.method === "MKCOL" && !targetPath.endsWith(folder)) {
+  if (proxy_method === "MKCOL" && !targetPath.endsWith(folder)) {
     return NextResponse.json(
       {
         error: true,
@@ -87,7 +96,7 @@ async function handle(
   }
 
   // for GET request, only allow request ending with fileName
-  if (req.method === "GET" && !targetPath.endsWith(fileName)) {
+  if (proxy_method === "GET" && !targetPath.endsWith(fileName)) {
     return NextResponse.json(
       {
         error: true,
@@ -100,7 +109,7 @@ async function handle(
   }
 
   //   for PUT request, only allow request ending with fileName
-  if (req.method === "PUT" && !targetPath.endsWith(fileName)) {
+  if (proxy_method === "PUT" && !targetPath.endsWith(fileName)) {
     return NextResponse.json(
       {
         error: true,
@@ -114,7 +123,7 @@ async function handle(
 
   const targetUrl = targetPath;
 
-  const method = req.method;
+  const method = proxy_method || req.method;
   const shouldNotHaveBody = ["get", "head"].includes(
     method?.toLowerCase() ?? "",
   );
@@ -139,7 +148,7 @@ async function handle(
       "[Any Proxy]",
       targetUrl,
       {
-        method: req.method,
+        method: method,
       },
       {
         status: fetchResult?.status,
