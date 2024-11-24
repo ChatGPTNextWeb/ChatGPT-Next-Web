@@ -369,6 +369,8 @@ const en: LocaleType = {
           Title: "Encryption Key",
           SubTitle: "Your encryption key for configuration data",
           Placeholder: "Enter encryption key",
+          Invalid:
+            "Invalid encryption key format. Must no less than 8 characters long!",
         },
       },
       Azure: {

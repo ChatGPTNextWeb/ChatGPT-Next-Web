@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from "react";
-
 import styles from "./settings.module.scss";
 
 import ResetIcon from "../icons/reload.svg";
@@ -1027,13 +1026,21 @@ export function Settings() {
       >
         <PasswordInput
           aria-label={Locale.Settings.Access.Bedrock.EncryptionKey.Title}
-          value={accessStore.bedrockEncryptionKey}
+          value={accessStore.encryptionKey}
           type="text"
           placeholder={Locale.Settings.Access.Bedrock.EncryptionKey.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.bedrockEncryptionKey = e.currentTarget.value),
+              (access) => (access.encryptionKey = e.currentTarget.value),
             );
+          }}
+          onBlur={(e) => {
+            const value = e.currentTarget.value;
+            if (!value || value.length < 8) {
+              showToast(Locale.Settings.Access.Bedrock.EncryptionKey.Invalid);
+              accessStore.update((access) => (access.encryptionKey = ""));
+              return;
+            }
           }}
           maskWhenShow={true}
         />

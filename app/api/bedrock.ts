@@ -1,209 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "./auth";
-import { sign, decrypt } from "../utils/aws";
+import {
+  sign,
+  decrypt,
+  getBedrockEndpoint,
+  getModelHeaders,
+  transformBedrockStream,
+  parseEventData,
+  BedrockCredentials,
+} from "../utils/aws";
 import { getServerSideConfig } from "../config/server";
 import { ModelProvider } from "../constant";
 import { prettyObject } from "../utils/format";
 
 const ALLOWED_PATH = new Set(["chat", "models"]);
 
-function parseEventData(chunk: Uint8Array): any {
-  const decoder = new TextDecoder();
-  const text = decoder.decode(chunk);
-  try {
-    const parsed = JSON.parse(text);
-    // AWS Bedrock wraps the response in a 'body' field
-    if (typeof parsed.body === "string") {
-      try {
-        const bodyJson = JSON.parse(parsed.body);
-        return bodyJson;
-      } catch (e) {
-        return { output: parsed.body };
-      }
-    }
-    return parsed.body || parsed;
-  } catch (e) {
-    // console.error("Error parsing event data:", e);
-    try {
-      // Handle base64 encoded responses
-      const base64Match = text.match(/:"([A-Za-z0-9+/=]+)"/);
-      if (base64Match) {
-        const decoded = Buffer.from(base64Match[1], "base64").toString("utf-8");
-        try {
-          return JSON.parse(decoded);
-        } catch (e) {
-          return { output: decoded };
-        }
-      }
-
-      // Handle event-type responses
-      const eventMatch = text.match(/:event-type[^\{]+({.*})/);
-      if (eventMatch) {
-        try {
-          return JSON.parse(eventMatch[1]);
-        } catch (e) {
-          return { output: eventMatch[1] };
-        }
-      }
-
-      // Handle plain text responses
-      if (text.trim()) {
-        // Clean up any malformed JSON characters
-        const cleanText = text.replace(/[\x00-\x1F\x7F-\x9F]/g, "");
-        return { output: cleanText };
-      }
-    } catch (innerError) {
-      console.error("Error in fallback parsing:", innerError);
-    }
-  }
-  return null;
-}
-
-async function* transformBedrockStream(
-  stream: ReadableStream,
-  modelId: string,
-) {
-  const reader = stream.getReader();
-  let buffer = "";
-
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) {
-        if (buffer) {
-          yield `data: ${JSON.stringify({
-            delta: { text: buffer },
-          })}\n\n`;
-        }
-        break;
-      }
-
-      const parsed = parseEventData(value);
-      if (!parsed) continue;
-
-      // Handle Titan models
-      if (modelId.startsWith("amazon.titan")) {
-        const text = parsed.outputText || "";
-        if (text) {
-          yield `data: ${JSON.stringify({
-            delta: { text },
-          })}\n\n`;
-        }
-      }
-      // Handle LLaMA models
-      else if (modelId.startsWith("us.meta.llama")) {
-        let text = "";
-        if (parsed.outputs?.[0]?.text) {
-          text = parsed.outputs[0].text;
-        } else if (parsed.generation) {
-          text = parsed.generation;
-        } else if (parsed.output) {
-          text = parsed.output;
-        } else if (typeof parsed === "string") {
-          text = parsed;
-        }
-
-        if (text) {
-          yield `data: ${JSON.stringify({
-            delta: { text },
-          })}\n\n`;
-        }
-      }
-      // Handle Mistral models
-      else if (modelId.startsWith("mistral.mistral")) {
-        let text = "";
-        if (parsed.outputs?.[0]?.text) {
-          text = parsed.outputs[0].text;
-        } else if (parsed.output) {
-          text = parsed.output;
-        } else if (parsed.completion) {
-          text = parsed.completion;
-        } else if (typeof parsed === "string") {
-          text = parsed;
-        }
-
-        if (text) {
-          yield `data: ${JSON.stringify({
-            delta: { text },
-          })}\n\n`;
-        }
-      }
-      // Handle Claude models
-      else if (modelId.startsWith("anthropic.claude")) {
-        if (parsed.type === "content_block_delta") {
-          if (parsed.delta?.type === "text_delta") {
-            yield `data: ${JSON.stringify({
-              delta: { text: parsed.delta.text },
-            })}\n\n`;
-          } else if (parsed.delta?.type === "input_json_delta") {
-            yield `data: ${JSON.stringify(parsed)}\n\n`;
-          }
-        } else if (
-          parsed.type === "message_delta" &&
-          parsed.delta?.stop_reason
-        ) {
-          yield `data: ${JSON.stringify({
-            delta: { stop_reason: parsed.delta.stop_reason },
-          })}\n\n`;
-        } else if (
-          parsed.type === "content_block_start" &&
-          parsed.content_block?.type === "tool_use"
-        ) {
-          yield `data: ${JSON.stringify(parsed)}\n\n`;
-        } else if (parsed.type === "content_block_stop") {
-          yield `data: ${JSON.stringify(parsed)}\n\n`;
-        }
-      }
-    }
-  } finally {
-    reader.releaseLock();
-  }
-}
-
-function validateRequest(body: any, modelId: string): void {
-  if (!modelId) throw new Error("Model ID is required");
-
-  // Handle nested body structure
-  const bodyContent = body.body || body;
-
-  if (modelId.startsWith("anthropic.claude")) {
-    if (
-      !body.anthropic_version ||
-      body.anthropic_version !== "bedrock-2023-05-31"
-    ) {
-      throw new Error("anthropic_version must be 'bedrock-2023-05-31'");
-    }
-    if (typeof body.max_tokens !== "number" || body.max_tokens < 0) {
-      throw new Error("max_tokens must be a positive number");
-    }
-    if (modelId.startsWith("anthropic.claude-3")) {
-      if (!Array.isArray(body.messages))
-        throw new Error("messages array is required for Claude 3");
-    } else if (typeof body.prompt !== "string") {
-      throw new Error("prompt is required for Claude 2 and earlier");
-    }
-  } else if (modelId.startsWith("us.meta.llama")) {
-    if (!bodyContent.prompt || typeof bodyContent.prompt !== "string") {
-      throw new Error("prompt string is required for LLaMA models");
-    }
-    if (
-      !bodyContent.max_gen_len ||
-      typeof bodyContent.max_gen_len !== "number"
-    ) {
-      throw new Error("max_gen_len must be a positive number for LLaMA models");
-    }
-  } else if (modelId.startsWith("mistral.mistral")) {
-    if (!bodyContent.prompt) {
-      throw new Error("prompt is required for Mistral models");
-    }
-  } else if (modelId.startsWith("amazon.titan")) {
-    if (!bodyContent.inputText) throw new Error("Titan requires inputText");
-  }
-}
-
-async function requestBedrock(req: NextRequest) {
-  const controller = new AbortController();
-
+async function getBedrockCredentials(
+  req: NextRequest,
+): Promise<BedrockCredentials> {
   // Get AWS credentials from server config first
   const config = getServerSideConfig();
   let awsRegion = config.awsRegion;
@@ -224,90 +38,99 @@ async function requestBedrock(req: NextRequest) {
     if (!encryptedRegion || !encryptedAccessKey || !encryptedSecretKey) {
       throw new Error("Invalid Authorization header format");
     }
-
+    const encryptionKey = req.headers.get("XEncryptionKey") || "";
     // Decrypt the credentials
-    awsRegion = decrypt(encryptedRegion);
-    awsAccessKey = decrypt(encryptedAccessKey);
-    awsSecretKey = decrypt(encryptedSecretKey);
+    awsRegion = decrypt(encryptedRegion, encryptionKey);
+    awsAccessKey = decrypt(encryptedAccessKey, encryptionKey);
+    awsSecretKey = decrypt(encryptedSecretKey, encryptionKey);
 
     if (!awsRegion || !awsAccessKey || !awsSecretKey) {
-      throw new Error("Failed to decrypt AWS credentials");
+      throw new Error(
+        "Failed to decrypt AWS credentials. Please ensure ENCRYPTION_KEY is set correctly.",
+      );
     }
   }
 
-  let modelId = req.headers.get("ModelID");
-  let shouldStream = req.headers.get("ShouldStream");
-  if (!awsRegion || !awsAccessKey || !awsSecretKey || !modelId) {
-    throw new Error("Missing required AWS credentials or model ID");
-  }
+  return {
+    region: awsRegion,
+    accessKeyId: awsAccessKey,
+    secretAccessKey: awsSecretKey,
+  };
+}
 
-  // Construct the base endpoint
-  const baseEndpoint = `https://bedrock-runtime.${awsRegion}.amazonaws.com`;
-
-  // Set up timeout
+async function requestBedrock(req: NextRequest) {
+  const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 10 * 60 * 1000);
 
   try {
-    // Determine the endpoint and request body based on model type
-    let endpoint;
+    // Get credentials and model info
+    const credentials = await getBedrockCredentials(req);
+    const modelId = req.headers.get("XModelID");
+    const shouldStream = req.headers.get("ShouldStream") !== "false";
 
+    if (!modelId) {
+      throw new Error("Missing model ID");
+    }
+
+    // Parse and validate request body
     const bodyText = await req.clone().text();
     if (!bodyText) {
       throw new Error("Request body is empty");
     }
-
-    const bodyJson = JSON.parse(bodyText);
-
-    // Debug log the request body
-    console.log("Original request body:", JSON.stringify(bodyJson, null, 2));
-
-    validateRequest(bodyJson, modelId);
-
-    // For all models, use standard endpoints
-    if (shouldStream === "false") {
-      endpoint = `${baseEndpoint}/model/${modelId}/invoke`;
-    } else {
-      endpoint = `${baseEndpoint}/model/${modelId}/invoke-with-response-stream`;
+    let bodyJson;
+    try {
+      bodyJson = JSON.parse(bodyText);
+    } catch (e) {
+      throw new Error(`Invalid JSON in request body: ${e}`);
     }
 
-    // Set additional headers based on model type
-    const additionalHeaders: Record<string, string> = {};
-    if (
-      modelId.startsWith("us.meta.llama") ||
-      modelId.startsWith("mistral.mistral")
-    ) {
-      additionalHeaders["content-type"] = "application/json";
-      additionalHeaders["accept"] = "application/json";
+    // Extract tool configuration if present
+    let tools: any[] | undefined;
+    if (bodyJson.tools) {
+      tools = bodyJson.tools;
+      delete bodyJson.tools; // Remove from main request body
     }
 
-    // For Mistral models, unwrap the body object
-    const finalRequestBody =
-      modelId.startsWith("mistral.mistral") && bodyJson.body
-        ? bodyJson.body
-        : bodyJson;
+    // Get endpoint and prepare request
+    const endpoint = getBedrockEndpoint(
+      credentials.region,
+      modelId,
+      shouldStream,
+    );
+    const additionalHeaders = getModelHeaders(modelId);
 
-    // Set content type and accept headers for specific models
+    console.log("[Bedrock Request] Endpoint:", endpoint);
+    console.log("[Bedrock Request] Model ID:", modelId);
+
+    // Only include tools for Claude models
+    const isClaudeModel = modelId.toLowerCase().includes("claude3");
+    const requestBody = {
+      ...bodyJson,
+      ...(isClaudeModel && tools && { tools }),
+    };
+
+    // Sign request
     const headers = await sign({
       method: "POST",
       url: endpoint,
-      region: awsRegion,
-      accessKeyId: awsAccessKey,
-      secretAccessKey: awsSecretKey,
-      body: JSON.stringify(finalRequestBody),
+      region: credentials.region,
+      accessKeyId: credentials.accessKeyId,
+      secretAccessKey: credentials.secretAccessKey,
+      body: JSON.stringify(requestBody),
       service: "bedrock",
-      isStreaming: shouldStream !== "false",
+      isStreaming: shouldStream,
       additionalHeaders,
     });
 
-    // Debug log the final request body
-    // console.log("Final request endpoint:", endpoint);
-    // console.log(headers);
-    // console.log("Final request body:", JSON.stringify(finalRequestBody, null, 2));
-
+    // Make request to AWS Bedrock
+    console.log(
+      "[Bedrock Request] Body:",
+      JSON.stringify(requestBody, null, 2),
+    );
     const res = await fetch(endpoint, {
       method: "POST",
       headers,
-      body: JSON.stringify(finalRequestBody),
+      body: JSON.stringify(requestBody),
       redirect: "manual",
       // @ts-ignore
       duplex: "half",
@@ -316,24 +139,35 @@ async function requestBedrock(req: NextRequest) {
 
     if (!res.ok) {
       const error = await res.text();
-      console.error("AWS Bedrock error response:", error);
+      console.error("[Bedrock Error] Status:", res.status);
+      console.error("[Bedrock Error] Response:", error);
       try {
         const errorJson = JSON.parse(error);
         throw new Error(errorJson.message || error);
       } catch {
-        throw new Error(error || "Failed to get response from Bedrock");
+        throw new Error(
+          `Bedrock request failed with status ${res.status}: ${
+            error || "No error message"
+          }`,
+        );
       }
     }
 
     if (!res.body) {
-      throw new Error("Empty response from Bedrock");
+      console.error("[Bedrock Error] Empty response body");
+      throw new Error(
+        "Empty response from Bedrock. Please check AWS credentials and permissions.",
+      );
     }
 
     // Handle non-streaming response
-    if (shouldStream === "false") {
+    if (!shouldStream) {
       const responseText = await res.text();
-      console.error("AWS Bedrock shouldStream === false:", responseText);
+      console.log("[Bedrock Response] Non-streaming:", responseText);
       const parsed = parseEventData(new TextEncoder().encode(responseText));
+      if (!parsed) {
+        throw new Error("Failed to parse Bedrock response");
+      }
       return NextResponse.json(parsed);
     }
 
@@ -347,7 +181,7 @@ async function requestBedrock(req: NextRequest) {
           }
           controller.close();
         } catch (err) {
-          console.error("Stream error:", err);
+          console.error("[Bedrock Stream Error]:", err);
           controller.error(err);
         }
       },
@@ -362,7 +196,7 @@ async function requestBedrock(req: NextRequest) {
       },
     });
   } catch (e) {
-    console.error("Request error:", e);
+    console.error("[Bedrock Request Error]:", e);
     throw e;
   } finally {
     clearTimeout(timeoutId);
@@ -384,12 +218,14 @@ export async function handle(
       { status: 403 },
     );
   }
+
   const authResult = auth(req, ModelProvider.Bedrock);
   if (authResult.error) {
     return NextResponse.json(authResult, {
       status: 401,
     });
   }
+
   try {
     return await requestBedrock(req);
   } catch (e) {

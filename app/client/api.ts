@@ -280,11 +280,11 @@ export function getHeaders(ignoreHeaders: boolean = false) {
       ? accessStore.awsRegion &&
         accessStore.awsAccessKey &&
         accessStore.awsSecretKey
-        ? encrypt(accessStore.awsRegion) +
+        ? encrypt(accessStore.awsRegion, accessStore.encryptionKey) +
           ":" +
-          encrypt(accessStore.awsAccessKey) +
+          encrypt(accessStore.awsAccessKey, accessStore.encryptionKey) +
           ":" +
-          encrypt(accessStore.awsSecretKey)
+          encrypt(accessStore.awsSecretKey, accessStore.encryptionKey)
         : ""
       : accessStore.openaiApiKey;
     return {

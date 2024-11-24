@@ -186,7 +186,7 @@ export const getServerSideConfig = () => {
     awsRegion: process.env.AWS_REGION,
     awsAccessKey: process.env.AWS_ACCESS_KEY,
     awsSecretKey: process.env.AWS_SECRET_KEY,
-    bedrockEncryptionKey: process.env.ENCRYPTION_KEY,
+    encryptionKey: process.env.ENCRYPTION_KEY,
 
     isStability,
     stabilityUrl: process.env.STABILITY_URL,

@@ -113,7 +113,8 @@ const DEFAULT_ACCESS_STATE = {
   awsRegion: "",
   awsAccessKey: "",
   awsSecretKey: "",
-  bedrockEncryptionKey: "",
+  encryptionKey: "",
+  bedrockAnthropicVersion: "bedrock-2023-05-31",
 
   // server config
   needCode: true,
@@ -194,7 +195,7 @@ export const useAccessStore = createPersistStore(
         "awsRegion",
         "awsAccessKey",
         "awsSecretKey",
-        "bedrockEncryptionKey",
+        "encryptionKey",
       ]);
     },
 
@@ -256,13 +257,19 @@ export const useAccessStore = createPersistStore(
     // Override the set method to encrypt AWS credentials before storage
     set: (partial: { [key: string]: any }) => {
       if (partial.awsAccessKey) {
-        partial.awsAccessKey = encrypt(partial.awsAccessKey);
+        partial.awsAccessKey = encrypt(
+          partial.awsAccessKey,
+          partial.encryptionKey,
+        );
       }
       if (partial.awsSecretKey) {
-        partial.awsSecretKey = encrypt(partial.awsSecretKey);
+        partial.awsSecretKey = encrypt(
+          partial.awsSecretKey,
+          partial.encryptionKey,
+        );
       }
       if (partial.awsRegion) {
-        partial.awsRegion = encrypt(partial.awsRegion);
+        partial.awsRegion = encrypt(partial.awsRegion, partial.encryptionKey);
       }
       set(partial);
     },
@@ -272,9 +279,15 @@ export const useAccessStore = createPersistStore(
       const state = get();
       return {
         ...state,
-        awsRegion: state.awsRegion ? decrypt(state.awsRegion) : "",
-        awsAccessKey: state.awsAccessKey ? decrypt(state.awsAccessKey) : "",
-        awsSecretKey: state.awsSecretKey ? decrypt(state.awsSecretKey) : "",
+        awsRegion: state.awsRegion
+          ? decrypt(state.awsRegion, state.encryptionKey)
+          : "",
+        awsAccessKey: state.awsAccessKey
+          ? decrypt(state.awsAccessKey, state.encryptionKey)
+          : "",
+        awsSecretKey: state.awsSecretKey
+          ? decrypt(state.awsSecretKey, state.encryptionKey)
+          : "",
       };
     },
   }),

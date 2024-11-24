@@ -365,6 +365,7 @@ const cn = {
           Title: "加密密钥",
           SubTitle: "用于配置数据的加密密钥",
           Placeholder: "输入加密密钥",
+          Invalid: "无效的加密密钥。必须至少包含8个字符！",
         },
       },
       Azure: {
