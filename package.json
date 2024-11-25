@@ -83,7 +83,7 @@
     "prettier": "^3.0.2",
     "ts-node": "^10.9.2",
     "tsx": "^4.16.0",
-    "typescript": "5.2.2",
+    "typescript": "5.7.2",
     "watch": "^1.0.2",
     "webpack": "^5.88.1"
   },
