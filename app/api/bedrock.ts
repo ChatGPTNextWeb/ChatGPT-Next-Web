@@ -105,26 +105,17 @@ async function requestBedrock(req: NextRequest) {
     console.log("[Bedrock Request] Model ID:", modelId);
 
     // Handle tools for different models
-    const isMistralModel = modelId.toLowerCase().includes("mistral");
+    const isMistralLargeModel = modelId
+      .toLowerCase()
+      .includes("mistral.mistral-large");
     const isClaudeModel = modelId.toLowerCase().includes("claude");
 
-    const requestBody = {
+    const requestBody: any = {
       ...bodyJson,
     };
 
     if (tools && tools.length > 0) {
-      if (isClaudeModel) {
-        // Claude models already have correct tool format
-        requestBody.tools = tools;
-      } else if (isMistralModel) {
-        // Format messages for Mistral
-        if (typeof requestBody.prompt === "string") {
-          requestBody.messages = [
-            { role: "user", content: requestBody.prompt },
-          ];
-          delete requestBody.prompt;
-        }
-
+      if (isMistralLargeModel) {
         // Add tools in Mistral's format
         requestBody.tool_choice = "auto";
         requestBody.tools = tools.map((tool) => ({
@@ -135,6 +126,8 @@ async function requestBedrock(req: NextRequest) {
             parameters: tool.input_schema,
           },
         }));
+      } else if (isClaudeModel) {
+        requestBody.tools = tools;
       }
     }
 
