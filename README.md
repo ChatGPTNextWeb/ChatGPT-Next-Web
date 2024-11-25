@@ -321,7 +321,7 @@ If you do not want users to input their own API key, set this value to 1.
 
 > Default: Empty
 
-If you do not want users to use GPT-4, set this value to 1.
+If you don't want users to use GPT-4, set this value to 1. This will hide all GPT-4 related models from the model list.
 
 ### `ENABLE_BALANCE_QUERY` (optional)
 
@@ -373,6 +373,71 @@ Stability API key.
 ### `STABILITY_URL` (optional)
 
 Customize Stability API url.
+
+### `CLOUDFLARE_ACCOUNT_ID` (optional)
+
+Cloudflare Account ID.
+
+### `CLOUDFLARE_KV_NAMESPACE_ID` (optional)
+
+Cloudflare KV Namespace ID.
+
+### `CLOUDFLARE_KV_API_KEY` (optional)
+
+Cloudflare KV API Key.
+
+### `CLOUDFLARE_KV_TTL` (optional)
+
+Cloudflare KV cache expiration time.
+
+### `GTM_ID` (optional)
+
+Google Tag Manager ID.
+
+### `GA_ID` (optional)
+
+Google Analytics ID. Will use default value if not set.
+
+### `TENCENT_SECRET_ID` (optional)
+
+Tencent Cloud Secret ID.
+
+### `TENCENT_SECRET_KEY` (optional)
+
+Tencent Cloud Secret Key.
+
+### `TENCENT_URL` (optional)
+
+Tencent Cloud API URL.
+
+### `MOONSHOT_URL` (optional)
+
+Moonshot API URL.
+
+### `MOONSHOT_API_KEY` (optional)
+
+Moonshot API Key.
+
+### `XAI_URL` (optional)
+
+XAI API URL.
+
+### `XAI_API_KEY` (optional)
+
+XAI API Key.
+
+### `PROXY_URL` (optional)
+
+> Example: `http://127.0.0.1:7890`
+
+Proxy server URL. Supports HTTP and SOCKS proxies.
+
+If your proxy server requires authentication, you can use the following format:
+```bash
+http://username:password@127.0.0.1:7890
+```
+
+Note: This configuration only works when deploying with Docker.
 
 ## Requirements
 

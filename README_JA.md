@@ -183,7 +183,9 @@ ByteDance API の URL。
 
 ### `DISABLE_GPT4` （オプション）
 
-ユーザーが GPT-4 を使用できないようにしたい場合は、この環境変数を 1 に設定します。
+> デフォルト：空
+
+ユーザーが GPT-4 を使用できないようにしたい場合は、この環境変数を 1 に設定します。これにより、モデルリストから GPT-4 関連のすべてのモデルが非表示になります。
 
 ### `ENABLE_BALANCE_QUERY` （オプション）
 
@@ -220,6 +222,71 @@ ByteDance モードでは、`modelName@bytedance=deploymentName` 形式でモデ
 ### `DEFAULT_INPUT_TEMPLATE` （オプション）
 
 『設定』の『ユーザー入力前処理』の初期設定に使用するテンプレートをカスタマイズします。
+
+### `CLOUDFLARE_ACCOUNT_ID` （オプション）
+
+Cloudflare アカウント ID。
+
+### `CLOUDFLARE_KV_NAMESPACE_ID` （オプション）
+
+Cloudflare KV ネームスペース ID。
+
+### `CLOUDFLARE_KV_API_KEY` （オプション）
+
+Cloudflare KV API キー。
+
+### `CLOUDFLARE_KV_TTL` （オプション）
+
+Cloudflare KV キャッシュの有効期限。
+
+### `GTM_ID` （オプション）
+
+Google Tag Manager ID。
+
+### `GA_ID` （オプション）
+
+Google Analytics ID。設定されていない場合はデフォルト値を使用します。
+
+### `TENCENT_SECRET_ID` （オプション）
+
+Tencent Cloud Secret ID。
+
+### `TENCENT_SECRET_KEY` （オプション）
+
+Tencent Cloud Secret Key。
+
+### `TENCENT_URL` （オプション）
+
+Tencent Cloud API の URL。
+
+### `MOONSHOT_URL` （オプション）
+
+Moonshot API の URL。
+
+### `MOONSHOT_API_KEY` （オプション）
+
+Moonshot API キー。
+
+### `XAI_URL` （オプション）
+
+XAI API の URL。
+
+### `XAI_API_KEY` （オプション）
+
+XAI API キー。
+
+### `PROXY_URL` （オプション）
+
+> 例：`http://127.0.0.1:7890`
+
+プロキシサーバーの URL。HTTP および SOCKS プロキシをサポートしています。
+
+プロキシサーバーで認証が必要な場合は、以下の形式を使用できます：
+```bash
+http://username:password@127.0.0.1:7890
+```
+
+注意：この設定は Docker でデプロイする場合のみ有効です。
 
 
 ## 開発

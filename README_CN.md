@@ -199,7 +199,9 @@ ChatGLM Api Url.
 
 ### `DISABLE_GPT4` （可选）
 
-如果你不想让用户使用 GPT-4，将此环境变量设置为 1 即可。
+> 默认值：空
+
+如果你不想让用户使用 GPT-4，将此环境变量设置为 1 即可。这将从模型列表中隐藏所有 GPT-4 相关的模型。
 
 ### `ENABLE_BALANCE_QUERY` （可选）
 
@@ -247,6 +249,70 @@ Stability API密钥
 
 自定义的Stability API请求地址
 
+### `CLOUDFLARE_ACCOUNT_ID` (可选)
+
+Cloudflare 账户 ID。
+
+### `CLOUDFLARE_KV_NAMESPACE_ID` (可选)
+
+Cloudflare KV 命名空间 ID。
+
+### `CLOUDFLARE_KV_API_KEY` (可选)
+
+Cloudflare KV API 密钥。
+
+### `CLOUDFLARE_KV_TTL` (可选)
+
+Cloudflare KV 缓存过期时间。
+
+### `GTM_ID` (可选)
+
+Google Tag Manager ID。
+
+### `GA_ID` (可选)
+
+Google Analytics ID。如果不设置则使用默认值。
+
+### `TENCENT_SECRET_ID` (可选)
+
+腾讯云 Secret ID。
+
+### `TENCENT_SECRET_KEY` (可选)
+
+腾讯云 Secret Key。
+
+### `TENCENT_URL` (可选)
+
+腾讯云 API 地址。
+
+### `MOONSHOT_URL` (可选)
+
+Moonshot API 地址。
+
+### `MOONSHOT_API_KEY` (可选)
+
+Moonshot API 密钥。
+
+### `XAI_URL` (可选)
+
+XAI API 地址。
+
+### `XAI_API_KEY` (可选)
+
+XAI API 密钥。
+
+### `PROXY_URL` (可选)
+
+> 示例：`http://127.0.0.1:7890`
+
+代理服务器地址。支持 HTTP 和 SOCKS 代理。
+
+如果代理服务器需要认证，可以使用以下格式：
+```bash
+http://username:password@127.0.0.1:7890
+```
+
+注意：此配置仅在使用 Docker 部署时有效。
 
 ## 开发
 
