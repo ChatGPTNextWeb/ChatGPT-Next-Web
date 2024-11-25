@@ -313,7 +313,7 @@ export function extractMessage(res: any, modelId: string = ""): string {
     console.error("[AWS Extract Error] extractMessage Empty response");
     return "";
   }
-  console.log("[Response] extractMessage response: ", res);
+  // console.log("[Response] extractMessage response: ", res);
 
   // Handle Mistral model response format
   if (modelId.toLowerCase().includes("mistral")) {
@@ -347,8 +347,8 @@ export async function* transformBedrockStream(
       const parsed = parseEventData(value);
       if (!parsed) continue;
 
-      console.log("parseEventData=========================");
-      console.log(parsed);
+      // console.log("parseEventData=========================");
+      // console.log(parsed);
       // Handle Mistral models
       if (modelId.toLowerCase().includes("mistral")) {
         // If we have content, accumulate it
@@ -357,8 +357,8 @@ export async function* transformBedrockStream(
           parsed.choices?.[0]?.message?.content
         ) {
           accumulatedText += parsed.choices?.[0]?.message?.content;
-          console.log("accumulatedText=========================");
-          console.log(accumulatedText);
+          // console.log("accumulatedText=========================");
+          // console.log(accumulatedText);
           // Check for tool call in the accumulated text
           if (!toolCallStarted && accumulatedText.includes("```json")) {
             const jsonMatch = accumulatedText.match(
