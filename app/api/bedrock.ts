@@ -82,10 +82,10 @@ async function requestBedrock(req: NextRequest) {
     } catch (e) {
       throw new Error(`Invalid JSON in request body: ${e}`);
     }
-    console.log(
-      "[Bedrock Request] original Body:",
-      JSON.stringify(bodyJson, null, 2),
-    );
+    // console.log(
+    //   "[Bedrock Request] original Body:",
+    //   JSON.stringify(bodyJson, null, 2),
+    // );
 
     // Extract tool configuration if present
     let tools: any[] | undefined;
