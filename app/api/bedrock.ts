@@ -184,7 +184,6 @@ async function requestBedrock(req: NextRequest) {
     // Handle non-streaming response
     if (!shouldStream) {
       const responseText = await res.text();
-      console.log("[Bedrock Response] Non-streaming:", responseText);
       const parsed = parseEventData(new TextEncoder().encode(responseText));
       if (!parsed) {
         throw new Error("Failed to parse Bedrock response");
@@ -212,13 +211,18 @@ async function requestBedrock(req: NextRequest) {
       },
     });
 
+    const newHeaders = new Headers(res.headers);
+    newHeaders.delete("www-authenticate");
+    newHeaders.set("Content-Type", "text/event-stream");
+    newHeaders.set("Cache-Control", "no-cache");
+    newHeaders.set("Connection", "keep-alive");
+    // to disable nginx buffering
+    newHeaders.set("X-Accel-Buffering", "no");
+
     return new Response(stream, {
-      headers: {
-        "Content-Type": "text/event-stream",
-        "Cache-Control": "no-cache",
-        Connection: "keep-alive",
-        "X-Accel-Buffering": "no",
-      },
+      status: res.status,
+      statusText: res.statusText,
+      headers: newHeaders,
     });
   } catch (e) {
     console.error("[Bedrock Request Error]:", e);
@@ -232,10 +236,6 @@ export async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
-  if (req.method === "OPTIONS") {
-    return NextResponse.json({ body: "OK" }, { status: 200 });
-  }
-
   const subpath = params.path.join("/");
   if (!ALLOWED_PATH.has(subpath)) {
     return NextResponse.json(
