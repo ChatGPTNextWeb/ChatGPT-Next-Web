@@ -6,6 +6,8 @@
 
 <h1 align="center">NextChat</h1>
 
+[English](./README.md) / 简体中文 / [日本語](./README_JA.md)
+
 一键免费部署你的私人 ChatGPT 网页应用，支持 GPT3, GPT4 & Gemini Pro 模型。
 
 [NextChatAI](https://nextchat.dev/chat?utm_source=readme) / [企业版](#%E4%BC%81%E4%B8%9A%E7%89%88) / [演示 Demo](https://chat-gpt-next-web.vercel.app/) / [反馈 Issues](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [加入 Discord](https://discord.gg/zrhvHCr79N)
@@ -86,139 +88,176 @@ code1,code2,code3
 
 > 本项目大多数配置项都通过环境变量来设置，教程：[如何修改 Vercel 环境变量](./docs/vercel-cn.md)。
 
-### `OPENAI_API_KEY` （必填项）
+### 基本配置
+
+#### `OPENAI_API_KEY` （必填项）
 
 OpanAI 密钥，你在 openai 账户页面申请的 api key，使用英文逗号隔开多个 key，这样可以随机轮询这些 key。
 
-### `CODE` （可选）
+#### `CODE` （可选）
+
+> 默认值: 空
 
 访问密码，可选，可以使用逗号隔开多个密码。
 
 **警告**：如果不填写此项，则任何人都可以直接使用你部署后的网站，可能会导致你的 token 被急速消耗完毕，建议填写此选项。
 
-### `BASE_URL` （可选）
+#### `PROXY_URL` (可选)
 
-> Default: `https://api.openai.com`
+> 示例：`http://127.0.0.1:7890`
 
-> Examples: `http://your-openai-proxy.com`
+代理服务器地址。支持 HTTP 和 SOCKS 代理。
+
+如果代理服务器需要认证，可以使用以下格式：
+```bash
+http://username:password@127.0.0.1:7890
+```
+
+注意：此配置仅在使用 Docker 部署时有效。
+
+### 模型配置相关
+
+#### `BASE_URL` （可选）
+
+> 默认值：`https://api.openai.com`
+
+> 示例：`http://your-openai-proxy.com`
 
 OpenAI 接口代理 URL，如果你手动配置了 openai 接口代理，请填写此选项。
 
 > 如果遇到 ssl 证书问题，请将 `BASE_URL` 的协议设置为 http。
 
-### `OPENAI_ORG_ID` （可选）
+#### `OPENAI_ORG_ID` （可选）
 
 指定 OpenAI 中的组织 ID。
 
-### `AZURE_URL` （可选）
+#### `AZURE_URL` （可选）
 
 > 形如：https://{azure-resource-url}/openai
 
 Azure 部署地址。
 
-### `AZURE_API_KEY` （可选）
+#### `AZURE_API_KEY` （可选）
 
 Azure 密钥。
 
-### `AZURE_API_VERSION` （可选）
+#### `AZURE_API_VERSION` （可选）
 
 Azure Api 版本，你可以在这里找到：[Azure 文档](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions)。
 
-### `GOOGLE_API_KEY` (可选)
+#### `GOOGLE_API_KEY` (可选)
 
-Google Gemini Pro 密钥.
+Google Gemini Pro 密钥。
 
-### `GOOGLE_URL` (可选)
+#### `GOOGLE_URL` (可选)
 
-Google Gemini Pro Api Url.
+Google Gemini Pro Api Url。
 
-### `ANTHROPIC_API_KEY` (可选)
+#### `ANTHROPIC_API_KEY` (可选)
 
-anthropic claude Api Key.
+Anthropic Claude Api Key。
 
-### `ANTHROPIC_API_VERSION` (可选)
+#### `ANTHROPIC_API_VERSION` (可选)
 
-anthropic claude Api version.
+Anthropic Claude Api version。
 
-### `ANTHROPIC_URL` (可选)
+#### `ANTHROPIC_URL` (可选)
 
-anthropic claude Api Url.
+Anthropic Claude Api Url。
 
-### `BAIDU_API_KEY` (可选)
+#### `BAIDU_API_KEY` (可选)
 
-Baidu Api Key.
+Baidu Api Key。
 
-### `BAIDU_SECRET_KEY` (可选)
+#### `BAIDU_SECRET_KEY` (可选)
 
-Baidu Secret Key.
+Baidu Secret Key。
 
-### `BAIDU_URL` (可选)
+#### `BAIDU_URL` (可选)
 
-Baidu Api Url.
+> 默认值: "https://aip.baidubce.com"
 
-### `BYTEDANCE_API_KEY` (可选)
+Baidu Api Url。
 
-ByteDance Api Key.
+#### `BYTEDANCE_API_KEY` (可选)
 
-### `BYTEDANCE_URL` (可选)
+ByteDance Api Key。
 
-ByteDance Api Url.
+#### `BYTEDANCE_URL` (可选)
 
-### `ALIBABA_API_KEY` (可选)
+> 默认值: "https://ark.cn-beijing.volces.com/api/"
 
-阿里云（千问）Api Key.
+ByteDance Api Url。
 
-### `ALIBABA_URL` (可选)
+#### `ALIBABA_API_KEY` (可选)
 
-阿里云（千问）Api Url.
+阿里云（千问）Api Key。
 
-### `IFLYTEK_URL` (可选)
+#### `ALIBABA_URL` (可选)
 
-讯飞星火Api Url.
+> 默认值: "https://dashscope.aliyuncs.com/api/"
 
-### `IFLYTEK_API_KEY` (可选)
+阿里云（千问）Api Url。
 
-讯飞星火Api Key.
+#### `IFLYTEK_API_KEY` (可选)
 
-### `IFLYTEK_API_SECRET` (可选)
+讯飞星火 Api Key。
 
-讯飞星火Api Secret.
+#### `IFLYTEK_API_SECRET` (可选)
 
-### `CHATGLM_API_KEY` (可选)
+讯飞星火 Api Secret。
 
-ChatGLM Api Key.
+#### `IFLYTEK_URL` (可选)
 
-### `CHATGLM_URL` (可选)
+> 默认值: "https://spark-api-open.xf-yun.com"
 
-ChatGLM Api Url.
+讯飞星火 Api Url。
 
+#### `MOONSHOT_API_KEY` (可选)
 
-### `HIDE_USER_API_KEY` （可选）
+Moonshot API 密钥。
 
-如果你不想让用户自行填入 API Key，将此环境变量设置为 1 即可。
+#### `MOONSHOT_URL` (可选)
 
-### `DISABLE_GPT4` （可选）
+> 默认值: "https://api.moonshot.cn"
 
-> 默认值：空
+Moonshot API 地址。
 
-如果你不想让用户使用 GPT-4，将此环境变量设置为 1 即可。这将从模型列表中隐藏所有 GPT-4 相关的模型。
+#### `XAI_API_KEY` (可选)
 
-### `ENABLE_BALANCE_QUERY` （可选）
+XAI API 密钥。
 
-如果你想启用余额查询功能，将此环境变量设置为 1 即可。
+#### `XAI_URL` (可选)
 
-### `DISABLE_FAST_LINK` （可选）
+> 默认值: "https://api.x.ai"
 
-如果你想禁用从链接解析预制设置，将此环境变量设置为 1 即可。
+XAI API 地址。
 
-### `WHITE_WEBDAV_ENDPOINTS` (可选)
+#### `CHATGLM_API_KEY` (可选)
 
-如果你想增加允许访问的webdav服务地址，可以使用该选项，格式要求：
-- 每一个地址必须是一个完整的 endpoint
-> `https://xxxx/xxx`
-- 多个地址以`,`相连
+ChatGLM Api Key。
 
-### `CUSTOM_MODELS` （可选）
+#### `CHATGLM_URL` (可选)
+
+> 默认值: "https://open.bigmodel.cn"
+
+ChatGLM Api Url。
+
+#### `TENCENT_SECRET_ID` (可选)
+
+腾讯云 Secret ID。
+
+#### `TENCENT_SECRET_KEY` (可选)
+
+腾讯云 Secret Key。
+
+#### `TENCENT_URL` (可选)
+
+> 默认值: "https://hunyuan.tencentcloudapi.com"
+
+腾讯云 API 地址。
+
+#### `CUSTOM_MODELS` （可选）
 
 > 示例：`+qwen-7b-chat,+glm-6b,-gpt-3.5-turbo,gpt-4-1106-preview=gpt-4-turbo` 表示增加 `qwen-7b-chat` 和 `glm-6b` 到模型列表，而从列表中删除 `gpt-3.5-turbo`，并将 `gpt-4-1106-preview` 模型名字展示为 `gpt-4-turbo`。
 > 如果你想先禁用所有模型，再启用指定模型，可以使用 `-all,+gpt-3.5-turbo`，则表示仅启用 `gpt-3.5-turbo`
@@ -232,87 +271,162 @@ ChatGLM Api Url.
 在ByteDance的模式下，支持使用`modelName@bytedance=deploymentName`的方式配置模型名称和部署名称(deploy-name)
 > 示例: `+Doubao-lite-4k@bytedance=ep-xxxxx-xxx`这个配置会在模型列表显示一个`Doubao-lite-4k(ByteDance)`的选项
 
+#### `DEFAULT_MODEL` （可选）
 
-### `DEFAULT_MODEL` （可选）
+> 默认值: 空
 
 更改默认模型
 
-### `DEFAULT_INPUT_TEMPLATE` （可选）
+### 功能相关
+
+#### `HIDE_USER_API_KEY` （可选）
+
+> 默认值: 空
+
+如果你不想让用户自行填入 API Key，将此环境变量设置为 1 即可。
+
+#### `DISABLE_GPT4` （可选）
+
+> 默认值：空
+
+如果你不想让用户使用 GPT-4，将此环境变量设置为 1 即可。这将从模型列表中隐藏所有 GPT-4 相关的模型。
+
+#### `ENABLE_BALANCE_QUERY` （可选）
+
+> 默认值: 空
+
+如果你想启用余额查询功能，将此环境变量设置为 1 即可。
+
+#### `DISABLE_FAST_LINK` （可选）
+
+> 默认值: 空
+
+如果你想禁用从链接解析预制设置，将此环境变量设置为 1 即可。
+
+#### `CHAT_PAGE_SIZE` (可选)
+
+> 默认值: 15
+
+每页加载的聊天消息数量。
+
+#### `MAX_RENDER_MSG_COUNT` (可选)
+
+> 默认值: 45
+
+聊天窗口中最大渲染的消息数量。
+
+#### `DEFAULT_INPUT_TEMPLATE` （可选）
+
+> 默认值: "{{input}}"
 
 自定义默认的 template，用于初始化『设置』中的『用户输入预处理』配置项
 
-### `STABILITY_API_KEY` (optional)
+### TTS 相关
+
+#### `DEFAULT_TTS_ENGINE` (可选)
+
+> 默认值: `OpenAI-TTS`
+
+默认的文字转语音引擎。
+
+#### `DEFAULT_TTS_ENGINES` (可选)
+
+> 默认值: `["OpenAI-TTS", "Edge-TTS"]`
+
+可用的文字转语音引擎列表。
+
+#### `DEFAULT_TTS_MODEL` (可选)
+
+> 默认值: `tts-1`
+
+默认的 OpenAI TTS 模型。
+
+#### `DEFAULT_TTS_VOICE` (可选)
+
+> 默认值: `alloy`
+
+默认的语音声音。
+
+#### `DEFAULT_TTS_MODELS` (可选)
+
+> 默认值: `["tts-1", "tts-1-hd"]`
+
+可用的 OpenAI TTS 模型列表。
+
+#### `DEFAULT_TTS_VOICES` (可选)
+
+> 默认值: `["alloy", "echo", "fable", "onyx", "nova", "shimmer"]`
+
+可用的语音声音列表。
+
+### 其他服务
+
+#### `WHITE_WEBDAV_ENDPOINTS` (可选)
+
+如果你想增加允许访问的webdav服务地址，可以使用该选项，格式要求：
+- 每一个地址必须是一个完整的 endpoint
+> `https://xxxx/xxx`
+- 多个地址以`,`相连
+
+#### `STABILITY_API_KEY` (optional)
+
+> 默认值: 空
 
 Stability API密钥
 
-### `STABILITY_URL` (optional)
+#### `STABILITY_URL` (optional)
+
+> 默认值: "https://api.stability.ai"
 
 自定义的Stability API请求地址
 
-### `CLOUDFLARE_ACCOUNT_ID` (可选)
+#### `CLOUDFLARE_ACCOUNT_ID` (可选)
+
+> 默认值: 空
 
 Cloudflare 账户 ID。
 
-### `CLOUDFLARE_KV_NAMESPACE_ID` (可选)
+#### `CLOUDFLARE_KV_NAMESPACE_ID` (可选)
+
+> 默认值: 空
 
 Cloudflare KV 命名空间 ID。
 
-### `CLOUDFLARE_KV_API_KEY` (可选)
+#### `CLOUDFLARE_KV_API_KEY` (可选)
+
+> 默认值: 空
 
 Cloudflare KV API 密钥。
 
-### `CLOUDFLARE_KV_TTL` (可选)
+#### `CLOUDFLARE_KV_TTL` (可选)
+
+> 默认值: 空
 
 Cloudflare KV 缓存过期时间。
 
-### `GTM_ID` (可选)
+#### `GTM_ID` (可选)
+
+> 默认值: 空
 
 Google Tag Manager ID。
 
-### `GA_ID` (可选)
+#### `GA_ID` (可选)
+
+> 默认值: "G-89WN60ZK2E"
 
 Google Analytics ID。如果不设置则使用默认值。
 
-### `TENCENT_SECRET_ID` (可选)
+#### `SAAS_CHAT_URL` (可选)
 
-腾讯云 Secret ID。
+> 默认值: "https://nextchat.dev/chat"
 
-### `TENCENT_SECRET_KEY` (可选)
+SaaS 聊天 URL。
 
-腾讯云 Secret Key。
+#### `SAAS_CHAT_UTM_URL` (可选)
 
-### `TENCENT_URL` (可选)
+> 默认值: "https://nextchat.dev/chat?utm=github"
 
-腾讯云 API 地址。
-
-### `MOONSHOT_URL` (可选)
-
-Moonshot API 地址。
-
-### `MOONSHOT_API_KEY` (可选)
-
-Moonshot API 密钥。
-
-### `XAI_URL` (可选)
-
-XAI API 地址。
-
-### `XAI_API_KEY` (可选)
-
-XAI API 密钥。
-
-### `PROXY_URL` (可选)
-
-> 示例：`http://127.0.0.1:7890`
-
-代理服务器地址。支持 HTTP 和 SOCKS 代理。
-
-如果代理服务器需要认证，可以使用以下格式：
-```bash
-http://username:password@127.0.0.1:7890
-```
-
-注意：此配置仅在使用 Docker 部署时有效。
+带 UTM 参数的 SaaS 聊天 URL。
 
 ## 开发
 
@@ -401,3 +515,5 @@ bash <(curl -s https://raw.githubusercontent.com/Yidadaa/ChatGPT-Next-Web/main/s
 ## 开源协议
 
 [MIT](https://opensource.org/license/mit/)
+```
+

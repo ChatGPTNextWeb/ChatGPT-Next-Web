@@ -3,6 +3,8 @@
 
 <h1 align="center">NextChat</h1>
 
+[English](./README.md) / [简体中文](./README_CN.md) / 日本語
+
 ワンクリックで無料であなた専用の ChatGPT ウェブアプリをデプロイ。GPT3、GPT4 & Gemini Pro モデルをサポート。
 
 [NextChatAI](https://nextchat.dev/chat?utm_source=readme) / [企業版](#企業版) / [デモ](https://chat-gpt-next-web.vercel.app/) / [フィードバック](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [Discordに参加](https://discord.gg/zrhvHCr79N)
@@ -90,192 +92,21 @@ code1,code2,code3
 
 > 本プロジェクトのほとんどの設定は環境変数で行います。チュートリアル：[Vercel の環境変数を変更する方法](./docs/vercel-ja.md)。
 
-### `OPENAI_API_KEY` （必須）
+### 基本設定
 
-OpenAI の API キー。OpenAI アカウントページで申請したキーをカンマで区切って複数設定できます。これにより、ランダムにキーが選択されます。
+#### `OPENAI_API_KEY` （必須）
 
-### `CODE` （オプション）
+OpenAI の API キー。複数のキーをカンマで区切って設定でき、ランダムに選択されます。
+
+#### `CODE` （オプション）
+
+> デフォルト値: 空
 
 アクセスパスワード。カンマで区切って複数設定可能。
 
 **警告**：この項目を設定しないと、誰でもデプロイしたウェブサイトを利用でき、トークンが急速に消耗する可能性があるため、設定をお勧めします。
 
-### `BASE_URL` （オプション）
-
-> デフォルト: `https://api.openai.com`
-
-> 例: `http://your-openai-proxy.com`
-
-OpenAI API のプロキシ URL。手動で OpenAI API のプロキシを設定している場合はこのオプションを設定してください。
-
-> SSL 証明書の問題がある場合は、`BASE_URL` のプロトコルを http に設定してください。
-
-### `OPENAI_ORG_ID` （オプション）
-
-OpenAI の組織 ID を指定します。
-
-### `AZURE_URL` （オプション）
-
-> 形式: https://{azure-resource-url}/openai/deployments/{deploy-name}
-> `CUSTOM_MODELS` で `displayName` 形式で {deploy-name} を設定した場合、`AZURE_URL` から {deploy-name} を省略できます。
-
-Azure のデプロイ URL。
-
-### `AZURE_API_KEY` （オプション）
-
-Azure の API キー。
-
-### `AZURE_API_VERSION` （オプション）
-
-Azure API バージョン。[Azure ドキュメント](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions)で確認できます。
-
-### `GOOGLE_API_KEY` (オプション)
-
-Google Gemini Pro API キー。
-
-### `GOOGLE_URL` (オプション)
-
-Google Gemini Pro API の URL。
-
-### `ANTHROPIC_API_KEY` (オプション)
-
-Anthropic Claude API キー。
-
-### `ANTHROPIC_API_VERSION` (オプション)
-
-Anthropic Claude API バージョン。
-
-### `ANTHROPIC_URL` (オプション)
-
-Anthropic Claude API の URL。
-
-### `BAIDU_API_KEY` (オプション)
-
-Baidu API キー。
-
-### `BAIDU_SECRET_KEY` (オプション)
-
-Baidu シークレットキー。
-
-### `BAIDU_URL` (オプション)
-
-Baidu API の URL。
-
-### `BYTEDANCE_API_KEY` (オプション)
-
-ByteDance API キー。
-
-### `BYTEDANCE_URL` (オプション)
-
-ByteDance API の URL。
-
-### `ALIBABA_API_KEY` (オプション)
-
-アリババ（千问）API キー。
-
-### `ALIBABA_URL` (オプション)
-
-アリババ（千问）API の URL。
-
-### `HIDE_USER_API_KEY` （オプション）
-
-ユーザーが API キーを入力できないようにしたい場合は、この環境変数を 1 に設定します。
-
-### `DISABLE_GPT4` （オプション）
-
-> デフォルト：空
-
-ユーザーが GPT-4 を使用できないようにしたい場合は、この環境変数を 1 に設定します。これにより、モデルリストから GPT-4 関連のすべてのモデルが非表示になります。
-
-### `ENABLE_BALANCE_QUERY` （オプション）
-
-バランスクエリ機能を有効にしたい場合は、この環境変数を 1 に設定します。
-
-### `DISABLE_FAST_LINK` （オプション）
-
-リンクからのプリセット設定解析を無効にしたい場合は、この環境変数を 1 に設定します。
-
-### `WHITE_WEBDAV_ENDPOINTS` (オプション)
-
-アクセス許可を与える WebDAV サービスのアドレスを追加したい場合、このオプションを使用します。フォーマット要件：
-- 各アドレスは完全なエンドポイントでなければなりません。
-> `https://xxxx/xxx`
-- 複数のアドレスは `,` で接続します。
-
-### `CUSTOM_MODELS` （オプション）
-
-> 例：`+qwen-7b-chat,+glm-6b,-gpt-3.5-turbo,gpt-4-1106-preview=gpt-4-turbo` は `qwen-7b-chat` と `glm-6b` をモデルリストに追加し、`gpt-3.5-turbo` を削除し、`gpt-4-1106-preview` のモデル名を `gpt-4-turbo` として表示します。
-> すべてのモデルを無効にし、特定のモデルを有効にしたい場合は、`-all,+gpt-3.5-turbo` を使用します。これは `gpt-3.5-turbo` のみを有効にすることを意味します。
-
-モデルリストを管理します。`+` でモデルを追加し、`-` でモデルを非表示にし、`モデル名=表示名` でモデルの表示名をカスタマイズし、カンマで区切ります。
-
-Azure モードでは、`modelName@Azure=deploymentName` 形式でモデル名とデプロイ名（deploy-name）を設定できます。
-> 例：`+gpt-3.5-turbo@Azure=gpt35` この設定でモデルリストに `gpt35(Azure)` のオプションが表示されます。
-
-ByteDance モードでは、`modelName@bytedance=deploymentName` 形式でモデル名とデプロイ名（deploy-name）を設定できます。
-> 例: `+Doubao-lite-4k@bytedance=ep-xxxxx-xxx` この設定でモデルリストに `Doubao-lite-4k(ByteDance)` のオプションが表示されます。
-
-### `DEFAULT_MODEL` （オプション）
-
-デフォルトのモデルを変更します。
-
-### `DEFAULT_INPUT_TEMPLATE` （オプション）
-
-『設定』の『ユーザー入力前処理』の初期設定に使用するテンプレートをカスタマイズします。
-
-### `CLOUDFLARE_ACCOUNT_ID` （オプション）
-
-Cloudflare アカウント ID。
-
-### `CLOUDFLARE_KV_NAMESPACE_ID` （オプション）
-
-Cloudflare KV ネームスペース ID。
-
-### `CLOUDFLARE_KV_API_KEY` （オプション）
-
-Cloudflare KV API キー。
-
-### `CLOUDFLARE_KV_TTL` （オプション）
-
-Cloudflare KV キャッシュの有効期限。
-
-### `GTM_ID` （オプション）
-
-Google Tag Manager ID。
-
-### `GA_ID` （オプション）
-
-Google Analytics ID。設定されていない場合はデフォルト値を使用します。
-
-### `TENCENT_SECRET_ID` （オプション）
-
-Tencent Cloud Secret ID。
-
-### `TENCENT_SECRET_KEY` （オプション）
-
-Tencent Cloud Secret Key。
-
-### `TENCENT_URL` （オプション）
-
-Tencent Cloud API の URL。
-
-### `MOONSHOT_URL` （オプション）
-
-Moonshot API の URL。
-
-### `MOONSHOT_API_KEY` （オプション）
-
-Moonshot API キー。
-
-### `XAI_URL` （オプション）
-
-XAI API の URL。
-
-### `XAI_API_KEY` （オプション）
-
-XAI API キー。
-
-### `PROXY_URL` （オプション）
+#### `PROXY_URL` (オプション)
 
 > 例：`http://127.0.0.1:7890`
 
@@ -287,6 +118,328 @@ http://username:password@127.0.0.1:7890
 ```
 
 注意：この設定は Docker でデプロイする場合のみ有効です。
+
+### モデル設定
+
+#### `BASE_URL` （オプション）
+
+> デフォルト値: `https://api.openai.com`
+
+> 例: `http://your-openai-proxy.com`
+
+OpenAI API のプロキシ URL。手動で OpenAI API のプロキシを設定している場合はこのオプションを設定してください。
+
+> SSL 証明書の問題がある場合は、`BASE_URL` のプロトコルを http に設定してください。
+
+#### `OPENAI_ORG_ID` （オプション）
+
+> デフォルト値: 空
+
+OpenAI の組織 ID を指定します。
+
+#### `AZURE_URL` （オプション）
+
+> 形式: https://{azure-resource-url}/openai/deployments/{deploy-name}
+
+Azure のデプロイ URL。
+
+#### `AZURE_API_KEY` （オプション）
+
+Azure の API キー。
+
+#### `AZURE_API_VERSION` （オプション）
+
+Azure API バージョン。[Azure ドキュメント](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions)で確認できます。
+
+### その他のモデルプロバイダー
+
+#### `GOOGLE_API_KEY` (オプション)
+
+Google Gemini Pro API キー。
+
+#### `GOOGLE_URL` (オプション)
+
+> デフォルト値: "https://generativelanguage.googleapis.com/"
+
+Google Gemini Pro API の URL。
+
+#### `ANTHROPIC_API_KEY` (オプション)
+
+Anthropic Claude API キー。
+
+#### `ANTHROPIC_API_VERSION` (オプション)
+
+Anthropic Claude API バージョン。
+
+#### `ANTHROPIC_URL` (オプション)
+
+> デフォルト値: "https://api.anthropic.com"
+
+Anthropic Claude API の URL。
+
+#### `BAIDU_API_KEY` (オプション)
+
+Baidu API キー。
+
+#### `BAIDU_SECRET_KEY` (オプション)
+
+Baidu シークレットキー。
+
+#### `BAIDU_URL` (オプション)
+
+> デフォルト値: "https://aip.baidubce.com"
+
+Baidu API の URL。
+
+#### `BYTEDANCE_API_KEY` (オプション)
+
+ByteDance API キー。
+
+#### `BYTEDANCE_URL` (オプション)
+
+> デフォルト値: "https://ark.cn-beijing.volces.com/api/"
+
+ByteDance API の URL。
+
+#### `ALIBABA_API_KEY` (オプション)
+
+アリババ（千问）API キー。
+
+#### `ALIBABA_URL` (オプション)
+
+> デフォルト値: "https://dashscope.aliyuncs.com/api/"
+
+アリババ（千问）API の URL。
+
+#### `IFLYTEK_API_KEY` (オプション)
+
+讯飞星火 API キー。
+
+#### `IFLYTEK_API_SECRET` (オプション)
+
+讯飞星火 API シークレット。
+
+#### `IFLYTEK_URL` (オプション)
+
+> デフォルト値: "https://spark-api-open.xf-yun.com"
+
+讯飞星火 API の URL。
+
+#### `MOONSHOT_API_KEY` (オプション)
+
+Moonshot API キー。
+
+#### `MOONSHOT_URL` (オプション)
+
+> デフォルト値: "https://api.moonshot.cn"
+
+Moonshot API の URL。
+
+#### `XAI_API_KEY` (オプション)
+
+XAI API キー。
+
+#### `XAI_URL` (オプション)
+
+> デフォルト値: "https://api.x.ai"
+
+XAI API の URL。
+
+#### `CHATGLM_API_KEY` (オプション)
+
+ChatGLM API キー。
+
+#### `CHATGLM_URL` (オプション)
+
+> デフォルト値: "https://open.bigmodel.cn"
+
+ChatGLM API の URL。
+
+#### `TENCENT_SECRET_ID` (オプション)
+
+Tencent Cloud シークレット ID。
+
+#### `TENCENT_SECRET_KEY` (オプション)
+
+Tencent Cloud シークレットキー。
+
+#### `TENCENT_URL` (オプション)
+
+> デフォルト値: "https://hunyuan.tencentcloudapi.com"
+
+Tencent Cloud API の URL。
+
+#### `CUSTOM_MODELS` （オプション）
+
+> 例：`+llama,+claude-2,-gpt-3.5-turbo,gpt-4-1106-preview=gpt-4-turbo` は `llama, claude-2` をモデルリストに追加し、`gpt-3.5-turbo` を削除し、`gpt-4-1106-preview` のモデル名を `gpt-4-turbo` として表示します。
+
+モデルリストを管理します。`+` でモデルを追加し、`-` でモデルを非表示にし、`モデル名=表示名` でモデルの表示名をカスタマイズし、カンマで区切ります。
+
+`-all` ですべてのデフォルトモデルを無効にし、`+all` ですべてのデフォルトモデルを有効にします。
+
+Azure モードでは、`modelName@Azure=deploymentName` 形式でモデル名とデプロイ名を設定できます。
+> 例：`+gpt-3.5-turbo@Azure=gpt35` この設定でモデルリストに `gpt35(Azure)` のオプションが表示されます。
+> Azure モデルのみを使用する場合は、`-all,+gpt-3.5-turbo@Azure=gpt35` を設定すると `gpt35(Azure)` のみが選択可能になります。
+
+ByteDance モードでは、`modelName@bytedance=deploymentName` 形式でモデル名とデプロイ名を設定できます。
+> 例: `+Doubao-lite-4k@bytedance=ep-xxxxx-xxx` この設定でモデルリストに `Doubao-lite-4k(ByteDance)` のオプションが表示されます。
+
+#### `DEFAULT_MODEL` （オプション）
+
+> デフォルト値: 空
+
+デフォルトのモデルを変更します。
+
+### 機能関連
+
+#### `HIDE_USER_API_KEY` （オプション）
+
+> デフォルト値: 空
+
+ユーザーが API キーを入力できないようにしたい場合は、この環境変数を 1 に設定します。
+
+#### `DISABLE_GPT4` （オプション）
+
+> デフォルト値：空
+
+ユーザーが GPT-4 を使用できないようにしたい場合は、この環境変数を 1 に設定します。これにより、モデルリストから GPT-4 関連のすべてのモデルが非表示になります。
+
+#### `ENABLE_BALANCE_QUERY` （オプション）
+
+> デフォルト値: 空
+
+バランスクエリ機能を有効にしたい場合は、この環境変数を 1 に設定します。
+
+#### `DISABLE_FAST_LINK` （オプション）
+
+> デフォルト値: 空
+
+リンクからのプリセット設定解析を無効にしたい場合は、この環境変数を 1 に設定します。
+
+#### `CHAT_PAGE_SIZE` (オプション)
+
+> デフォルト値: 15
+
+1ページあたりのチャットメッセージ数。
+
+#### `MAX_RENDER_MSG_COUNT` (オプション)
+
+> デフォルト値: 45
+
+チャットウィンドウに表示できるメッセージの最大数。
+
+#### `DEFAULT_INPUT_TEMPLATE` （オプション）
+
+> デフォルト値: "{{input}}"
+
+『設定』の『ユーザー入力前処理』の初期設定に使用するテンプレート。
+
+### TTS 関連
+
+#### `DEFAULT_TTS_ENGINE` (オプション)
+
+> デフォルト値: `OpenAI-TTS`
+
+デフォルトの音声合成エンジン。
+
+#### `DEFAULT_TTS_ENGINES` (オプション)
+
+> デフォルト値: `["OpenAI-TTS", "Edge-TTS"]`
+
+利用可能な音声合成エンジンのリスト。
+
+#### `DEFAULT_TTS_MODEL` (オプション)
+
+> デフォルト値: `tts-1`
+
+デフォルトの OpenAI TTS モデル。
+
+#### `DEFAULT_TTS_VOICE` (オプション)
+
+> デフォルト値: `alloy`
+
+デフォルトの音声。
+
+#### `DEFAULT_TTS_MODELS` (オプション)
+
+> デフォルト値: `["tts-1", "tts-1-hd"]`
+
+利用可能な OpenAI TTS モデルのリスト。
+
+#### `DEFAULT_TTS_VOICES` (オプション)
+
+> デフォルト値: `["alloy", "echo", "fable", "onyx", "nova", "shimmer"]`
+
+利用可能な音声のリスト。
+
+### その他のサービス
+
+#### `WHITE_WEBDAV_ENDPOINTS` (オプション)
+
+アクセスを許可する WebDAV サービスのアドレスを追加する場合に使用します。フォーマット要件：
+- 各アドレスは完全なエンドポイントである必要があります
+> `https://xxxx/xxx`
+- 複数のアドレスは `,` で接続します
+
+#### `STABILITY_API_KEY` (オプション)
+
+> デフォルト値: 空
+
+Stability API キー。
+
+#### `STABILITY_URL` (オプション)
+
+> デフォルト値: "https://api.stability.ai"
+
+カスタム Stability API の URL。
+
+#### `CLOUDFLARE_ACCOUNT_ID` (オプション)
+
+> デフォルト値: 空
+
+Cloudflare アカウント ID。
+
+#### `CLOUDFLARE_KV_NAMESPACE_ID` (オプション)
+
+> デフォルト値: 空
+
+Cloudflare KV ネームスペース ID。
+
+#### `CLOUDFLARE_KV_API_KEY` (オプション)
+
+> デフォルト値: 空
+
+Cloudflare KV API キー。
+
+#### `CLOUDFLARE_KV_TTL` (オプション)
+
+> デフォルト値: 空
+
+Cloudflare KV キャッシュの有効期限。
+
+#### `GTM_ID` (オプション)
+
+> デフォルト値: 空
+
+Google Tag Manager ID。
+
+#### `GA_ID` (オプション)
+
+> デフォルト値: "G-89WN60ZK2E"
+
+Google Analytics ID。設定されていない場合はデフォルト値を使用します。
+
+#### `SAAS_CHAT_URL` (オプション)
+
+> デフォルト値: "https://nextchat.dev/chat"
+
+SaaS チャット URL。
+
+#### `SAAS_CHAT_UTM_URL` (オプション)
+
+> デフォルト値: "https://nextchat.dev/chat?utm=github"
+
+UTM パラメータ付きの SaaS チャット URL。
 
 
 ## 開発

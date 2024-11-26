@@ -6,7 +6,7 @@
 
 <h1 align="center">NextChat (ChatGPT Next Web)</h1>
 
-English / [简体中文](./README_CN.md)
+English / [简体中文](./README_CN.md) / [日本語](./README_JA.md)
 
 One-Click to get a well-designed cross-platform ChatGPT web UI, with GPT3, GPT4 & Gemini Pro support.
 
@@ -207,226 +207,23 @@ After adding or modifying this environment variable, please redeploy the project
 
 ## Environment Variables
 
-> [简体中文 > 如何配置 api key、访问密码、接口代理](./README_CN.md#环境变量)
+> Most of this project's configurations are done through environment variables. Tutorial: [How to modify Vercel environment variables](./docs/vercel-en.md).
 
-### `CODE` (optional)
+### Basic Configuration
+
+#### `OPENAI_API_KEY` (required)
+
+Your OpenAI API key. You can separate multiple keys with commas for random polling between keys.
+
+#### `CODE` (optional)
+
+> Default: empty
 
 Access password, separated by comma.
 
-### `OPENAI_API_KEY` (required)
+**Warning**: If you don't set this value, anyone can access your deployment. This may lead to rapid token consumption.
 
-Your openai api key, join multiple api keys with comma.
-
-### `BASE_URL` (optional)
-
-> Default: `https://api.openai.com`
-
-> Examples: `http://your-openai-proxy.com`
-
-Override openai api request base url.
-
-### `OPENAI_ORG_ID` (optional)
-
-Specify OpenAI organization ID.
-
-### `AZURE_URL` (optional)
-
-> Example: https://{azure-resource-url}/openai
-
-Azure deploy url.
-
-### `AZURE_API_KEY` (optional)
-
-Azure Api Key.
-
-### `AZURE_API_VERSION` (optional)
-
-Azure Api Version, find it at [Azure Documentation](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions).
-
-### `GOOGLE_API_KEY` (optional)
-
-Google Gemini Pro Api Key.
-
-### `GOOGLE_URL` (optional)
-
-Google Gemini Pro Api Url.
-
-### `ANTHROPIC_API_KEY` (optional)
-
-anthropic claude Api Key.
-
-### `ANTHROPIC_API_VERSION` (optional)
-
-anthropic claude Api version.
-
-### `ANTHROPIC_URL` (optional)
-
-anthropic claude Api Url.
-
-### `BAIDU_API_KEY` (optional)
-
-Baidu Api Key.
-
-### `BAIDU_SECRET_KEY` (optional)
-
-Baidu Secret Key.
-
-### `BAIDU_URL` (optional)
-
-Baidu Api Url.
-
-### `BYTEDANCE_API_KEY` (optional)
-
-ByteDance Api Key.
-
-### `BYTEDANCE_URL` (optional)
-
-ByteDance Api Url.
-
-### `ALIBABA_API_KEY` (optional)
-
-Alibaba Cloud Api Key.
-
-### `ALIBABA_URL` (optional)
-
-Alibaba Cloud Api Url.
-
-### `IFLYTEK_URL` (Optional)
-
-iflytek Api Url.
-
-### `IFLYTEK_API_KEY` (Optional)
-
-iflytek Api Key.
-
-### `IFLYTEK_API_SECRET` (Optional)
-
-iflytek Api Secret.
-
-### `CHATGLM_API_KEY` (optional)
-
-ChatGLM Api Key.
-
-### `CHATGLM_URL` (optional)
-
-ChatGLM Api Url.
-
-### `HIDE_USER_API_KEY` (optional)
-
-> Default: Empty
-
-If you do not want users to input their own API key, set this value to 1.
-
-### `DISABLE_GPT4` (optional)
-
-> Default: Empty
-
-If you don't want users to use GPT-4, set this value to 1. This will hide all GPT-4 related models from the model list.
-
-### `ENABLE_BALANCE_QUERY` (optional)
-
-> Default: Empty
-
-If you do want users to query balance, set this value to 1.
-
-### `DISABLE_FAST_LINK` (optional)
-
-> Default: Empty
-
-If you want to disable parse settings from url, set this to 1.
-
-### `CUSTOM_MODELS` (optional)
-
-> Default: Empty
-> Example: `+llama,+claude-2,-gpt-3.5-turbo,gpt-4-1106-preview=gpt-4-turbo` means add `llama, claude-2` to model list, and remove `gpt-3.5-turbo` from list, and display `gpt-4-1106-preview` as `gpt-4-turbo`.
-
-To control custom models, use `+` to add a custom model, use `-` to hide a model, use `name=displayName` to customize model name, separated by comma.
-
-User `-all` to disable all default models, `+all` to enable all default models.
-
-For Azure: use `modelName@Azure=deploymentName` to customize model name and deployment name.
-> Example: `+gpt-3.5-turbo@Azure=gpt35` will show option `gpt35(Azure)` in model list.
-> If you only can use Azure model, `-all,+gpt-3.5-turbo@Azure=gpt35` will `gpt35(Azure)` the only option in model list.
-
-For ByteDance: use `modelName@bytedance=deploymentName` to customize model name and deployment name.
-> Example: `+Doubao-lite-4k@bytedance=ep-xxxxx-xxx` will show option `Doubao-lite-4k(ByteDance)` in model list.
-
-### `DEFAULT_MODEL` （optional）
-
-Change default model
-
-### `WHITE_WEBDAV_ENDPOINTS` (optional)
-
-You can use this option if you want to increase the number of webdav service addresses you are allowed to access, as required by the format：
-- Each address must be a complete endpoint 
-> `https://xxxx/yyy`
-- Multiple addresses are connected by ', '
-
-### `DEFAULT_INPUT_TEMPLATE` (optional)
-
-Customize the default template used to initialize the User Input Preprocessing configuration item in Settings.
-
-### `STABILITY_API_KEY` (optional)
-
-Stability API key.
-
-### `STABILITY_URL` (optional)
-
-Customize Stability API url.
-
-### `CLOUDFLARE_ACCOUNT_ID` (optional)
-
-Cloudflare Account ID.
-
-### `CLOUDFLARE_KV_NAMESPACE_ID` (optional)
-
-Cloudflare KV Namespace ID.
-
-### `CLOUDFLARE_KV_API_KEY` (optional)
-
-Cloudflare KV API Key.
-
-### `CLOUDFLARE_KV_TTL` (optional)
-
-Cloudflare KV cache expiration time.
-
-### `GTM_ID` (optional)
-
-Google Tag Manager ID.
-
-### `GA_ID` (optional)
-
-Google Analytics ID. Will use default value if not set.
-
-### `TENCENT_SECRET_ID` (optional)
-
-Tencent Cloud Secret ID.
-
-### `TENCENT_SECRET_KEY` (optional)
-
-Tencent Cloud Secret Key.
-
-### `TENCENT_URL` (optional)
-
-Tencent Cloud API URL.
-
-### `MOONSHOT_URL` (optional)
-
-Moonshot API URL.
-
-### `MOONSHOT_API_KEY` (optional)
-
-Moonshot API Key.
-
-### `XAI_URL` (optional)
-
-XAI API URL.
-
-### `XAI_API_KEY` (optional)
-
-XAI API Key.
-
-### `PROXY_URL` (optional)
+#### `PROXY_URL` (optional)
 
 > Example: `http://127.0.0.1:7890`
 
@@ -438,6 +235,328 @@ http://username:password@127.0.0.1:7890
 ```
 
 Note: This configuration only works when deploying with Docker.
+
+### Model Configuration
+
+#### `BASE_URL` (optional)
+
+> Default: `https://api.openai.com`
+
+> Examples: `http://your-openai-proxy.com`
+
+Override openai api request base url.
+
+> If you encounter SSL certificate issues, try setting the protocol to http.
+
+#### `OPENAI_ORG_ID` (optional)
+
+> Default: empty
+
+Specify OpenAI organization ID.
+
+#### `AZURE_URL` (optional)
+
+> Example: https://{azure-resource-url}/openai
+
+Azure deploy url.
+
+#### `AZURE_API_KEY` (optional)
+
+Azure Api Key.
+
+#### `AZURE_API_VERSION` (optional)
+
+Azure Api Version, find it at [Azure Documentation](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#chat-completions).
+
+### Other Model Providers
+
+#### `GOOGLE_API_KEY` (optional)
+
+Google Gemini Pro Api Key.
+
+#### `GOOGLE_URL` (optional)
+
+> Default: "https://generativelanguage.googleapis.com/"
+
+Google Gemini Pro Api Url.
+
+#### `ANTHROPIC_API_KEY` (optional)
+
+Anthropic Claude Api Key.
+
+#### `ANTHROPIC_API_VERSION` (optional)
+
+Anthropic Claude Api version.
+
+#### `ANTHROPIC_URL` (optional)
+
+> Default: "https://api.anthropic.com"
+
+Anthropic Claude Api Url.
+
+#### `BAIDU_API_KEY` (optional)
+
+Baidu Api Key.
+
+#### `BAIDU_SECRET_KEY` (optional)
+
+Baidu Secret Key.
+
+#### `BAIDU_URL` (optional)
+
+> Default: "https://aip.baidubce.com"
+
+Baidu Api Url.
+
+#### `BYTEDANCE_API_KEY` (optional)
+
+ByteDance Api Key.
+
+#### `BYTEDANCE_URL` (optional)
+
+> Default: "https://ark.cn-beijing.volces.com/api/"
+
+ByteDance Api Url.
+
+#### `ALIBABA_API_KEY` (optional)
+
+Alibaba Cloud Api Key.
+
+#### `ALIBABA_URL` (optional)
+
+> Default: "https://dashscope.aliyuncs.com/api/"
+
+Alibaba Cloud Api Url.
+
+#### `IFLYTEK_API_KEY` (optional)
+
+Iflytek Api Key.
+
+#### `IFLYTEK_API_SECRET` (optional)
+
+Iflytek Api Secret.
+
+#### `IFLYTEK_URL` (optional)
+
+> Default: "https://spark-api-open.xf-yun.com"
+
+Iflytek Api Url.
+
+#### `MOONSHOT_API_KEY` (optional)
+
+Moonshot API Key.
+
+#### `MOONSHOT_URL` (optional)
+
+> Default: "https://api.moonshot.cn"
+
+Moonshot API URL.
+
+#### `XAI_API_KEY` (optional)
+
+XAI API Key.
+
+#### `XAI_URL` (optional)
+
+> Default: "https://api.x.ai"
+
+XAI API URL.
+
+#### `CHATGLM_API_KEY` (optional)
+
+ChatGLM Api Key.
+
+#### `CHATGLM_URL` (optional)
+
+> Default: "https://open.bigmodel.cn"
+
+ChatGLM Api Url.
+
+#### `TENCENT_SECRET_ID` (optional)
+
+Tencent Cloud Secret ID.
+
+#### `TENCENT_SECRET_KEY` (optional)
+
+Tencent Cloud Secret Key.
+
+#### `TENCENT_URL` (optional)
+
+> Default: "https://hunyuan.tencentcloudapi.com"
+
+Tencent Cloud API URL.
+
+#### `CUSTOM_MODELS` (optional)
+
+> Example: `+llama,+claude-2,-gpt-3.5-turbo,gpt-4-1106-preview=gpt-4-turbo` means add `llama, claude-2` to model list, and remove `gpt-3.5-turbo` from list, and display `gpt-4-1106-preview` as `gpt-4-turbo`.
+
+To control custom models, use `+` to add a custom model, use `-` to hide a model, use `name=displayName` to customize model name, separated by comma.
+
+Use `-all` to disable all default models, `+all` to enable all default models.
+
+For Azure: use `modelName@Azure=deploymentName` to customize model name and deployment name.
+> Example: `+gpt-3.5-turbo@Azure=gpt35` will show option `gpt35(Azure)` in model list.
+> If you only can use Azure model, `-all,+gpt-3.5-turbo@Azure=gpt35` will make `gpt35(Azure)` the only option in model list.
+
+For ByteDance: use `modelName@bytedance=deploymentName` to customize model name and deployment name.
+> Example: `+Doubao-lite-4k@bytedance=ep-xxxxx-xxx` will show option `Doubao-lite-4k(ByteDance)` in model list.
+
+#### `DEFAULT_MODEL` (optional)
+
+> Default: empty
+
+Change default model.
+
+### Features
+
+#### `HIDE_USER_API_KEY` (optional)
+
+> Default: empty
+
+If you do not want users to input their own API key, set this value to 1.
+
+#### `DISABLE_GPT4` (optional)
+
+> Default: empty
+
+If you don't want users to use GPT-4, set this value to 1. This will hide all GPT-4 related models from the model list.
+
+#### `ENABLE_BALANCE_QUERY` (optional)
+
+> Default: empty
+
+If you do want users to query balance, set this value to 1.
+
+#### `DISABLE_FAST_LINK` (optional)
+
+> Default: empty
+
+If you want to disable parse settings from url, set this to 1.
+
+#### `CHAT_PAGE_SIZE` (optional)
+
+> Default: 15
+
+Number of chat messages to load per page.
+
+#### `MAX_RENDER_MSG_COUNT` (optional)
+
+> Default: 45
+
+Maximum number of messages to render in chat window.
+
+#### `DEFAULT_INPUT_TEMPLATE` (optional)
+
+> Default: "{{input}}"
+
+Customize the default template used to initialize the User Input Preprocessing configuration item in Settings.
+
+### TTS Related
+
+#### `DEFAULT_TTS_ENGINE` (optional)
+
+> Default: `OpenAI-TTS`
+
+Default text-to-speech engine.
+
+#### `DEFAULT_TTS_ENGINES` (optional)
+
+> Default: `["OpenAI-TTS", "Edge-TTS"]`
+
+Available text-to-speech engines.
+
+#### `DEFAULT_TTS_MODEL` (optional)
+
+> Default: `tts-1`
+
+Default OpenAI TTS model.
+
+#### `DEFAULT_TTS_VOICE` (optional)
+
+> Default: `alloy`
+
+Default TTS voice.
+
+#### `DEFAULT_TTS_MODELS` (optional)
+
+> Default: `["tts-1", "tts-1-hd"]`
+
+Available OpenAI TTS models.
+
+#### `DEFAULT_TTS_VOICES` (optional)
+
+> Default: `["alloy", "echo", "fable", "onyx", "nova", "shimmer"]`
+
+Available TTS voices.
+
+### Other Services
+
+#### `WHITE_WEBDAV_ENDPOINTS` (optional)
+
+You can use this option if you want to increase the number of webdav service addresses you are allowed to access, as required by the format:
+- Each address must be a complete endpoint 
+> `https://xxxx/yyy`
+- Multiple addresses are connected by ', '
+
+#### `STABILITY_API_KEY` (optional)
+
+> Default: empty
+
+Stability API key.
+
+#### `STABILITY_URL` (optional)
+
+> Default: "https://api.stability.ai"
+
+Customize Stability API url.
+
+#### `CLOUDFLARE_ACCOUNT_ID` (optional)
+
+> Default: empty
+
+Cloudflare Account ID.
+
+#### `CLOUDFLARE_KV_NAMESPACE_ID` (optional)
+
+> Default: empty
+
+Cloudflare KV Namespace ID.
+
+#### `CLOUDFLARE_KV_API_KEY` (optional)
+
+> Default: empty
+
+Cloudflare KV API Key.
+
+#### `CLOUDFLARE_KV_TTL` (optional)
+
+> Default: empty
+
+Cloudflare KV cache expiration time.
+
+#### `GTM_ID` (optional)
+
+> Default: empty
+
+Google Tag Manager ID.
+
+#### `GA_ID` (optional)
+
+> Default: "G-89WN60ZK2E"
+
+Google Analytics ID. Will use default value if not set.
+
+#### `SAAS_CHAT_URL` (optional)
+
+> Default: "https://nextchat.dev/chat"
+
+SaaS chat URL.
+
+#### `SAAS_CHAT_UTM_URL` (optional)
+
+> Default: "https://nextchat.dev/chat?utm=github"
+
+SaaS chat URL with UTM parameters.
 
 ## Requirements
 
