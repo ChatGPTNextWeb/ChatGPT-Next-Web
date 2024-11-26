@@ -101,8 +101,7 @@ async function requestBedrock(req: NextRequest) {
       shouldStream,
     );
 
-    console.log("[Bedrock Request] Endpoint:", endpoint);
-    console.log("[Bedrock Request] Model ID:", modelId);
+    console.log("[Bedrock Request] Initiating request");
 
     // Handle tools for different models
     const isMistralLargeModel = modelId

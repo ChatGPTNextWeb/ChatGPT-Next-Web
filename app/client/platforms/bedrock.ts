@@ -228,14 +228,14 @@ export class BedrockApi implements LLMApi {
       const headers = getHeaders();
       headers.XModelID = modelConfig.model;
       headers.XEncryptionKey = accessStore.encryptionKey;
-
-      console.log("[Bedrock Client] Request:", {
-        path: chatPath,
-        model: modelConfig.model,
-        messages: messages.length,
-        stream: shouldStream,
-      });
-
+      if (process.env.NODE_ENV !== "production") {
+        console.debug("[Bedrock Client] Request:", {
+          path: chatPath,
+          model: modelConfig.model,
+          messages: messages.length,
+          stream: shouldStream,
+        });
+      }
       const finalRequestBody = this.formatRequestBody(messages, modelConfig);
       console.log(
         "[Bedrock Client] Request Body:",

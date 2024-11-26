@@ -28,13 +28,11 @@ export interface ModelValidationConfig {
 export function encrypt(data: string, encryptionKey: string): string {
   if (!data) return "";
   if (!encryptionKey) {
-    console.error("[AWS Encryption Error] Encryption key is required");
     throw new Error("Encryption key is required for AWS credential encryption");
   }
   try {
     return AES.encrypt(data, encryptionKey).toString();
   } catch (error) {
-    console.error("[AWS Encryption Error]:", error);
     throw new Error("Failed to encrypt AWS credentials");
   }
 }
