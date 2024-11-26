@@ -160,8 +160,7 @@ async function requestBedrock(req: NextRequest) {
 
     if (!res.ok) {
       const error = await res.text();
-      console.error("[Bedrock Error] Status:", res.status);
-      console.error("[Bedrock Error] Response:", error);
+      console.error("[Bedrock Error] Request failed with status:", res.status);
       try {
         const errorJson = JSON.parse(error);
         throw new Error(errorJson.message || error);
