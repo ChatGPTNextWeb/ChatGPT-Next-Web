@@ -12,8 +12,6 @@ export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 export const STABILITY_BASE_URL = "https://api.stability.ai";
 
 export const OPENAI_BASE_URL = "https://api.openai.com";
-export const BEDROCK_BASE_URL =
-  "https://bedrock-runtime.us-west-2.amazonaws.com";
 export const ANTHROPIC_BASE_URL = "https://api.anthropic.com";
 
 export const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/";
@@ -246,6 +244,9 @@ export const Bedrock = {
   getEndpoint: (region: string = "us-west-2") =>
     `https://bedrock-runtime.${region}.amazonaws.com`,
 };
+
+// Get the region from access store for BEDROCK_BASE_URL
+export const BEDROCK_BASE_URL = Bedrock.getEndpoint();
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
 // export const DEFAULT_SYSTEM_TEMPLATE = `
