@@ -244,7 +244,6 @@ export const Bedrock = {
   getEndpoint: (region: string = "us-west-2") =>
     `https://bedrock-runtime.${region}.amazonaws.com`,
 };
-
 // Get the region from access store for BEDROCK_BASE_URL
 export const BEDROCK_BASE_URL = Bedrock.getEndpoint();
 
