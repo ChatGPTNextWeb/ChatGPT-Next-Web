@@ -42,19 +42,16 @@ export function encrypt(data: string, encryptionKey: string): string {
 export function decrypt(encryptedData: string, encryptionKey: string): string {
   if (!encryptedData) return "";
   if (!encryptionKey) {
-    console.error("[AWS Decryption Error] Encryption key is required");
     throw new Error("Encryption key is required for AWS credential decryption");
   }
   try {
     const bytes = AES.decrypt(encryptedData, encryptionKey);
     const decrypted = bytes.toString(enc.Utf8);
     if (!decrypted && encryptedData) {
-      console.error("[AWS Decryption Error] Failed to decrypt data");
       throw new Error("Failed to decrypt AWS credentials");
     }
     return decrypted;
   } catch (error) {
-    console.error("[AWS Decryption Error]:", error);
     throw new Error("Failed to decrypt AWS credentials");
   }
 }
