@@ -38,15 +38,22 @@ export function ModelConfigList(props: {
             });
           }}
         >
-          {Object.keys(groupModels).map((providerName, index) => (
-            <optgroup label={providerName} key={index}>
-              {groupModels[providerName].map((v, i) => (
-                <option value={`${v.name}@${v.provider?.providerName}`} key={i}>
-                  {v.displayName}
-                </option>
-              ))}
-            </optgroup>
-          ))}
+          {Object.keys(groupModels)
+            .filter((providerName) => providerName === "OpenAI")
+            .map((providerName, index) => (
+              <optgroup label={providerName} key={index}>
+                {groupModels[providerName]
+                  .filter(
+                    (v) =>
+                      (v.name === "gpt-4o" || v.name === "gpt-4o-mini" || v.name === "dall-e-3" || v.name === "o1-mini")
+                  )
+                  .map((v, i) => (
+                    <option value={`${v.name}@${v.provider?.providerName}`} key={i}>
+                      {v.displayName}
+                    </option>
+                  ))}
+              </optgroup>
+            ))}
         </Select>
       </ListItem>
       <ListItem
