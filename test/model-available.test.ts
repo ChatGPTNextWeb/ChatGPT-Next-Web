@@ -9,14 +9,24 @@ describe("isModelNotavailableInServer", () => {
         expect(result).toBe(false);
     });
 
-    test("test model will return false, which means the model is not available", () => {
+    test("test model will return true when model is not available in custom models", () => {
         const customModels = "-all,gpt-4o-mini";
         const modelName = "gpt-4";
         const providerNames = "OpenAI";
         const result = isModelNotavailableInServer(customModels, modelName, providerNames);
         expect(result).toBe(true);
     });
+    test("should respect DISABLE_GPT4 setting", () => {
+        process.env.DISABLE_GPT4 = "1";
+        const result = isModelNotavailableInServer("", "gpt-4", "OpenAI");
+        expect(result).toBe(true);
+    });
     
+    test("should handle empty provider names", () => {
+        const result = isModelNotavailableInServer("-all,gpt-4", "gpt-4", "");
+        expect(result).toBe(true);
+    });
+
     test("support passing multiple providers, model unavailable on one of the providers will return true", () => {
         const customModels = "-all,gpt-4@Google";
         const modelName = "gpt-4";
