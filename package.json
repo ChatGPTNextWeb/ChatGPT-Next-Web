@@ -36,7 +36,7 @@
     "lodash-es": "^4.17.21",
     "markdown-to-txt": "^2.0.1",
     "mermaid": "^10.6.1",
-    "nanoid": "^5.0.3",
+    "nanoid": "^5.0.9",
     "next": "^14.1.1",
     "node-fetch": "^3.3.1",
     "openapi-client-axios": "^7.5.5",
