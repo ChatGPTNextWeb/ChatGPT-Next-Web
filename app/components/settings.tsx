@@ -1853,9 +1853,11 @@ export function Settings() {
           <ListItem
             title={Locale.Settings.Access.CustomModel.Title}
             subTitle={Locale.Settings.Access.CustomModel.SubTitle}
+            vertical={true}
           >
             <input
               aria-label={Locale.Settings.Access.CustomModel.Title}
+              style={{ width: "100%", maxWidth: "unset", textAlign: "left" }}
               type="text"
               value={config.customModels}
               placeholder="model1,model2,model3"
