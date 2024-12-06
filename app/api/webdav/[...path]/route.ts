@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import path from "path";
 
 // 配置常量
 const ALLOWED_METHODS = ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PROPFIND", "MKCOL"];
@@ -24,6 +23,14 @@ const TIMEOUT = 30000; // 30 seconds
 const ENDPOINT = process.env.WEBDAV_ENDPOINT || "http://localhost:8080";
 
 export const runtime = "edge";
+
+// 路径拼接函数
+function joinPaths(...parts: string[]): string {
+  return parts
+    .map(part => part.replace(/^\/+|\/+$/g, ''))
+    .filter(Boolean)
+    .join('/');
+}
 
 // 重试机制
 async function makeRequest(url: string, options: RequestInit, retries = 3) {
@@ -55,14 +62,11 @@ export async function handler(
   { params }: { params: { path: string[] } }
 ) {
   try {
-    // 获取请求方法
     const method = req.method;
 
-    // 记录请求日志
     console.log(`[Proxy Request] ${method} ${req.url}`);
     console.log("Request Headers:", Object.fromEntries(req.headers));
 
-    // 处理 OPTIONS 请求
     if (method === "OPTIONS") {
       return new NextResponse(null, {
         status: 204,
@@ -70,7 +74,6 @@ export async function handler(
       });
     }
 
-    // 验证请求方法
     if (!ALLOWED_METHODS.includes(method)) {
       return NextResponse.json(
         { error: "Method Not Allowed" },
@@ -78,12 +81,13 @@ export async function handler(
       );
     }
 
-    // 构建目标 URL
+    // 构建目标 URL（使用自定义的 joinPaths 函数替代 path.join）
     const targetUrlObj = new URL(ENDPOINT);
-    targetUrlObj.pathname = path.join(targetUrlObj.pathname, ...(params.path || []));
+    const pathSegments = params.path || [];
+    targetUrlObj.pathname = joinPaths(targetUrlObj.pathname, ...pathSegments);
     const targetUrl = targetUrlObj.toString();
 
-    // 处理请求头
+    // 其余代码保持不变...
     const headers = new Headers();
     req.headers.forEach((value, key) => {
       if (ALLOWED_HEADERS.includes(key.toLowerCase())) {
@@ -91,25 +95,21 @@ export async function handler(
       }
     });
 
-    // 特殊处理 WebDAV 相关头
     const depth = req.headers.get('depth');
     if (depth) {
       headers.set('depth', depth);
     }
 
-    // 处理认证头
     const authHeader = req.headers.get('authorization');
     if (authHeader) {
       headers.set('authorization', authHeader);
     }
 
-    // 处理请求体
     let requestBody: BodyInit | null = null;
     if (["POST", "PUT"].includes(method)) {
       try {
         const contentLength = req.headers.get('content-length');
         if (contentLength && parseInt(contentLength) > 10 * 1024 * 1024) {
-          // 大文件使用流式处理
           requestBody = req.body;
           headers.set('transfer-encoding', 'chunked');
         } else {
@@ -124,7 +124,6 @@ export async function handler(
       }
     }
 
-    // 构建fetch选项
     const fetchOptions: RequestInit = {
       method,
       headers,
@@ -136,7 +135,6 @@ export async function handler(
       }
     };
 
-    // 发送代理请求
     let response: Response;
     try {
       console.log(`[Proxy Forward] ${method} ${targetUrl}`);
@@ -150,14 +148,11 @@ export async function handler(
       );
     }
 
-    // 处理响应头
     const responseHeaders = new Headers(response.headers);
-    // 移除敏感头信息
     ["set-cookie", "server"].forEach((header) => {
       responseHeaders.delete(header);
     });
 
-    // 添加 CORS 头和安全头
     Object.entries({
       ...CORS_HEADERS,
       "Content-Security-Policy": "upgrade-insecure-requests",
@@ -166,18 +161,15 @@ export async function handler(
       responseHeaders.set(key, value);
     });
 
-    // 记录响应日志
     console.log(`[Proxy Response] ${response.status} ${response.statusText}`);
     console.log("Response Headers:", Object.fromEntries(responseHeaders));
 
-    // 返回响应
     return new NextResponse(response.body, {
       status: response.status,
       statusText: response.statusText,
       headers: responseHeaders,
     });
   } catch (error) {
-    // 捕获全局异常
     console.error("[Global Error]", error);
     return NextResponse.json(
       { error: "Internal Server Error", details: error.message },
@@ -186,7 +178,6 @@ export async function handler(
   }
 }
 
-// 导出支持的 HTTP 方法
 export const GET = handler;
 export const POST = handler;
 export const PUT = handler;
