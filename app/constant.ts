@@ -329,10 +329,10 @@ const openaiModels = [
 ];
 
 const bedrockModels = [
-  // Amazon Titan Models
-  "amazon.titan-text-express-v1",
-  "amazon.titan-text-lite-v1",
-  "amazon.titan-tg1-large",
+  // Amazon nova Models
+  "us.amazon.nova-micro-v1:0",
+  "us.amazon.nova-lite-v1:0",
+  "us.amazon.nova-pro-v1:0",
   // Claude Models
   "anthropic.claude-3-haiku-20240307-v1:0",
   "anthropic.claude-3-5-haiku-20241022-v1:0",

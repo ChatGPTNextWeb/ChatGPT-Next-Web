@@ -327,14 +327,35 @@ export function processMessage(
   if (!data) return { remainText, index };
 
   try {
-    // Handle message_start event
-    if (data.type === "message_start") {
-      // Keep existing text but mark the start of a new message
-      console.debug("[Message Start] Current text:", remainText);
+    // Handle Nova's messageStart event
+    if (data.messageStart) {
       return { remainText, index };
     }
 
-    // Handle content_block_start event
+    // Handle Nova's contentBlockDelta event
+    if (data.contentBlockDelta) {
+      if (data.contentBlockDelta.delta?.text) {
+        remainText += data.contentBlockDelta.delta.text;
+      }
+      return { remainText, index };
+    }
+
+    // Handle Nova's contentBlockStop event
+    if (data.contentBlockStop) {
+      return { remainText, index };
+    }
+
+    // Handle Nova's messageStop event
+    if (data.messageStop) {
+      return { remainText, index };
+    }
+
+    // Handle message_start event (for other models)
+    if (data.type === "message_start") {
+      return { remainText, index };
+    }
+
+    // Handle content_block_start event (for other models)
     if (data.type === "content_block_start") {
       if (data.content_block?.type === "tool_use") {
         index += 1;
@@ -350,13 +371,12 @@ export function processMessage(
       return { remainText, index };
     }
 
-    // Handle content_block_delta event
+    // Handle content_block_delta event (for other models)
     if (data.type === "content_block_delta") {
       if (data.delta?.type === "input_json_delta" && runTools[index]) {
         runTools[index].function.arguments += data.delta.partial_json;
       } else if (data.delta?.type === "text_delta") {
         const newText = data.delta.text || "";
-        // console.debug("[Text Delta] Adding:", newText);
         remainText += newText;
       }
       return { remainText, index };
@@ -398,7 +418,6 @@ export function processMessage(
 
     // Only append if we have new text
     if (newText) {
-      // console.debug("[New Text] Adding:", newText);
       remainText += newText;
     }
   } catch (e) {
@@ -530,8 +549,16 @@ export function extractMessage(res: any, modelId: string = ""): string {
 
   let message = "";
 
+  // Handle Nova model response format
+  if (modelId.toLowerCase().includes("nova")) {
+    if (res.output?.message?.content?.[0]?.text) {
+      message = res.output.message.content[0].text;
+    } else {
+      message = res.output || "";
+    }
+  }
   // Handle Mistral model response format
-  if (modelId.toLowerCase().includes("mistral")) {
+  else if (modelId.toLowerCase().includes("mistral")) {
     if (res.choices?.[0]?.message?.content) {
       message = res.choices[0].message.content;
     } else {

@@ -264,6 +264,8 @@ export function isVisionModel(model: string) {
     "learnlm",
     "qwen-vl",
     "qwen2-vl",
+    "nova-lite",
+    "nova-pro",
   ];
   const isGpt4Turbo =
     model.includes("gpt-4-turbo") && !model.includes("preview");

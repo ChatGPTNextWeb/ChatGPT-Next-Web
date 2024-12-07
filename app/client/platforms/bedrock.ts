@@ -46,20 +46,68 @@ export class BedrockApi implements LLMApi {
 
     // Handle Nova models
     if (model.startsWith("us.amazon.nova")) {
-      return {
+      // Extract system message if present
+      const systemMessage = messages.find((m) => m.role === "system");
+      const conversationMessages = messages.filter((m) => m.role !== "system");
+
+      const requestBody: any = {
+        schemaVersion: "messages-v1",
+        messages: conversationMessages.map((message) => {
+          const content = Array.isArray(message.content)
+            ? message.content
+            : [{ text: getMessageTextContent(message) }];
+
+          return {
+            role: message.role,
+            content: content.map((item: any) => {
+              // Handle text content
+              if (item.text || typeof item === "string") {
+                return { text: item.text || item };
+              }
+
+              // Handle image content
+              if (item.image_url?.url) {
+                const { url = "" } = item.image_url;
+                const colonIndex = url.indexOf(":");
+                const semicolonIndex = url.indexOf(";");
+                const comma = url.indexOf(",");
+
+                // Extract format from mime type
+                const mimeType = url.slice(colonIndex + 1, semicolonIndex);
+                const format = mimeType.split("/")[1];
+                const data = url.slice(comma + 1);
+
+                return {
+                  image: {
+                    format,
+                    source: {
+                      bytes: data,
+                    },
+                  },
+                };
+              }
+              return item;
+            }),
+          };
+        }),
         inferenceConfig: {
-          max_tokens: modelConfig.max_tokens || 1000,
+          temperature: modelConfig.temperature || 0.7,
+          top_p: modelConfig.top_p || 0.9,
+          top_k: modelConfig.top_k || 50,
+          max_new_tokens: modelConfig.max_tokens || 1000,
         },
-        messages: messages.map((message) => ({
-          role: message.role,
-          content: [
-            {
-              type: "text",
-              text: getMessageTextContent(message),
-            },
-          ],
-        })),
       };
+
+      // Add system message if present
+      if (systemMessage) {
+        requestBody.system = [
+          {
+            text: getMessageTextContent(systemMessage),
+          },
+        ];
+      }
+
+      return requestBody;
     }
 
     // Handle Titan models
@@ -426,10 +474,9 @@ function bedrockStream(
   let runTools: any[] = [];
   let responseRes: Response;
   let index = -1;
-  let chunks: Uint8Array[] = []; // 使用数组存储二进制数据块
-  let pendingChunk: Uint8Array | null = null; // 存储不完整的数据块
+  let chunks: Uint8Array[] = [];
+  let pendingChunk: Uint8Array | null = null;
 
-  // Animate response to make it looks smooth
   function animateResponseText() {
     if (finished || controller.signal.aborted) {
       responseText += remainText;
@@ -451,7 +498,6 @@ function bedrockStream(
     requestAnimationFrame(animateResponseText);
   }
 
-  // Start animation
   animateResponseText();
 
   const finish = () => {
@@ -462,7 +508,7 @@ function bedrockStream(
           tool_calls: [...runTools],
         };
         running = true;
-        runTools.splice(0, runTools.length); // empty runTools
+        runTools.splice(0, runTools.length);
         return Promise.all(
           toolCallMessage.tool_calls.map((tool) => {
             options?.onBeforeTool?.(tool);
@@ -510,7 +556,6 @@ function bedrockStream(
         ).then((toolCallResult) => {
           processToolMessage(requestPayload, toolCallMessage, toolCallResult);
           setTimeout(() => {
-            // call again
             console.debug("[BedrockAPI for toolCallResult] restart");
             running = false;
             bedrockChatApi(chatPath, headers, requestPayload, tools);
@@ -562,13 +607,11 @@ function bedrockStream(
         contentType,
       );
 
-      // Handle non-stream responses
       if (contentType?.startsWith("text/plain")) {
         responseText = await res.text();
         return finish();
       }
 
-      // Handle error responses
       if (
         !res.ok ||
         res.status !== 200 ||
@@ -593,7 +636,6 @@ function bedrockStream(
         return finish();
       }
 
-      // Process the stream using chunks
       const reader = res.body?.getReader();
       if (!reader) {
         throw new Error("No response body reader available");
@@ -603,7 +645,6 @@ function bedrockStream(
         while (true) {
           const { done, value } = await reader.read();
           if (done) {
-            // Process final pending chunk
             if (pendingChunk) {
               try {
                 const parsed = parseEventData(pendingChunk);
@@ -624,10 +665,8 @@ function bedrockStream(
             break;
           }
 
-          // Add new chunk to queue
           chunks.push(value);
 
-          // Process chunk queue
           const result = processChunks(
             chunks,
             pendingChunk,
@@ -648,6 +687,11 @@ function bedrockStream(
         finish();
       }
     } catch (e) {
+      // @ts-ignore
+      if (e.name === "AbortError") {
+        console.log("[Bedrock Client] Aborted by user");
+        return;
+      }
       console.error("[Bedrock Request] error", e);
       options.onError?.(e);
       throw e;
