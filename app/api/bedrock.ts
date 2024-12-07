@@ -80,54 +80,16 @@ async function requestBedrock(req: NextRequest) {
     } catch (e) {
       throw new Error(`Invalid JSON in request body: ${e}`);
     }
-    // console.log(
-    //   "[Bedrock Request] original Body:",
-    //   JSON.stringify(bodyJson, null, 2),
-    // );
-
-    // Extract tool configuration if present
-    let tools: any[] | undefined;
-    if (bodyJson.tools) {
-      tools = bodyJson.tools;
-      delete bodyJson.tools; // Remove from main request body
-    }
-
+    console.log("[Bedrock Request] Initiating request");
     // Get endpoint and prepare request
     const endpoint = getBedrockEndpoint(
       credentials.region,
       modelId,
       shouldStream,
     );
-
-    console.log("[Bedrock Request] Initiating request");
-
-    // Handle tools for different models
-    const isMistralLargeModel = modelId
-      .toLowerCase()
-      .includes("mistral.mistral-large");
-    const isClaudeModel = modelId.toLowerCase().includes("claude");
-
     const requestBody: any = {
       ...bodyJson,
     };
-
-    if (tools && tools.length > 0) {
-      if (isMistralLargeModel) {
-        // Add tools in Mistral's format
-        requestBody.tool_choice = "auto";
-        requestBody.tools = tools.map((tool) => ({
-          type: "function",
-          function: {
-            name: tool.name,
-            description: tool.description,
-            parameters: tool.input_schema,
-          },
-        }));
-      } else if (isClaudeModel) {
-        requestBody.tools = tools;
-      }
-    }
-
     // Sign request
     const headers = await sign({
       method: "POST",

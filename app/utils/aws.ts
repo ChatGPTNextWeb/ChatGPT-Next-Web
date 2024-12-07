@@ -327,6 +327,31 @@ export function processMessage(
   if (!data) return { remainText, index };
 
   try {
+    // Handle Nova's tool calls
+    // console.log("processMessage data=========================",data);
+    if (
+      data.stopReason === "tool_use" &&
+      data.output?.message?.content?.[0]?.toolUse
+    ) {
+      const toolUse = data.output.message.content[0].toolUse;
+      index += 1;
+      runTools.push({
+        id: `tool-${Date.now()}`,
+        type: "function",
+        function: {
+          name: toolUse.name,
+          arguments: JSON.stringify(toolUse.input),
+        },
+      });
+      return { remainText, index };
+    }
+
+    // Handle Nova's text content
+    if (data.output?.message?.content?.[0]?.text) {
+      remainText += data.output.message.content[0].text;
+      return { remainText, index };
+    }
+
     // Handle Nova's messageStart event
     if (data.messageStart) {
       return { remainText, index };
@@ -382,7 +407,7 @@ export function processMessage(
       return { remainText, index };
     }
 
-    // Handle tool calls
+    // Handle tool calls for other models
     if (data.choices?.[0]?.message?.tool_calls) {
       for (const toolCall of data.choices[0].message.tool_calls) {
         index += 1;
