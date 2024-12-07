@@ -137,7 +137,8 @@ export class BedrockApi implements LLMApi {
               },
             },
           })),
-          // toolChoice: { auto: {} }
+          toolChoice: { auto: {} },
+          //  toolChoice: { any: {} }
         };
       }
 
@@ -339,16 +340,11 @@ export class BedrockApi implements LLMApi {
     const controller = new AbortController();
     options.onController?.(controller);
 
-    if (!accessStore.isValidBedrock()) {
-      throw new Error(
-        "Invalid AWS credentials. Please check your configuration and ensure ENCRYPTION_KEY is set.",
-      );
-    }
-
     let finalRequestBody = this.formatRequestBody(messages, modelConfig);
 
     try {
       const isApp = !!getClientConfig()?.isApp;
+      // const isApp = true;
       const bedrockAPIPath = `${BEDROCK_BASE_URL}/model/${
         modelConfig.model
       }/invoke${shouldStream ? "-with-response-stream" : ""}`;
@@ -699,10 +695,10 @@ function bedrockStream(
       responseRes = res;
 
       const contentType = res.headers.get("content-type");
-      console.log(
-        "[Bedrock Stream Request] response content type: ",
-        contentType,
-      );
+      // console.log(
+      //   "[Bedrock Stream Request] response content type: ",
+      //   contentType,
+      // );
 
       if (contentType?.startsWith("text/plain")) {
         responseText = await res.text();

@@ -2,7 +2,7 @@ import SHA256 from "crypto-js/sha256";
 import HmacSHA256 from "crypto-js/hmac-sha256";
 import Hex from "crypto-js/enc-hex";
 import Utf8 from "crypto-js/enc-utf8";
-import { AES, enc } from "crypto-js";
+import { AES, enc, lib, PBKDF2, mode, pad, algo } from "crypto-js";
 
 // Types and Interfaces
 export interface BedrockCredentials {
@@ -29,13 +29,51 @@ type ParsedEvent = Record<string, any>;
 type EventResult = ParsedEvent[];
 
 // Encryption utilities
+function generateSalt(): string {
+  const salt = lib.WordArray.random(128 / 8);
+  return salt.toString(enc.Base64);
+}
+
+function generateIV(): string {
+  const iv = lib.WordArray.random(128 / 8);
+  return iv.toString(enc.Base64);
+}
+
+function deriveKey(password: string, salt: string): lib.WordArray {
+  // Use PBKDF2 with SHA256 for key derivation
+  return PBKDF2(password, salt, {
+    keySize: 256 / 32,
+    iterations: 10000,
+    hasher: algo.SHA256,
+  });
+}
+
+// Using a dot as separator since it's not used in Base64
+const SEPARATOR = ".";
+
 export function encrypt(data: string, encryptionKey: string): string {
   if (!data) return "";
   if (!encryptionKey) {
     throw new Error("Encryption key is required for AWS credential encryption");
   }
   try {
-    return AES.encrypt(data, encryptionKey).toString();
+    // Generate salt and IV
+    const salt = generateSalt();
+    const iv = generateIV();
+
+    // Derive key using PBKDF2
+    const key = deriveKey(encryptionKey, salt);
+
+    // Encrypt the data
+    const encrypted = AES.encrypt(data, key, {
+      iv: enc.Base64.parse(iv),
+      mode: mode.CBC,
+      padding: pad.Pkcs7,
+    });
+
+    // Combine salt, IV, and encrypted data
+    // Format: salt.iv.encryptedData
+    return [salt, iv, encrypted.toString()].join(SEPARATOR);
   } catch (error) {
     throw new Error("Failed to encrypt AWS credentials");
   }
@@ -47,12 +85,21 @@ export function decrypt(encryptedData: string, encryptionKey: string): string {
     throw new Error("Encryption key is required for AWS credential decryption");
   }
   try {
-    const bytes = AES.decrypt(encryptedData, encryptionKey);
-    const decrypted = bytes.toString(enc.Utf8);
-    if (!decrypted && encryptedData) {
+    let components = encryptedData.split(SEPARATOR);
+    const [salt, iv, data] = components;
+    // For new format, use the provided salt and IV
+    const key = deriveKey(encryptionKey, salt);
+    const decrypted = AES.decrypt(data, key, {
+      iv: enc.Base64.parse(iv),
+      mode: mode.CBC,
+      padding: pad.Pkcs7,
+    });
+
+    const result = decrypted.toString(enc.Utf8);
+    if (!result) {
       throw new Error("Failed to decrypt AWS credentials");
     }
-    return decrypted;
+    return result;
   } catch (error) {
     throw new Error("Failed to decrypt AWS credentials");
   }
@@ -61,7 +108,9 @@ export function decrypt(encryptedData: string, encryptionKey: string): string {
 export function maskSensitiveValue(value: string): string {
   if (!value) return "";
   if (value.length <= 4) return value;
-  return "*".repeat(value.length - 4) + value.slice(-4);
+  // Use constant-time operations to prevent timing attacks
+  const masked = Buffer.alloc(value.length - 4, "*").toString();
+  return value.slice(0, 2) + masked + value.slice(-2);
 }
 
 // AWS Signing

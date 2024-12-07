@@ -103,10 +103,10 @@ async function requestBedrock(req: NextRequest) {
     });
 
     // Make request to AWS Bedrock
-    // console.log(
-    //   "[Bedrock Request] Final Body:",
-    //   JSON.stringify(requestBody, null, 2),
-    // );
+    console.log(
+      "[Bedrock Request] Final Body:",
+      JSON.stringify(requestBody, null, 2),
+    );
     const res = await fetch(endpoint, {
       method: "POST",
       headers,
