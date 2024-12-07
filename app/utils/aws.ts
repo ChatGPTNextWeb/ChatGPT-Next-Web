@@ -67,8 +67,9 @@ export interface SignParams {
   region: string;
   accessKeyId: string;
   secretAccessKey: string;
-  body: string;
+  body: string | object;
   service: string;
+  headers?: Record<string, string>;
   isStreaming?: boolean;
 }
 
@@ -99,7 +100,7 @@ function normalizeHeaderValue(value: string): string {
   return value.replace(/\s+/g, " ").trim();
 }
 
-function encodeURIComponent_RFC3986(str: string): string {
+function encodeRFC3986(str: string): string {
   return encodeURIComponent(str)
     .replace(
       /[!'()*]/g,
@@ -108,41 +109,36 @@ function encodeURIComponent_RFC3986(str: string): string {
     .replace(/[-_.~]/g, (c) => c);
 }
 
-function encodeURI_RFC3986(uri: string): string {
-  if (!uri || uri === "/") return "";
+function getCanonicalUri(path: string): string {
+  if (!path || path === "/") return "/";
 
-  const segments = uri.split("/");
+  return (
+    "/" +
+    path
+      .split("/")
+      .map((segment) => {
+        if (!segment) return "";
+        if (segment === "invoke-with-response-stream") return segment;
 
-  return segments
-    .map((segment) => {
-      if (!segment) return "";
-
-      if (segment.includes("model/")) {
-        const parts = segment.split(/(model\/)/);
-        return parts
-          .map((part) => {
-            if (part === "model/") return part;
-            if (part.includes(".") || part.includes(":")) {
+        if (segment.includes("model/")) {
+          return segment
+            .split(/(model\/)/)
+            .map((part) => {
+              if (part === "model/") return part;
               return part
                 .split(/([.:])/g)
-                .map((subpart, i) => {
-                  if (i % 2 === 1) return subpart;
-                  return encodeURIComponent_RFC3986(subpart);
-                })
+                .map((subpart, i) =>
+                  i % 2 === 1 ? subpart : encodeRFC3986(subpart),
+                )
                 .join("");
-            }
-            return encodeURIComponent_RFC3986(part);
-          })
-          .join("");
-      }
+            })
+            .join("");
+        }
 
-      if (segment === "invoke-with-response-stream") {
-        return segment;
-      }
-
-      return encodeURIComponent_RFC3986(segment);
-    })
-    .join("/");
+        return encodeRFC3986(segment);
+      })
+      .join("/")
+  );
 }
 
 export async function sign({
@@ -153,18 +149,20 @@ export async function sign({
   secretAccessKey,
   body,
   service,
+  headers: customHeaders = {},
   isStreaming = true,
 }: SignParams): Promise<Record<string, string>> {
   try {
     const endpoint = new URL(url);
-    const canonicalUri = "/" + encodeURI_RFC3986(endpoint.pathname.slice(1));
+    const canonicalUri = getCanonicalUri(endpoint.pathname.slice(1));
     const canonicalQueryString = endpoint.search.slice(1);
 
     const now = new Date();
     const amzDate = now.toISOString().replace(/[:-]|\.\d{3}/g, "");
     const dateStamp = amzDate.slice(0, 8);
 
-    const payloadHash = SHA256(body).toString(Hex);
+    const bodyString = typeof body === "string" ? body : JSON.stringify(body);
+    const payloadHash = SHA256(bodyString).toString(Hex);
 
     const headers: Record<string, string> = {
       accept: isStreaming
@@ -174,6 +172,7 @@ export async function sign({
       host: endpoint.host,
       "x-amz-content-sha256": payloadHash,
       "x-amz-date": amzDate,
+      ...customHeaders,
     };
 
     if (isStreaming) {
@@ -237,54 +236,274 @@ export async function sign({
 }
 
 // Bedrock utilities
+function decodeBase64(base64String: string): string {
+  try {
+    return Buffer.from(base64String, "base64").toString("utf-8");
+  } catch (e) {
+    console.error("[Base64 Decode Error]:", e);
+    return "";
+  }
+}
+
 export function parseEventData(chunk: Uint8Array): any {
   const decoder = new TextDecoder();
   const text = decoder.decode(chunk);
+  const results = [];
 
   try {
+    // First try to parse as JSON
     const parsed = JSON.parse(text);
-    // AWS Bedrock wraps the response in a 'body' field
+
+    // Handle bytes field in the response
+    if (parsed.bytes) {
+      const decoded = decodeBase64(parsed.bytes);
+      try {
+        results.push(JSON.parse(decoded));
+      } catch (e) {
+        results.push({ output: decoded });
+      }
+      return results;
+    }
+
+    // Handle body field
     if (typeof parsed.body === "string") {
       try {
-        return JSON.parse(parsed.body);
+        results.push(JSON.parse(parsed.body));
       } catch (e) {
-        return { output: parsed.body };
+        results.push({ output: parsed.body });
       }
+      return results;
     }
-    return parsed.body || parsed;
+
+    results.push(parsed.body || parsed);
+    return results;
   } catch (e) {
     try {
-      // Handle base64 encoded responses
-      const base64Match = text.match(/:"([A-Za-z0-9+/=]+)"/);
-      if (base64Match) {
-        const decoded = Buffer.from(base64Match[1], "base64").toString("utf-8");
+      // Handle event-stream format
+      const eventRegex = /:event-type[^\{]+({.*?})/g;
+      let match;
+      while ((match = eventRegex.exec(text)) !== null) {
         try {
-          return JSON.parse(decoded);
+          const eventData = match[1];
+          const parsed = JSON.parse(eventData);
+          if (parsed.bytes) {
+            const decoded = decodeBase64(parsed.bytes);
+            try {
+              results.push(JSON.parse(decoded));
+            } catch (e) {
+              results.push({ output: decoded });
+            }
+          } else {
+            results.push(parsed);
+          }
         } catch (e) {
-          return { output: decoded };
+          results.push({ output: match[1] });
         }
       }
 
-      // Handle event-type responses
-      const eventMatch = text.match(/:event-type[^\{]+({.*})/);
-      if (eventMatch) {
-        try {
-          return JSON.parse(eventMatch[1]);
-        } catch (e) {
-          return { output: eventMatch[1] };
-        }
+      if (results.length > 0) {
+        return results;
       }
 
       // Handle plain text responses
       if (text.trim()) {
         const cleanText = text.replace(/[\x00-\x1F\x7F-\x9F]/g, "");
-        return { output: cleanText };
+        results.push({ output: cleanText.trim() });
+        return results;
       }
     } catch (innerError) {
       console.error("[AWS Parse Error] Inner parsing failed:", innerError);
     }
   }
-  return null;
+  return [];
+}
+
+export function processMessage(
+  data: any,
+  remainText: string,
+  runTools: any[],
+  index: number,
+): { remainText: string; index: number } {
+  if (!data) return { remainText, index };
+
+  try {
+    // Handle message_start event
+    if (data.type === "message_start") {
+      // Keep existing text but mark the start of a new message
+      console.debug("[Message Start] Current text:", remainText);
+      return { remainText, index };
+    }
+
+    // Handle content_block_start event
+    if (data.type === "content_block_start") {
+      if (data.content_block?.type === "tool_use") {
+        index += 1;
+        runTools.push({
+          id: data.content_block.id,
+          type: "function",
+          function: {
+            name: data.content_block.name,
+            arguments: "",
+          },
+        });
+      }
+      return { remainText, index };
+    }
+
+    // Handle content_block_delta event
+    if (data.type === "content_block_delta") {
+      if (data.delta?.type === "input_json_delta" && runTools[index]) {
+        runTools[index].function.arguments += data.delta.partial_json;
+      } else if (data.delta?.type === "text_delta") {
+        const newText = data.delta.text || "";
+        // console.debug("[Text Delta] Adding:", newText);
+        remainText += newText;
+      }
+      return { remainText, index };
+    }
+
+    // Handle tool calls
+    if (data.choices?.[0]?.message?.tool_calls) {
+      for (const toolCall of data.choices[0].message.tool_calls) {
+        index += 1;
+        runTools.push({
+          id: toolCall.id || `tool-${Date.now()}`,
+          type: "function",
+          function: {
+            name: toolCall.function?.name,
+            arguments: toolCall.function?.arguments || "",
+          },
+        });
+      }
+      return { remainText, index };
+    }
+
+    // Handle various response formats
+    let newText = "";
+    if (data.delta?.text) {
+      newText = data.delta.text;
+    } else if (data.choices?.[0]?.message?.content) {
+      newText = data.choices[0].message.content;
+    } else if (data.content?.[0]?.text) {
+      newText = data.content[0].text;
+    } else if (data.generation) {
+      newText = data.generation;
+    } else if (data.outputText) {
+      newText = data.outputText;
+    } else if (data.response) {
+      newText = data.response;
+    } else if (data.output) {
+      newText = data.output;
+    }
+
+    // Only append if we have new text
+    if (newText) {
+      // console.debug("[New Text] Adding:", newText);
+      remainText += newText;
+    }
+  } catch (e) {
+    console.error("[Bedrock Request] parse error", e);
+  }
+
+  return { remainText, index };
+}
+
+export function processChunks(
+  chunks: Uint8Array[],
+  pendingChunk: Uint8Array | null,
+  remainText: string,
+  runTools: any[],
+  index: number,
+): {
+  chunks: Uint8Array[];
+  pendingChunk: Uint8Array | null;
+  remainText: string;
+  index: number;
+} {
+  let currentText = remainText;
+  let currentIndex = index;
+
+  while (chunks.length > 0) {
+    const chunk = chunks[0];
+    try {
+      // Try to process the chunk
+      const parsedEvents = parseEventData(chunk);
+      if (parsedEvents.length > 0) {
+        // Process each event in the chunk
+        for (const parsed of parsedEvents) {
+          const result = processMessage(
+            parsed,
+            currentText,
+            runTools,
+            currentIndex,
+          );
+          currentText = result.remainText;
+          currentIndex = result.index;
+        }
+        chunks.shift(); // Remove processed chunk
+
+        // If there's a pending chunk, try to process it now
+        if (pendingChunk) {
+          const pendingEvents = parseEventData(pendingChunk);
+          if (pendingEvents.length > 0) {
+            for (const pendingParsed of pendingEvents) {
+              const pendingResult = processMessage(
+                pendingParsed,
+                currentText,
+                runTools,
+                currentIndex,
+              );
+              currentText = pendingResult.remainText;
+              currentIndex = pendingResult.index;
+            }
+            pendingChunk = null;
+          }
+        }
+      } else {
+        // If parsing fails, it might be an incomplete chunk
+        if (pendingChunk) {
+          // Merge with pending chunk
+          const mergedChunk = new Uint8Array(
+            pendingChunk.length + chunk.length,
+          );
+          mergedChunk.set(pendingChunk);
+          mergedChunk.set(chunk, pendingChunk.length);
+          pendingChunk = mergedChunk;
+        } else {
+          pendingChunk = chunk;
+        }
+        chunks.shift();
+      }
+    } catch (e) {
+      console.error("[Chunk Process Error]:", e);
+      chunks.shift(); // Remove error chunk
+    }
+  }
+
+  // Try to process any remaining pending chunk one last time
+  if (pendingChunk) {
+    const finalEvents = parseEventData(pendingChunk);
+    if (finalEvents.length > 0) {
+      for (const finalParsed of finalEvents) {
+        const finalResult = processMessage(
+          finalParsed,
+          currentText,
+          runTools,
+          currentIndex,
+        );
+        currentText = finalResult.remainText;
+        currentIndex = finalResult.index;
+      }
+      pendingChunk = null;
+    }
+  }
+
+  return {
+    chunks,
+    pendingChunk,
+    remainText: currentText,
+    index: currentIndex,
+  };
 }
 
 export function getBedrockEndpoint(
@@ -309,150 +528,32 @@ export function extractMessage(res: any, modelId: string = ""): string {
     return "";
   }
 
+  let message = "";
+
   // Handle Mistral model response format
   if (modelId.toLowerCase().includes("mistral")) {
     if (res.choices?.[0]?.message?.content) {
-      return res.choices[0].message.content;
+      message = res.choices[0].message.content;
+    } else {
+      message = res.output || "";
     }
-    return res.output || "";
   }
-
   // Handle Llama model response format
-  if (modelId.toLowerCase().includes("llama")) {
-    return res?.generation || "";
+  else if (modelId.toLowerCase().includes("llama")) {
+    message = res?.generation || "";
   }
-
   // Handle Titan model response format
-  if (modelId.toLowerCase().includes("titan")) {
-    return res?.outputText || "";
+  else if (modelId.toLowerCase().includes("titan")) {
+    message = res?.outputText || "";
   }
-
   // Handle Claude and other models
-  return res?.content?.[0]?.text || "";
-}
-
-export async function* transformBedrockStream(
-  stream: ReadableStream,
-  modelId: string,
-) {
-  const reader = stream.getReader();
-
-  try {
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-
-      const parsed = parseEventData(value);
-      if (!parsed) continue;
-
-      // console.log("parseEventData=========================");
-      // console.log(parsed);
-      // Handle Claude 3 models
-      if (modelId.startsWith("anthropic.claude")) {
-        if (parsed.type === "message_start") {
-          // Initialize message
-          continue;
-        } else if (parsed.type === "content_block_start") {
-          if (parsed.content_block?.type === "tool_use") {
-            yield `data: ${JSON.stringify(parsed)}\n\n`;
-          }
-          continue;
-        } else if (parsed.type === "content_block_delta") {
-          if (parsed.delta?.type === "text_delta") {
-            yield `data: ${JSON.stringify({
-              delta: { text: parsed.delta.text },
-            })}\n\n`;
-          } else if (parsed.delta?.type === "input_json_delta") {
-            yield `data: ${JSON.stringify(parsed)}\n\n`;
-          }
-        } else if (parsed.type === "content_block_stop") {
-          yield `data: ${JSON.stringify(parsed)}\n\n`;
-        } else if (
-          parsed.type === "message_delta" &&
-          parsed.delta?.stop_reason
-        ) {
-          yield `data: ${JSON.stringify({
-            delta: { stop_reason: parsed.delta.stop_reason },
-          })}\n\n`;
-        }
-      }
-      // Handle Mistral models
-      else if (modelId.toLowerCase().includes("mistral")) {
-        if (parsed.choices?.[0]?.message?.tool_calls) {
-          const toolCalls = parsed.choices[0].message.tool_calls;
-          for (const toolCall of toolCalls) {
-            yield `data: ${JSON.stringify({
-              type: "content_block_start",
-              content_block: {
-                type: "tool_use",
-                id: toolCall.id || `tool-${Date.now()}`,
-                name: toolCall.function?.name,
-              },
-            })}\n\n`;
-
-            if (toolCall.function?.arguments) {
-              yield `data: ${JSON.stringify({
-                type: "content_block_delta",
-                delta: {
-                  type: "input_json_delta",
-                  partial_json: toolCall.function.arguments,
-                },
-              })}\n\n`;
-            }
-
-            yield `data: ${JSON.stringify({
-              type: "content_block_stop",
-            })}\n\n`;
-          }
-        } else if (parsed.choices?.[0]?.message?.content) {
-          yield `data: ${JSON.stringify({
-            delta: { text: parsed.choices[0].message.content },
-          })}\n\n`;
-        }
-
-        if (parsed.choices?.[0]?.finish_reason) {
-          yield `data: ${JSON.stringify({
-            delta: { stop_reason: parsed.choices[0].finish_reason },
-          })}\n\n`;
-        }
-      }
-      // Handle Llama models
-      else if (modelId.toLowerCase().includes("llama")) {
-        if (parsed.generation) {
-          yield `data: ${JSON.stringify({
-            delta: { text: parsed.generation },
-          })}\n\n`;
-        }
-        if (parsed.stop_reason) {
-          yield `data: ${JSON.stringify({
-            delta: { stop_reason: parsed.stop_reason },
-          })}\n\n`;
-        }
-      }
-      // Handle Titan models
-      else if (modelId.toLowerCase().includes("titan")) {
-        if (parsed.outputText) {
-          yield `data: ${JSON.stringify({
-            delta: { text: parsed.outputText },
-          })}\n\n`;
-        }
-        if (parsed.completionReason) {
-          yield `data: ${JSON.stringify({
-            delta: { stop_reason: parsed.completionReason },
-          })}\n\n`;
-        }
-      }
-      // Handle other models with basic text output
-      else {
-        const text = parsed.response || parsed.output || "";
-        if (text) {
-          yield `data: ${JSON.stringify({
-            delta: { text },
-          })}\n\n`;
-        }
-      }
-    }
-  } finally {
-    reader.releaseLock();
+  else if (res.content?.[0]?.text) {
+    message = res.content[0].text;
   }
+  // Handle other response formats
+  else {
+    message = res.output || res.response || res.message || "";
+  }
+
+  return message;
 }

@@ -4,8 +4,6 @@ import {
   sign,
   decrypt,
   getBedrockEndpoint,
-  transformBedrockStream,
-  parseEventData,
   BedrockCredentials,
 } from "../utils/aws";
 import { getServerSideConfig } from "../config/server";
@@ -178,50 +176,7 @@ async function requestBedrock(req: NextRequest) {
         "Empty response from Bedrock. Please check AWS credentials and permissions.",
       );
     }
-
-    // Handle non-streaming response
-    if (!shouldStream) {
-      const responseText = await res.text();
-      const parsed = parseEventData(new TextEncoder().encode(responseText));
-      if (!parsed) {
-        throw new Error("Failed to parse Bedrock response");
-      }
-      return NextResponse.json(parsed);
-    }
-
-    // Handle streaming response
-    const transformedStream = transformBedrockStream(res.body, modelId);
-    const encoder = new TextEncoder();
-    const stream = new ReadableStream({
-      async start(controller) {
-        try {
-          for await (const chunk of transformedStream) {
-            // Ensure we're sending non-empty chunks
-            if (chunk && chunk.trim()) {
-              controller.enqueue(encoder.encode(chunk));
-            }
-          }
-          controller.close();
-        } catch (err) {
-          console.error("[Bedrock Stream Error]:", err);
-          controller.error(err);
-        }
-      },
-    });
-
-    const newHeaders = new Headers(res.headers);
-    newHeaders.delete("www-authenticate");
-    newHeaders.set("Content-Type", "text/event-stream");
-    newHeaders.set("Cache-Control", "no-cache");
-    newHeaders.set("Connection", "keep-alive");
-    // to disable nginx buffering
-    newHeaders.set("X-Accel-Buffering", "no");
-
-    return new Response(stream, {
-      status: res.status,
-      statusText: res.statusText,
-      headers: newHeaders,
-    });
+    return res;
   } catch (e) {
     console.error("[Bedrock Request Error]:", e);
     throw e;
