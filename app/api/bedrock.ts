@@ -32,14 +32,10 @@ async function getBedrockCredentials(
     const [encryptedRegion, encryptedAccessKey, encryptedSecretKey] =
       credentials.split(":");
 
-    // console.log("===========encryptedRegion",encryptedRegion);
-    // console.log("===========encryptedAccessKey",encryptedAccessKey);
-    // console.log("===========encryptedSecretKey",encryptedSecretKey);
     if (!encryptedRegion || !encryptedAccessKey || !encryptedSecretKey) {
       throw new Error("Invalid Authorization header format");
     }
     const encryptionKey = req.headers.get("XEncryptionKey") || "";
-    // console.log("===========encryptionKey",encryptionKey);
     // Decrypt the credentials
     [awsRegion, awsAccessKey, awsSecretKey] = await Promise.all([
       decrypt(encryptedRegion, encryptionKey),
