@@ -1,9 +1,3 @@
-import SHA256 from "crypto-js/sha256";
-import HmacSHA256 from "crypto-js/hmac-sha256";
-import Hex from "crypto-js/enc-hex";
-import Utf8 from "crypto-js/enc-utf8";
-import { AES, enc, lib, PBKDF2, mode, pad, algo } from "crypto-js";
-
 // Types and Interfaces
 export interface BedrockCredentials {
   region: string;
@@ -15,89 +9,128 @@ export interface BedrockCredentials {
 type ParsedEvent = Record<string, any>;
 type EventResult = ParsedEvent[];
 
-// Encryption utilities
-function generateSalt(): string {
-  const salt = lib.WordArray.random(128 / 8);
-  return salt.toString(enc.Base64);
-}
-
-function generateIV(): string {
-  const iv = lib.WordArray.random(128 / 8);
-  return iv.toString(enc.Base64);
-}
-
-function deriveKey(password: string, salt: string): lib.WordArray {
-  // Use PBKDF2 with SHA256 for key derivation
-  return PBKDF2(password, salt, {
-    keySize: 256 / 32,
-    iterations: 10000,
-    hasher: algo.SHA256,
-  });
-}
-
 // Using a dot as separator since it's not used in Base64
 const SEPARATOR = ".";
 
-export function encrypt(data: string, encryptionKey: string): string {
+// Unified crypto utilities for both frontend and backend
+async function generateKey(
+  password: string,
+  salt: Uint8Array,
+): Promise<CryptoKey> {
+  const enc = new TextEncoder();
+  const keyMaterial = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(password),
+    { name: "PBKDF2" },
+    false,
+    ["deriveBits", "deriveKey"],
+  );
+
+  return crypto.subtle.deriveKey(
+    {
+      name: "PBKDF2",
+      salt,
+      iterations: 100000,
+      hash: "SHA-256",
+    },
+    keyMaterial,
+    { name: "AES-GCM", length: 256 },
+    false,
+    ["encrypt", "decrypt"],
+  );
+}
+
+function arrayBufferToBase64(buffer: ArrayBuffer | Uint8Array): string {
+  const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
+  return btoa(String.fromCharCode(...bytes));
+}
+
+function base64ToArrayBuffer(base64: string): Uint8Array {
+  const binaryString = atob(base64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes;
+}
+
+export async function encrypt(
+  data: string,
+  encryptionKey: string,
+): Promise<string> {
   if (!data) return "";
   if (!encryptionKey) {
     throw new Error("Encryption key is required for AWS credential encryption");
   }
+
   try {
-    // Generate salt and IV
-    const salt = generateSalt();
-    const iv = generateIV();
+    const enc = new TextEncoder();
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const key = await generateKey(encryptionKey, salt);
 
-    // Derive key using PBKDF2
-    const key = deriveKey(encryptionKey, salt);
+    const encrypted = await crypto.subtle.encrypt(
+      {
+        name: "AES-GCM",
+        iv,
+      },
+      key,
+      enc.encode(data),
+    );
 
-    // Encrypt the data
-    const encrypted = AES.encrypt(data, key, {
-      iv: enc.Base64.parse(iv),
-      mode: mode.CBC,
-      padding: pad.Pkcs7,
-    });
+    // Convert to base64 strings
+    const encryptedBase64 = arrayBufferToBase64(encrypted);
+    const saltBase64 = arrayBufferToBase64(salt);
+    const ivBase64 = arrayBufferToBase64(iv);
 
-    // Combine salt, IV, and encrypted data
-    // Format: salt.iv.encryptedData
-    return [salt, iv, encrypted.toString()].join(SEPARATOR);
+    return [saltBase64, ivBase64, encryptedBase64].join(SEPARATOR);
   } catch (error) {
+    console.error("[Encryption Error]:", error);
     throw new Error("Failed to encrypt AWS credentials");
   }
 }
 
-export function decrypt(encryptedData: string, encryptionKey: string): string {
+export async function decrypt(
+  encryptedData: string,
+  encryptionKey: string,
+): Promise<string> {
   if (!encryptedData) return "";
   if (!encryptionKey) {
     throw new Error("Encryption key is required for AWS credential decryption");
   }
-  try {
-    let components = encryptedData.split(SEPARATOR);
-    const [salt, iv, data] = components;
-    // For new format, use the provided salt and IV
-    const key = deriveKey(encryptionKey, salt);
-    const decrypted = AES.decrypt(data, key, {
-      iv: enc.Base64.parse(iv),
-      mode: mode.CBC,
-      padding: pad.Pkcs7,
-    });
 
-    const result = decrypted.toString(enc.Utf8);
-    if (!result) {
-      throw new Error("Failed to decrypt AWS credentials");
-    }
-    return result;
+  try {
+    const [saltBase64, ivBase64, cipherBase64] = encryptedData.split(SEPARATOR);
+
+    // Convert base64 strings back to Uint8Arrays
+    const salt = base64ToArrayBuffer(saltBase64);
+    const iv = base64ToArrayBuffer(ivBase64);
+    const cipherData = base64ToArrayBuffer(cipherBase64);
+
+    const key = await generateKey(encryptionKey, salt);
+
+    const decrypted = await crypto.subtle.decrypt(
+      {
+        name: "AES-GCM",
+        iv,
+      },
+      key,
+      cipherData,
+    );
+
+    const dec = new TextDecoder();
+    return dec.decode(decrypted);
   } catch (error) {
+    console.error("[Decryption Error]:", error);
     throw new Error("Failed to decrypt AWS credentials");
   }
 }
 
 export function maskSensitiveValue(value: string): string {
   if (!value) return "";
-  if (value.length <= 4) return value;
-  // Use constant-time operations to prevent timing attacks
-  const masked = Buffer.alloc(value.length - 4, "*").toString();
-  return value.slice(0, 2) + masked + value.slice(-2);
+  if (value.length <= 6) return value;
+  const masked = "*".repeat(value.length - 6);
+  return value.slice(0, 3) + masked + value.slice(-3);
 }
 
 // AWS Signing
@@ -113,26 +146,33 @@ export interface SignParams {
   isStreaming?: boolean;
 }
 
-function hmac(
-  key: string | CryptoJS.lib.WordArray,
+async function createHmac(
+  key: ArrayBuffer | Uint8Array,
   data: string,
-): CryptoJS.lib.WordArray {
-  if (typeof key === "string") {
-    key = Utf8.parse(key);
-  }
-  return HmacSHA256(data, key);
+): Promise<ArrayBuffer> {
+  const encoder = new TextEncoder();
+  const keyData = key instanceof Uint8Array ? key : new Uint8Array(key);
+  const keyObject = await crypto.subtle.importKey(
+    "raw",
+    keyData,
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  return crypto.subtle.sign("HMAC", keyObject, encoder.encode(data));
 }
 
-function getSigningKey(
+async function getSigningKey(
   secretKey: string,
   dateStamp: string,
   region: string,
   service: string,
-): CryptoJS.lib.WordArray {
-  const kDate = hmac("AWS4" + secretKey, dateStamp);
-  const kRegion = hmac(kDate, region);
-  const kService = hmac(kRegion, service);
-  const kSigning = hmac(kService, "aws4_request");
+): Promise<ArrayBuffer> {
+  const encoder = new TextEncoder();
+  const kDate = await createHmac(encoder.encode("AWS4" + secretKey), dateStamp);
+  const kRegion = await createHmac(kDate, region);
+  const kService = await createHmac(kRegion, service);
+  const kSigning = await createHmac(kService, "aws4_request");
   return kSigning;
 }
 
@@ -202,7 +242,14 @@ export async function sign({
     const dateStamp = amzDate.slice(0, 8);
 
     const bodyString = typeof body === "string" ? body : JSON.stringify(body);
-    const payloadHash = SHA256(bodyString).toString(Hex);
+    const encoder = new TextEncoder();
+    const payloadBuffer = await crypto.subtle.digest(
+      "SHA-256",
+      encoder.encode(bodyString),
+    );
+    const payloadHash = Array.from(new Uint8Array(payloadBuffer))
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
 
     const headers: Record<string, string> = {
       accept: isStreaming
@@ -215,6 +262,7 @@ export async function sign({
       ...customHeaders,
     };
 
+    // Add x-amzn-bedrock-accept header for streaming requests
     if (isStreaming) {
       headers["x-amzn-bedrock-accept"] = "*/*";
     }
@@ -244,20 +292,34 @@ export async function sign({
 
     const algorithm = "AWS4-HMAC-SHA256";
     const credentialScope = `${dateStamp}/${region}/${service}/aws4_request`;
+
+    const canonicalRequestHash = Array.from(
+      new Uint8Array(
+        await crypto.subtle.digest("SHA-256", encoder.encode(canonicalRequest)),
+      ),
+    )
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+
     const stringToSign = [
       algorithm,
       amzDate,
       credentialScope,
-      SHA256(canonicalRequest).toString(Hex),
+      canonicalRequestHash,
     ].join("\n");
 
-    const signingKey = getSigningKey(
+    const signingKey = await getSigningKey(
       secretAccessKey,
       dateStamp,
       region,
       service,
     );
-    const signature = hmac(signingKey, stringToSign).toString(Hex);
+
+    const signature = Array.from(
+      new Uint8Array(await createHmac(signingKey, stringToSign)),
+    )
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
 
     const authorization = [
       `${algorithm} Credential=${accessKeyId}/${credentialScope}`,
@@ -278,7 +340,9 @@ export async function sign({
 // Bedrock utilities
 function decodeBase64(base64String: string): string {
   try {
-    return Buffer.from(base64String, "base64").toString("utf-8");
+    const bytes = Buffer.from(base64String, "base64");
+    const decoder = new TextDecoder("utf-8");
+    return decoder.decode(bytes);
   } catch (e) {
     console.error("[Base64 Decode Error]:", e);
     return "";
@@ -286,7 +350,7 @@ function decodeBase64(base64String: string): string {
 }
 
 export function parseEventData(chunk: Uint8Array): EventResult {
-  const decoder = new TextDecoder();
+  const decoder = new TextDecoder("utf-8");
   const text = decoder.decode(chunk);
   const results: EventResult = [];
 

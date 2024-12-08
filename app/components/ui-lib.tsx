@@ -276,26 +276,18 @@ export function PasswordInput(
   },
 ) {
   const [visible, setVisible] = useState(false);
-  const [displayValue, setDisplayValue] = useState(props.value as string);
-  const { maskWhenShow, ...inputProps } = props;
-
-  useEffect(() => {
-    if (maskWhenShow && visible && props.value) {
-      setDisplayValue(maskSensitiveValue(props.value as string));
-    } else {
-      setDisplayValue(props.value as string);
-    }
-  }, [visible, props.value, maskWhenShow]);
+  const [isEditing, setIsEditing] = useState(false);
+  const { maskWhenShow, onChange, value, ...inputProps } = props;
 
   function changeVisibility() {
     setVisible(!visible);
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (props.onChange) {
-      props.onChange(e);
-    }
-  };
+  // Get display value - use masked value only when showing and maskWhenShow is true and not editing
+  const displayValue =
+    maskWhenShow && visible && value && !isEditing
+      ? maskSensitiveValue(value as string)
+      : value;
 
   return (
     <div className={"password-input-container"}>
@@ -308,7 +300,9 @@ export function PasswordInput(
       <input
         {...inputProps}
         value={displayValue}
-        onChange={handleChange}
+        onChange={onChange}
+        onFocus={() => setIsEditing(true)}
+        onBlur={() => setIsEditing(false)}
         type={visible ? "text" : "password"}
         className={"password-input"}
       />
