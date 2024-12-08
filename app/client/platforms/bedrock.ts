@@ -583,12 +583,24 @@ export class BedrockApi implements LLMApi {
     }
   }
 
+  /**
+   * Usage tracking is not supported for Bedrock API.
+   * @throws {Error} Always throws an error indicating the operation is not supported.
+   */
   async usage() {
-    return { used: 0, total: 0 };
+    throw new Error(
+      "Usage tracking is not supported for Bedrock API. Use AWS CloudWatch metrics instead."
+    );
   }
 
+  /**
+   * Model listing is not supported for Bedrock API.
+   * @throws {Error} Always throws an error indicating the operation is not supported.
+   */
   async models() {
-    return [];
+    throw new Error(
+      "Model listing is not supported for Bedrock API. Configure available models in AWS Console."
+    );
   }
 }
 
