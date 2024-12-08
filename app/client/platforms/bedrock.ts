@@ -51,6 +51,11 @@ async function getBedrockHeaders(
   shouldStream: boolean,
 ): Promise<Record<string, string>> {
   const accessStore = useAccessStore.getState();
+  // Validate credentials
+  if (!accessStore.awsAccessKey || !accessStore.awsSecretKey || !accessStore.awsRegion) {
+    throw new Error("Missing required AWS credentials");
+  }
+
   const bedrockHeaders = isApp
     ? await sign({
         method: "POST",
@@ -66,19 +71,24 @@ async function getBedrockHeaders(
     : getHeaders();
 
   if (!isApp) {
-    const { awsRegion, awsAccessKey, awsSecretKey, encryptionKey } =
-      accessStore;
+    const { awsRegion, awsAccessKey, awsSecretKey, encryptionKey } = accessStore;
+    if (!encryptionKey) {
+      throw new Error("Missing encryption key");
+    }
 
     const bedrockHeadersConfig = {
       XModelID: modelId,
       XEncryptionKey: encryptionKey,
       ShouldStream: String(shouldStream),
-      Authorization: await createAuthHeader(
-        awsRegion,
-        awsAccessKey,
-        awsSecretKey,
+      Authorization: await createAuthHeader({
+        region: awsRegion,
+        accessKey: awsAccessKey,
+        secretKey: awsSecretKey,
         encryptionKey,
-      ),
+      }).catch(error => {
+        console.error("[Bedrock] Failed to create auth header:", error);
+        throw new Error("Failed to create authorization header");
+      }),
     };
 
     Object.assign(bedrockHeaders, bedrockHeadersConfig);
