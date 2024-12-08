@@ -11,19 +11,6 @@ export interface BedrockCredentials {
   secretAccessKey: string;
 }
 
-export interface BedrockRequestConfig {
-  modelId: string;
-  shouldStream: boolean;
-  body: any;
-  credentials: BedrockCredentials;
-}
-
-export interface ModelValidationConfig {
-  requiredFields: string[];
-  optionalFields?: string[];
-  customValidation?: (body: any) => string | null;
-}
-
 // Type definitions for better type safety
 type ParsedEvent = Record<string, any>;
 type EventResult = ParsedEvent[];
