@@ -573,8 +573,9 @@ export class BedrockApi implements LLMApi {
           const message = extractMessage(resJson);
           options.onFinish(message, res);
         } catch (e) {
-          console.error("failed to chat", e);
-          options.onError?.(e as Error);
+          const error = e instanceof Error ? e : new Error('Unknown error occurred');
+          console.error("[Bedrock Client] Chat failed:", error.message);
+          options.onError?.(error);
         }
       }
     } catch (e) {
