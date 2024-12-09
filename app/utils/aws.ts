@@ -642,8 +642,7 @@ export function getBedrockEndpoint(
 
 export function extractMessage(res: any, modelId: string = ""): string {
   if (!res) {
-    console.error("[AWS Extract Error] extractMessage Empty response");
-    return "";
+    throw new Error("Empty response received");
   }
 
   let message = "";
