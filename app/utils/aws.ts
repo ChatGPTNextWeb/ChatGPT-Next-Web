@@ -555,7 +555,7 @@ export function processMessage(
       remainText += newText;
     }
   } catch (e) {
-    console.error("[Bedrock Request] parse error", e);
+    console.warn("Failed to process Bedrock message");
   }
 
   return { remainText, index };
