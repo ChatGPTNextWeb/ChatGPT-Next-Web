@@ -332,7 +332,7 @@ export async function sign({
       Authorization: authorization,
     };
   } catch (error) {
-    console.error("[AWS Signing Error]:", error);
+    console.error("[AWS Signing Error]: Failed to sign request");
     throw new Error("Failed to sign AWS request");
   }
 }
