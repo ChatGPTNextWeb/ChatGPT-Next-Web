@@ -826,21 +826,26 @@ function bedrockStream(
           index = result.index;
         }
       } catch (err) {
-        console.error("[Bedrock Stream Error]:", err);
-        throw err;
+        console.error(
+          "[Bedrock Stream]:",
+          err instanceof Error ? err.message : "Stream processing failed"
+        );
+        throw new Error("Failed to process stream response");
       } finally {
         reader.releaseLock();
         finish();
       }
     } catch (e) {
-      // @ts-ignore
-      if (e.name === "AbortError") {
+      if (e instanceof Error && e.name === "AbortError") {
         console.log("[Bedrock Client] Aborted by user");
         return;
       }
-      console.error("[Bedrock Request] error", e);
+      console.error(
+        "[Bedrock Request] Failed:",
+        e instanceof Error ? e.message : "Request failed"
+      );
       options.onError?.(e);
-      throw e;
+      throw new Error("Request processing failed");
     }
   }
 
