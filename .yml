@@ -1,0 +1,12 @@
+$ npm install --save ('https://smee.io/PI6J3xe99sOV7LRB')
+
+const SmeeClient = require('https://smee.io/PI6J3xe99sOV7LRB')
+const smee = new SmeeClient({
+  source: 'https://smee.io/PI6J3xe99sOV7LRB',
+  target: 'http://localhost:3000/events',
+  logger: console
+})
+
+const events = smee.start()
+// Stop forwarding events
+events.close()
