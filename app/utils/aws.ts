@@ -85,7 +85,7 @@ export async function encrypt(
 
     return [saltBase64, ivBase64, encryptedBase64].join(SEPARATOR);
   } catch (error) {
-    console.error("[Encryption Error]:", error);
+    // console.error("[Encryption Error]:", error);
     throw new Error("Failed to encrypt AWS credentials");
   }
 }
