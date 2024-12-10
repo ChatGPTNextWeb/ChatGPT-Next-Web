@@ -609,10 +609,15 @@ export function processChunks(
         chunks.shift();
       }
     } catch (e) {
-      console.error("[Chunk Process Error]:", e);
-      chunks.shift(); // Remove error chunk
-      pendingChunk = null; // Reset pending chunk on error
-    }
+      console.warn("Failed to process chunk, attempting recovery");
+      // Attempt to recover by processing the next chunk
+      if (chunks.length > 1) {
+        chunks.shift();
+        pendingChunk = null;
+      } else {
+        // If this is the last chunk, throw to prevent data loss
+        throw new Error("Failed to process final chunk");
+      }
   }
 
   return {
