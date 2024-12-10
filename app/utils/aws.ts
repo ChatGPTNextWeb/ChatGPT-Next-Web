@@ -10,7 +10,7 @@ type ParsedEvent = Record<string, any>;
 type EventResult = ParsedEvent[];
 
 // Using a dot as separator since it's not used in Base64
-const SEPARATOR = ".";
+const SEPARATOR = "~";
 
 // Unified crypto utilities for both frontend and backend
 async function generateKey(
@@ -121,7 +121,6 @@ export async function decrypt(
     const dec = new TextDecoder();
     return dec.decode(decrypted);
   } catch (error) {
-    console.error("[Decryption Error]:", error);
     throw new Error("Failed to decrypt AWS credentials");
   }
 }
