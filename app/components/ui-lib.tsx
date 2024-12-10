@@ -503,13 +503,26 @@ export function SearchSelector<T>(props: {
     }
   };
 
+  const { items, onClose } = props;
   // 过滤列表项
-  const filteredItems = props.items.filter(
+  const filteredItems = items.filter(
     (item) =>
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (item.subTitle &&
         item.subTitle.toLowerCase().includes(searchQuery.toLowerCase())),
   );
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose?.();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onClose]);
 
   return (
     <div className={styles["selector"]} onClick={() => props.onClose?.()}>
@@ -522,6 +535,7 @@ export function SearchSelector<T>(props: {
           <div className={styles["selector-search"]}>
             <input
               type="text"
+              autoFocus
               className={styles["selector-search-input"]}
               placeholder="search model"
               value={searchQuery}
