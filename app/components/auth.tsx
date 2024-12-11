@@ -103,6 +103,14 @@ export function AuthPage() {
           />
         </>
       ) : null}
+
+      <div className={styles["auth-actions"]}>
+        <IconButton
+          text={Locale.Auth.Confirm}
+          type="primary"
+          onClick={goChat}
+        />
+      </div>
     </div>
   );
 }
