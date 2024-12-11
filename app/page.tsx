@@ -1,8 +1,16 @@
 import { Analytics } from "@vercel/analytics/react";
 import { Home } from "./components/home";
 import { getServerSideConfig } from "./config/server";
-import HotjarLoader from "./components/HotjarLoader"; // 引入 HotjarLoader
+import Hotjar from '@hotjar/browser';
+const siteId = 3414362;
+const hotjarVersion = 6;
 
+Hotjar.init(siteId, hotjarVersion);
+
+// Initializing with `debug` option:
+Hotjar.init(siteId, hotjarVersion, {
+    debug: true
+});
 const serverConfig = getServerSideConfig();
 
 export default async function App() {
