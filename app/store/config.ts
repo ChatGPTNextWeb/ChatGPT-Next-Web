@@ -91,7 +91,6 @@ export const DEFAULT_CONFIG = {
     voice: DEFAULT_TTS_VOICE,
     speed: 1.0,
   },
-
   realtimeConfig: {
     enable: false,
     provider: "OpenAI" as ServiceProvider,
