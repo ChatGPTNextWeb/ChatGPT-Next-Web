@@ -1,6 +1,7 @@
 "use client";
 
 require("../polyfill");
+import Hotjar from '@hotjar/browser';
 
 import { useState, useEffect } from "react";
 import styles from "./home.module.scss";
@@ -29,7 +30,14 @@ import { getClientConfig } from "../config/client";
 import { type ClientApi, getClientApi } from "../client/api";
 import { useAccessStore } from "../store";
 import clsx from "clsx";
+const siteId = 5237727;
+const hotjarVersion = 6;
+Hotjar.init(siteId, hotjarVersion);
 
+// Initializing with `debug` option:
+Hotjar.init(siteId, hotjarVersion, {
+  debug: true
+});
 export function Loading(props: { noLogo?: boolean }) {
   return (
     <div className={clsx("no-dark", styles["loading-content"])}>
