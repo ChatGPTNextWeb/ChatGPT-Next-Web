@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { Analytics } from "@vercel/analytics/react";
 
 import { Home } from "./components/home";
@@ -8,7 +9,7 @@ const serverConfig = getServerSideConfig();
 
 export default function App() {
     // 使用 useEffect 加载 Hotjar 脚本
-    React.useEffect(() => {
+    useEffect(() => {
         if (serverConfig?.isVercel) {
             (function (h, o, t, j, a, r) {
                 h.hj =
