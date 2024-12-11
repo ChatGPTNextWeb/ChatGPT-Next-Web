@@ -4,7 +4,6 @@ import { useEffect } from "react";
 
 export default function HotjarLoader() {
     useEffect(() => {
-        // Hotjar Tracking Code
         (function (h, o, t, j, a, r) {
             h.hj =
                 h.hj ||
@@ -17,7 +16,7 @@ export default function HotjarLoader() {
             a = o.getElementsByTagName("head")[0];
             if (!a) {
                 console.error("Head element not found in the document.");
-                return;
+                return; // 如果没有找到 <head>，直接退出
             }
 
             // 创建 <script> 元素
@@ -30,5 +29,5 @@ export default function HotjarLoader() {
         })(window, document, "https://static.hotjar.com/c/hotjar-", ".js?sv=");
     }, []);
 
-    return null; // 不需要渲染任何内容
+    return null; // 组件不需要渲染任何内容
 }
