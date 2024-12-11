@@ -2,7 +2,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { Home } from "./components/home";
 import { getServerSideConfig } from "./config/server";
 import Hotjar from '@hotjar/browser';
-const siteId = 3414362;
+const siteId = 4245983;
 const hotjarVersion = 6;
 
 Hotjar.init(siteId, hotjarVersion);
