@@ -20,7 +20,6 @@ export default async function App() {
             {serverConfig?.isVercel && (
                 <>
                     <Analytics />
-                    <HotjarLoader /> {/* 加入 HotjarLoader */}
                 </>
             )}
         </>
