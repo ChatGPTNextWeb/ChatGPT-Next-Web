@@ -71,7 +71,7 @@
     "@types/spark-md5": "^3.0.4",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
-    "@hotjar/browser":"^1.0.9",
+    "@hotjar/browser": "^1.0.9",
     "eslint": "^8.49.0",
     "eslint-config-next": "13.4.19",
     "eslint-config-prettier": "^8.8.0",
