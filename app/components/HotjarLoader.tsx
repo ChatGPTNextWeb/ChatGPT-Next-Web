@@ -11,14 +11,6 @@ export default function HotjarLoader() {
                     (h.hj.q = h.hj.q || []).push(arguments);
                 };
             h._hjSettings = { hjid: 3414362, hjsv: 6 };
-
-            // 获取 <head> 元素
-            const headElement = o.getElementsByTagName("head")[0];
-            if (!headElement) {
-                console.error("Head element not found in the document.");
-                return; // 如果没有找到 <head>，直接退出
-            }
-
             // 创建 <script> 元素
             r = o.createElement("script");
             r.async = 1;
