@@ -13,8 +13,8 @@ export default function HotjarLoader() {
             h._hjSettings = { hjid: 3414362, hjsv: 6 };
 
             // 获取 <head> 元素
-            a = o.getElementsByTagName("head")[0];
-            if (!a) {
+            const headElement = o.getElementsByTagName("head")[0];
+            if (!headElement) {
                 console.error("Head element not found in the document.");
                 return; // 如果没有找到 <head>，直接退出
             }
@@ -25,7 +25,7 @@ export default function HotjarLoader() {
             r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
 
             // 将 <script> 插入 <head>
-            a.appendChild(r);
+            headElement.appendChild(r); // 使用明确的变量
         })(window, document, "https://static.hotjar.com/c/hotjar-", ".js?sv=");
     }, []);
 
