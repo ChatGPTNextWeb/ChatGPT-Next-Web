@@ -5,14 +5,13 @@ import Hotjar from '@hotjar/browser';
 const siteId = 5237727;
 const hotjarVersion = 6;
 
+const serverConfig = getServerSideConfig();
 Hotjar.init(siteId, hotjarVersion);
 
 // Initializing with `debug` option:
 Hotjar.init(siteId, hotjarVersion, {
     debug: true
 });
-const serverConfig = getServerSideConfig();
-
 export default async function App() {
     return (
         <>
