@@ -89,22 +89,22 @@ export const useUpdateStore = createPersistStore(
         set(() => ({
           remoteVersion: remoteId,
         }));
-        if (window.__TAURI__?.notification && isApp) {
+        if (window.__TAURI__?.core.notification && isApp) {
           // Check if notification permission is granted
-          await window.__TAURI__?.notification
+          await window.__TAURI__?.core.notification
             .isPermissionGranted()
             .then((granted) => {
               if (!granted) {
                 return;
               } else {
                 // Request permission to show notifications
-                window.__TAURI__?.notification
+                window.__TAURI__?.core.notification
                   .requestPermission()
                   .then((permission) => {
                     if (permission === "granted") {
                       if (version === remoteId) {
                         // Show a notification using Tauri
-                        window.__TAURI__?.notification.sendNotification({
+                        window.__TAURI__?.core.notification.sendNotification({
                           title: "NextChat",
                           body: `${Locale.Settings.Update.IsLatest}`,
                           icon: `${ChatGptIcon.src}`,
@@ -114,7 +114,7 @@ export const useUpdateStore = createPersistStore(
                         const updateMessage =
                           Locale.Settings.Update.FoundUpdate(`${remoteId}`);
                         // Show a notification for the new version using Tauri
-                        window.__TAURI__?.notification.sendNotification({
+                        window.__TAURI__?.core.notification.sendNotification({
                           title: "NextChat",
                           body: updateMessage,
                           icon: `${ChatGptIcon.src}`,

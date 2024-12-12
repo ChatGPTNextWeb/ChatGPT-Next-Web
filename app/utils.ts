@@ -21,7 +21,7 @@ export function trimTopic(topic: string) {
 export async function copyToClipboard(text: string) {
   try {
     if (window.__TAURI__) {
-      window.__TAURI__.writeText(text);
+      window.__TAURI__.core.writeText(text);
     } else {
       await navigator.clipboard.writeText(text);
     }
@@ -45,7 +45,7 @@ export async function copyToClipboard(text: string) {
 
 export async function downloadAs(text: string, filename: string) {
   if (window.__TAURI__) {
-    const result = await window.__TAURI__.dialog.save({
+    const result = await window.__TAURI__.core.dialog.save({
       defaultPath: `${filename}`,
       filters: [
         {
@@ -61,7 +61,7 @@ export async function downloadAs(text: string, filename: string) {
 
     if (result !== null) {
       try {
-        await window.__TAURI__.fs.writeTextFile(result, text);
+        await window.__TAURI__.core.fs.writeTextFile(result, text);
         showToast(Locale.Download.Success);
       } catch (error) {
         showToast(Locale.Download.Failed);
@@ -396,11 +396,11 @@ export function getOperationId(operation: {
 
 export function clientUpdate() {
   // this a wild for updating client app
-  return window.__TAURI__?.updater
+  return window.__TAURI__?.core.updater
     .checkUpdate()
     .then((updateResult) => {
       if (updateResult.shouldUpdate) {
-        window.__TAURI__?.updater
+        window.__TAURI__?.core.updater
           .installUpdate()
           .then((result) => {
             showToast(Locale.Settings.Update.Success);
