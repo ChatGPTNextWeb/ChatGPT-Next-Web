@@ -23,9 +23,9 @@ serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "2", features = [
 ] }
-tauri-plugin-window-state = "2"
+tauri-plugin-window-state = "2.2.0"
 percent-encoding = "2.3.1"
-reqwest = "0.12.9"
+reqwest = {version = "0.12.9", features = ["rustls-tls", "http2", "charset"], default-features = false} 
 futures-util = "0.3.30"
 bytes = "1.7.2"
 tauri-plugin-clipboard-manager = "2.2.0"
@@ -35,11 +35,13 @@ tauri-plugin-notification = "2"
 tauri-plugin-shell = "2"
 tauri-plugin-http = "2"
 
+[target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
+tauri-plugin-updater = "2"
+
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.
 # If you use cargo directly instead of tauri's cli you can use this feature flag to switch between tauri's `dev` and `build` modes.
 # DO NOT REMOVE!!
 custom-protocol = ["tauri/custom-protocol"]
 
-[target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
-tauri-plugin-updater = "2"
+
