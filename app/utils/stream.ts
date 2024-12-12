@@ -47,7 +47,7 @@ export function fetch(url: string, options?: RequestInit): Promise<Response> {
       signal.addEventListener("abort", () => close());
     }
     // @ts-ignore 2. listen response multi times, and write to Response.body
-    window.__TAURI__.core.event
+    window.__TAURI__.event
       .listen("stream-response", (e: ResponseEvent) =>
         requestIdPromise.then((request_id) => {
           const { request_id: rid, chunk, status } = e?.payload || {};
