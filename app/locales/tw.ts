@@ -9,6 +9,8 @@ const tw = {
     Unauthorized: isApp
       ? "檢測到無效 API Key，請前往[設定](/#/settings)頁檢查 API Key 是否設定正確。"
       : "存取密碼不正確或未填寫，請前往[登入](/#/auth)頁輸入正確的存取密碼，或者在[設定](/#/settings)頁填入你自己的 OpenAI API Key。",
+  },
+
   Auth: {
     Title: "需要密碼",
     Tips: "管理員開啟了密碼驗證，請在下方填入存取密碼",
