@@ -7,18 +7,16 @@ const tw = {
   WIP: "該功能仍在開發中……",
   Error: {
     Unauthorized: isApp
-      ? "检测到无效 API Key，请前往[设置](/#/settings)页检查 API Key 是否配置正确。需要key联系QQ：[1422756921](http://wpa.qq.com/msgrd?v=3&uin=1422756921&site=qq&menu=yes)。[青云博客](https://blog.aerr.cn)"
-      : "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者填入你自己的 OpenAI API Key。如果自己没有key联系QQ：[1422756921](http://wpa.qq.com/msgrd?v=3&uin=1422756921&site=qq&menu=yes)。[青云博客](https://blog.aerr.cn)",
+      ? "檢測到無效 API Key，請前往[設定](/#/settings)頁檢查 API Key 是否設定正確。"
+      : "存取密碼不正確或未填寫，請前往[登入](/#/auth)頁輸入正確的存取密碼，或者在[設定](/#/settings)頁填入你自己的 OpenAI API Key。",
   },
   Auth: {
-    Title: "需要访问密码或者key",
-    Tips: "管理员开启了验证，请在下方填入访问密码",
-    Tips1: "访问密码和key只需填一个即可",
-    SubTips1: "如果自己没有key联系QQ：1422756921", 
-    SubTips: "或者输入你的 OpenAI API key",
-    Input: "在此处填写访问密码",
-    Confirm: "确认",
-    Later: "稍后再说",
+    Title: "需要密碼",
+    Tips: "管理員開啟了密碼驗證，請在下方填入存取密碼",
+    SubTips: "或者輸入你的 OpenAI 或 Google API 金鑰",
+    Input: "在此處填寫存取密碼",
+    Confirm: "確認",
+    Later: "稍候再說",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 則對話`,
@@ -408,9 +406,7 @@ const tw = {
   Plugin: { Name: "外掛" },
   FineTuned: { Sysmessage: "你是一個助手" },
   Mask: {
-    blog: "青云博客",
-    faka: "购买卡密",
-    Name: "面具",
+    Name: "角色範本",
     Page: {
       Title: "預設角色角色範本",
       SubTitle: (count: number) => `${count} 個預設角色定義`,
