@@ -23,8 +23,6 @@ import {
   MIN_SIDEBAR_WIDTH,
   NARROW_SIDEBAR_WIDTH,
   Path,
-  BLOG_URL,
-  FAKA_URL,
   REPO_URL,
 } from "../constant";
 
