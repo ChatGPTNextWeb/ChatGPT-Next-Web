@@ -7,16 +7,13 @@ const cn = {
   WIP: "该功能仍在开发中……",
   Error: {
     Unauthorized: isApp
-      ? "检测到无效 API Key，请前往[设置](/#/settings)页检查 API Key 是否配置正确。需要key联系QQ：[1422756921](http://wpa.qq.com/msgrd?v=3&uin=1422756921&site=qq&menu=yes)。[青云博客](https://blog.aerr.cn)"
-      : "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者填入你自己的 OpenAI API Key。如果自己没有key联系QQ：[1422756921](http://wpa.qq.com/msgrd?v=3&uin=1422756921&site=qq&menu=yes)。[青云博客](https://blog.aerr.cn)",
-  },
+  ? "检测到无效 API Key，请前往[设置](/#/settings)页检查 API Key 是否配置正确。"
+      : "访问密码不正确或为空，请前往[登录](/#/auth)页输入正确的访问密码，或者在[设置](/#/settings)页填入你自己的 OpenAI API Key。",  },
   Auth: {
-    Title: "需要访问密码或者key",
-    Tips: "管理员开启了验证，请在下方填入访问密码",
-    Tips1: "访问密码和key只需填一个即可",
-    SubTips1: "如果自己没有key联系QQ：1422756921", 
-    SubTips: "或者输入你的 OpenAI API key",
-    Input: "在此处填写访问密码",
+   Title: "需要密码",
+    Tips: "管理员开启了密码验证，请在下方填入访问码",
+    SubTips: "或者输入你的 OpenAI 或 Google API 密钥",
+    Input: "在此处填写访问码",
     Confirm: "确认",
     Later: "稍后再说",
   },
@@ -379,7 +376,7 @@ const cn = {
   },
   Store: {
     DefaultTopic: "新的聊天",
-    BotHello: "有什么可以帮你的吗，如有问题请联系QQ：[1422756921](http://wpa.qq.com/msgrd?v=3&uin=1422756921&site=qq&menu=yes)",
+   BotHello: "有什么可以帮你的吗",
     Error: "出错了，稍后重试吧",
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
@@ -411,8 +408,7 @@ const cn = {
     Sysmessage: "你是一个助手",
   },
   Mask: {
-    blog: "博客",
-    faka: "卡密",
+
     Name: "面具",
     Page: {
       Title: "预设角色面具",
