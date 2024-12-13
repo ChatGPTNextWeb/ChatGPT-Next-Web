@@ -10,8 +10,6 @@ const id: PartialLocaleType = {
   Auth: {
     Title: "Diperlukan Kode Akses",
     Tips: "Masukkan kode akses di bawah",
-    Tips1: "密码和key只需填一个即可",
-    SubTips1: "如果自己没有key联系QQ：1422756921 ", 
     SubTips: "Atau masukkan kunci API OpenAI Anda",
     Input: "Kode Akses",
     Confirm: "Konfirmasi",
