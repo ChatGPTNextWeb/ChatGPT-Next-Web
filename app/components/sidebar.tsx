@@ -186,7 +186,6 @@ export function SideBar(props: { className?: string }) {
           onClick={() => showToast(Locale.WIP)}
           shadow
         />
-
       </div>
 
       <div
