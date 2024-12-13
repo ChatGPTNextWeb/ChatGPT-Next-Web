@@ -232,7 +232,7 @@ export const XAI = {
 
 export const ChatGLM = {
   ExampleEndpoint: CHATGLM_BASE_URL,
-  ChatPath: "/api/paas/v4/chat/completions",
+  ChatPath: "api/paas/v4/chat/completions",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -264,6 +264,7 @@ export const KnowledgeCutOffDate: Record<string, string> = {
   "gpt-4o": "2023-10",
   "gpt-4o-2024-05-13": "2023-10",
   "gpt-4o-2024-08-06": "2023-10",
+  "gpt-4o-2024-11-20": "2023-10",
   "chatgpt-4o-latest": "2023-10",
   "gpt-4o-mini": "2023-10",
   "gpt-4o-mini-2024-07-18": "2023-10",
@@ -303,6 +304,7 @@ const openaiModels = [
   "gpt-4o",
   "gpt-4o-2024-05-13",
   "gpt-4o-2024-08-06",
+  "gpt-4o-2024-11-20",
   "chatgpt-4o-latest",
   "gpt-4o-mini",
   "gpt-4o-mini-2024-07-18",
@@ -318,6 +320,9 @@ const googleModels = [
   "gemini-1.0-pro",
   "gemini-1.5-pro-latest",
   "gemini-1.5-flash-latest",
+  "gemini-exp-1114",
+  "gemini-exp-1121",
+  "learnlm-1.5-pro-experimental",
   "gemini-pro-vision",
 ];
 
@@ -327,11 +332,13 @@ const anthropicModels = [
   "claude-2.1",
   "claude-3-sonnet-20240229",
   "claude-3-opus-20240229",
+  "claude-3-opus-latest",
   "claude-3-haiku-20240307",
+  "claude-3-5-haiku-20241022",
+  "claude-3-5-haiku-latest",
   "claude-3-5-sonnet-20240620",
   "claude-3-5-sonnet-20241022",
   "claude-3-5-sonnet-latest",
-  "claude-3-opus-latest",
 ];
 
 const baiduModels = [

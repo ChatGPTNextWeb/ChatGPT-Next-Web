@@ -85,6 +85,7 @@ import { nanoid } from "nanoid";
 import { useMaskStore } from "../store/mask";
 import { ProviderType } from "../utils/cloud";
 import { TTSConfigList } from "./tts-config";
+import { RealtimeConfigList } from "./realtime-chat/realtime-config";
 
 function EditPromptModal(props: { id: string; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -1785,9 +1786,11 @@ export function Settings() {
           <ListItem
             title={Locale.Settings.Access.CustomModel.Title}
             subTitle={Locale.Settings.Access.CustomModel.SubTitle}
+            vertical={true}
           >
             <input
               aria-label={Locale.Settings.Access.CustomModel.Title}
+              style={{ width: "100%", maxWidth: "unset", textAlign: "left" }}
               type="text"
               value={config.customModels}
               placeholder="model1,model2,model3"
@@ -1814,7 +1817,18 @@ export function Settings() {
         {shouldShowPromptModal && (
           <UserPromptModal onClose={() => setShowPromptModal(false)} />
         )}
-
+        <List>
+          <RealtimeConfigList
+            realtimeConfig={config.realtimeConfig}
+            updateConfig={(updater) => {
+              const realtimeConfig = { ...config.realtimeConfig };
+              updater(realtimeConfig);
+              config.update(
+                (config) => (config.realtimeConfig = realtimeConfig),
+              );
+            }}
+          />
+        </List>
         <List>
           <TTSConfigList
             ttsConfig={config.ttsConfig}

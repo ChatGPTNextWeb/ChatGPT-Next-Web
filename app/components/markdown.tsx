@@ -23,6 +23,7 @@ import { useChatStore } from "../store";
 import { IconButton } from "./button";
 
 import { useAppConfig } from "../store/config";
+import clsx from "clsx";
 
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -57,7 +58,7 @@ export function Mermaid(props: { code: string }) {
 
   return (
     <div
-      className="no-dark mermaid"
+      className={clsx("no-dark", "mermaid")}
       style={{
         cursor: "pointer",
         overflow: "auto",
@@ -89,7 +90,11 @@ export function PreCode(props: { children: any }) {
     const refText = ref.current.querySelector("code")?.innerText;
     if (htmlDom) {
       setHtmlCode((htmlDom as HTMLElement).innerText);
-    } else if (refText?.startsWith("<!DOCTYPE")) {
+    } else if (
+      refText?.startsWith("<!DOCTYPE") ||
+      refText?.startsWith("<svg") ||
+      refText?.startsWith("<?xml")
+    ) {
       setHtmlCode(refText);
     }
   }, 600);
@@ -193,7 +198,12 @@ function CustomCode(props: { children: any; className?: string }) {
   const renderShowMoreButton = () => {
     if (showToggle && enableCodeFold && collapsed) {
       return (
-        <div className={`show-hide-button ${collapsed ? "collapsed" : "expanded"}`}>
+        <div
+          className={clsx("show-hide-button", {
+            collapsed,
+            expanded: !collapsed,
+          })}
+        >
           <button onClick={toggleCollapsed}>{Locale.NewChat.More}</button>
         </div>
       );
@@ -203,7 +213,7 @@ function CustomCode(props: { children: any; className?: string }) {
   return (
     <>
       <code
-        className={props?.className}
+        className={clsx(props?.className)}
         ref={ref}
         style={{
           maxHeight: enableCodeFold && collapsed ? "400px" : "none",
@@ -238,6 +248,10 @@ function escapeBrackets(text: string) {
 
 function tryWrapHtmlCode(text: string) {
   // try add wrap html code (fixed: html codeblock include 2 newline)
+  // ignore embed codeblock
+  if (text.includes("```")) {
+    return text;
+  }
   return text
     .replace(
       /([`]*?)(\w*?)([\n\r]*?)(<!DOCTYPE html>)/g,

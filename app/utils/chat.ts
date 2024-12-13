@@ -138,7 +138,7 @@ export function uploadImage(file: Blob): Promise<string> {
   })
     .then((res) => res.json())
     .then((res) => {
-      console.log("res", res);
+      // console.log("res", res);
       if (res?.code == 0 && res?.data) {
         return res?.data;
       }

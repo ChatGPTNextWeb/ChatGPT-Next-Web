@@ -37,6 +37,17 @@ const sortModelTable = (models: ReturnType<typeof collectModels>) =>
     }
   });
 
+/**
+ * get model name and provider from a formatted string,
+ * e.g. `gpt-4@OpenAi` or `claude-3-5-sonnet@20240620@Google`
+ * @param modelWithProvider model name with provider separated by last `@` char,
+ * @returns [model, provider] tuple, if no `@` char found, provider is undefined
+ */
+export function getModelProvider(modelWithProvider: string): [string, string?] {
+  const [model, provider] = modelWithProvider.split(/@(?!.*@)/);
+  return [model, provider];
+}
+
 export function collectModelTable(
   models: readonly LLMModel[],
   customModels: string,
@@ -79,10 +90,10 @@ export function collectModelTable(
         );
       } else {
         // 1. find model by name, and set available value
-        const [customModelName, customProviderName] = name.split("@");
+        const [customModelName, customProviderName] = getModelProvider(name);
         let count = 0;
         for (const fullName in modelTable) {
-          const [modelName, providerName] = fullName.split("@");
+          const [modelName, providerName] = getModelProvider(fullName);
           if (
             customModelName == modelName &&
             (customProviderName === undefined ||
@@ -102,7 +113,7 @@ export function collectModelTable(
         }
         // 2. if model not exists, create new model with available value
         if (count === 0) {
-          let [customModelName, customProviderName] = name.split("@");
+          let [customModelName, customProviderName] = getModelProvider(name);
           const provider = customProvider(
             customProviderName || customModelName,
           );
@@ -139,7 +150,7 @@ export function collectModelTableWithDefaultModel(
       for (const key of Object.keys(modelTable)) {
         if (
           modelTable[key].available &&
-          key.split("@").shift() == defaultModel
+          getModelProvider(key)[0] == defaultModel
         ) {
           modelTable[key].isDefault = true;
           break;
