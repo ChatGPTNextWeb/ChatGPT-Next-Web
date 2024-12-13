@@ -186,12 +186,7 @@ export function SideBar(props: { className?: string }) {
           onClick={() => showToast(Locale.WIP)}
           shadow
         />
-      <a href={FAKA_URL} target="_blank">
-        <IconButton
-          text={shouldNarrow ? undefined : Locale.Mask.faka}
-          shadow
-        />
-      </a>
+
       </div>
 
       <div
