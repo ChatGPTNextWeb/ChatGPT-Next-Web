@@ -38,7 +38,6 @@ export function AuthPage() {
 
       <div className={styles["auth-title"]}>{Locale.Auth.Title}</div>
       <div className={styles["auth-tips"]}>{Locale.Auth.Tips}</div>
-    
 
       <input
         className={styles["auth-input"]}
@@ -54,7 +53,6 @@ export function AuthPage() {
       {!accessStore.hideUserApiKey ? (
         <>
           <div className={styles["auth-tips"]}>{Locale.Auth.SubTips}</div>
-      
           <input
             className={styles["auth-input"]}
             type="password"
