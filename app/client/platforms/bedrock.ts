@@ -139,7 +139,6 @@ export class BedrockApi implements LLMApi {
               if (item.text || typeof item === "string") {
                 return { text: item.text || item };
               }
-
               // Handle image content
               if (item.image_url?.url) {
                 const { url = "" } = item.image_url;
@@ -170,6 +169,7 @@ export class BedrockApi implements LLMApi {
           top_p: modelConfig.top_p || 0.9,
           top_k: modelConfig.top_k || 50,
           max_new_tokens: modelConfig.max_tokens || 1000,
+          stopSequences: modelConfig.stop || [],
         },
       };
 
@@ -182,7 +182,7 @@ export class BedrockApi implements LLMApi {
         ];
       }
 
-      // Add tools if available - now in correct format
+      // Add tools if available - exact Nova format
       if (toolsArray.length > 0) {
         requestBody.toolConfig = {
           tools: toolsArray.map((tool) => ({
@@ -192,14 +192,13 @@ export class BedrockApi implements LLMApi {
               inputSchema: {
                 json: {
                   type: "object",
-                  properties: tool?.function?.parameters || {},
-                  required: Object.keys(tool?.function?.parameters || {}),
+                  properties: tool?.function?.parameters?.properties || {},
+                  required: tool?.function?.parameters?.required || [],
                 },
               },
             },
           })),
           toolChoice: { auto: {} },
-          //  toolChoice: { any: {} }
         };
       }
 
@@ -501,7 +500,7 @@ export class BedrockApi implements LLMApi {
                 })),
               );
             } else if (isNova) {
-              // Format for Nova
+              // Format for Nova - Updated format
               // @ts-ignore
               requestPayload?.messages?.splice(
                 // @ts-ignore
@@ -511,35 +510,39 @@ export class BedrockApi implements LLMApi {
                   role: "assistant",
                   content: [
                     {
-                      text: "", // Add empty text content to satisfy type requirements
-                      tool_calls: toolCallMessage.tool_calls.map(
-                        (tool: ChatMessageTool) => ({
-                          id: tool.id,
-                          name: tool?.function?.name,
-                          arguments: tool?.function?.arguments
-                            ? JSON.parse(tool?.function?.arguments)
-                            : {},
-                        }),
-                      ),
+                      toolUse: {
+                        toolUseId: toolCallMessage.tool_calls[0].id,
+                        name: toolCallMessage.tool_calls[0]?.function?.name,
+                        input:
+                          typeof toolCallMessage.tool_calls[0]?.function
+                            ?.arguments === "string"
+                            ? JSON.parse(
+                                toolCallMessage.tool_calls[0]?.function
+                                  ?.arguments,
+                              )
+                            : toolCallMessage.tool_calls[0]?.function
+                                ?.arguments || {},
+                      },
                     },
                   ],
                 },
-                ...toolCallResult.map((result) => ({
+                {
                   role: "user",
                   content: [
                     {
-                      toolUseId: result.tool_call_id,
-                      content: [
-                        {
-                          json:
-                            typeof result.content === "string"
-                              ? JSON.parse(result.content)
-                              : result.content,
-                        },
-                      ],
+                      toolResult: {
+                        toolUseId: toolCallResult[0].tool_call_id,
+                        content: [
+                          {
+                            json: {
+                              content: toolCallResult[0].content,
+                            },
+                          },
+                        ],
+                      },
                     },
                   ],
-                })),
+                },
               );
             } else {
               console.warn(
@@ -573,7 +576,8 @@ export class BedrockApi implements LLMApi {
           const message = extractMessage(resJson);
           options.onFinish(message, res);
         } catch (e) {
-          const error = e instanceof Error ? e : new Error('Unknown error occurred');
+          const error =
+            e instanceof Error ? e : new Error("Unknown error occurred");
           console.error("[Bedrock Client] Chat failed:", error.message);
           options.onError?.(error);
         }
@@ -829,7 +833,7 @@ function bedrockStream(
       } catch (err) {
         console.error(
           "[Bedrock Stream]:",
-          err instanceof Error ? err.message : "Stream processing failed"
+          err instanceof Error ? err.message : "Stream processing failed",
         );
         throw new Error("Failed to process stream response");
       } finally {
@@ -843,7 +847,7 @@ function bedrockStream(
       }
       console.error(
         "[Bedrock Request] Failed:",
-        e instanceof Error ? e.message : "Request failed"
+        e instanceof Error ? e.message : "Request failed",
       );
       options.onError?.(e);
       throw new Error("Request processing failed");

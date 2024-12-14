@@ -435,22 +435,28 @@ export function processMessage(
   if (!data) return { remainText, index };
 
   try {
-    // Handle Nova's tool calls
+    // Handle Nova's tool calls with exact schema match
     // console.log("processMessage data=========================",data);
-    if (
-      data.stopReason === "tool_use" &&
-      data.output?.message?.content?.[0]?.toolUse
-    ) {
-      const toolUse = data.output.message.content[0].toolUse;
+    if (data.contentBlockStart?.start?.toolUse) {
+      const toolUse = data.contentBlockStart.start.toolUse;
       index += 1;
       runTools.push({
-        id: `tool-${Date.now()}`,
+        id: toolUse.toolUseId,
         type: "function",
         function: {
-          name: toolUse.name,
-          arguments: JSON.stringify(toolUse.input),
+          name: toolUse.name || "", // Ensure name is always present
+          arguments: "{}", // Initialize empty arguments
         },
       });
+      return { remainText, index };
+    }
+
+    // Handle Nova's tool input in contentBlockDelta
+    if (data.contentBlockDelta?.delta?.toolUse?.input) {
+      if (runTools[index]) {
+        runTools[index].function.arguments =
+          data.contentBlockDelta.delta.toolUse.input;
+      }
       return { remainText, index };
     }
 
@@ -465,11 +471,9 @@ export function processMessage(
       return { remainText, index };
     }
 
-    // Handle Nova's contentBlockDelta event
-    if (data.contentBlockDelta) {
-      if (data.contentBlockDelta.delta?.text) {
-        remainText += data.contentBlockDelta.delta.text;
-      }
+    // Handle Nova's text delta
+    if (data.contentBlockDelta?.delta?.text) {
+      remainText += data.contentBlockDelta.delta.text;
       return { remainText, index };
     }
 
@@ -496,7 +500,7 @@ export function processMessage(
           id: data.content_block.id,
           type: "function",
           function: {
-            name: data.content_block.name,
+            name: data.content_block.name || "", // Ensure name is always present
             arguments: "",
           },
         });
@@ -523,7 +527,7 @@ export function processMessage(
           id: toolCall.id || `tool-${Date.now()}`,
           type: "function",
           function: {
-            name: toolCall.function?.name,
+            name: toolCall.function?.name || "", // Ensure name is always present
             arguments: toolCall.function?.arguments || "",
           },
         });
@@ -554,7 +558,7 @@ export function processMessage(
       remainText += newText;
     }
   } catch (e) {
-    console.warn("Failed to process Bedrock message");
+    console.warn("Failed to process Bedrock message:");
   }
 
   return { remainText, index };

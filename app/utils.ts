@@ -296,7 +296,8 @@ export function showPlugins(provider: ServiceProvider, model: string) {
   }
   if (
     (provider == ServiceProvider.Bedrock && model.includes("claude-3")) ||
-    model.includes("mistral-large")
+    model.includes("mistral-large") ||
+    model.includes("amazon.nova")
   ) {
     return true;
   }
