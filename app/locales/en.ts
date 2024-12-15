@@ -1,7 +1,7 @@
 import { getClientConfig } from "../config/client";
 import { SubmitKey } from "../store/config";
 import { LocaleType } from "./index";
-
+import { SAAS_CHAT_UTM_URL } from "@/app/constant";
 // if you are adding a new translation, please use PartialLocaleType instead of LocaleType
 
 const isApp = !!getClientConfig()?.isApp;
@@ -9,16 +9,26 @@ const en: LocaleType = {
   WIP: "Coming Soon...",
   Error: {
     Unauthorized: isApp
-      ? "Invalid API Key, please check it in [Settings](/#/settings) page."
-      : "Unauthorized access, please enter access code in [auth](/#/auth) page, or enter your OpenAI API Key.",
+      ? `😆 Oops, there's an issue. No worries:
+     \\ 1️⃣ New here? [Click to start chatting now 🚀](${SAAS_CHAT_UTM_URL})
+     \\ 2️⃣ Want to use your own OpenAI resources? [Click here](/#/settings) to change settings ⚙️`
+      : `😆 Oops, there's an issue. Let's fix it:
+     \ 1️⃣ New here? [Click to start chatting now 🚀](${SAAS_CHAT_UTM_URL})
+     \ 2️⃣ Using a private setup? [Click here](/#/auth) to enter your key 🔑
+     \ 3️⃣ Want to use your own OpenAI resources? [Click here](/#/settings) to change settings ⚙️
+     `,
   },
   Auth: {
+    Return: "Return",
     Title: "Need Access Code",
     Tips: "Please enter access code below",
     SubTips: "Or enter your OpenAI or Google API Key",
     Input: "access code",
     Confirm: "Confirm",
     Later: "Later",
+    SaasTips: "Too Complex, Use Immediately Now",
+    TopTips:
+      "🥳 NextChat AI launch promotion: Instantly unlock the latest models like OpenAI o1, GPT-4o, Claude-3.5!",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,
@@ -47,6 +57,8 @@ const en: LocaleType = {
       FullScreen: "FullScreen",
       RefreshTitle: "Refresh Title",
       RefreshToast: "Title refresh request sent",
+      Speech: "Play",
+      StopSpeech: "Stop",
     },
     Commands: {
       new: "Start a new chat",
@@ -54,6 +66,7 @@ const en: LocaleType = {
       next: "Next Chat",
       prev: "Previous Chat",
       clear: "Clear Context",
+      fork: "Copy Chat",
       del: "Delete Chat",
     },
     InputActions: {
@@ -80,6 +93,8 @@ const en: LocaleType = {
       return inputHints + ", / to search prompts, : to use commands";
     },
     Send: "Send",
+    StartSpeak: "Start Speak",
+    StopSpeak: "Stop Speak",
     Config: {
       Reset: "Reset to Default",
       SaveAs: "Save as Mask",
@@ -192,6 +207,8 @@ const en: LocaleType = {
       IsChecking: "Checking update...",
       FoundUpdate: (x: string) => `Found new version: ${x}`,
       GoToUpdate: "Update",
+      Success: "Update Successful.",
+      Failed: "Update Failed.",
     },
     SendKey: "Send Key",
     Theme: "Theme",
@@ -296,6 +313,14 @@ const en: LocaleType = {
       NoAccess: "Enter API Key to check balance",
     },
     Access: {
+      SaasStart: {
+        Title: "Use NextChat AI",
+        Label: " (Most Cost-Effective Option)",
+        SubTitle:
+          "Maintained by NextChat, zero setup needed, unlock OpenAI o1, GPT-4o," +
+          " Claude-3.5 and more",
+        ChatNow: "Start Now",
+      },
       AccessCode: {
         Title: "Access Code",
         SubTitle: "Access control Enabled",
@@ -421,6 +446,28 @@ const en: LocaleType = {
           SubTitle: "Example: ",
         },
       },
+      XAI: {
+        ApiKey: {
+          Title: "XAI API Key",
+          SubTitle: "Use a custom XAI API Key",
+          Placeholder: "XAI API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
+      ChatGLM: {
+        ApiKey: {
+          Title: "ChatGLM API Key",
+          SubTitle: "Use a custom ChatGLM API Key",
+          Placeholder: "ChatGLM API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
       Stability: {
         ApiKey: {
           Title: "Stability API Key",
@@ -456,7 +503,7 @@ const en: LocaleType = {
         ApiKey: {
           Title: "API Key",
           SubTitle: "Obtain your API Key from Google AI",
-          Placeholder: "Enter your Google AI Studio API Key",
+          Placeholder: "Google AI API Key",
         },
 
         Endpoint: {
@@ -477,8 +524,8 @@ const en: LocaleType = {
 
     Model: "Model",
     CompressModel: {
-      Title: "Compression Model",
-      SubTitle: "Model used to compress history",
+      Title: "Summary Model",
+      SubTitle: "Model used to compress history and generate title",
     },
     Temperature: {
       Title: "Temperature",
@@ -501,6 +548,60 @@ const en: LocaleType = {
       Title: "Frequency Penalty",
       SubTitle:
         "A larger value decreasing the likelihood to repeat the same line",
+    },
+    TTS: {
+      Enable: {
+        Title: "Enable TTS",
+        SubTitle: "Enable text-to-speech service",
+      },
+      Autoplay: {
+        Title: "Enable Autoplay",
+        SubTitle:
+          "Automatically generate speech and play, you need to enable the text-to-speech switch first",
+      },
+      Model: "Model",
+      Voice: {
+        Title: "Voice",
+        SubTitle: "The voice to use when generating the audio",
+      },
+      Speed: {
+        Title: "Speed",
+        SubTitle: "The speed of the generated audio",
+      },
+      Engine: "TTS Engine",
+    },
+    Realtime: {
+      Enable: {
+        Title: "Realtime Chat",
+        SubTitle: "Enable realtime chat feature",
+      },
+      Provider: {
+        Title: "Model Provider",
+        SubTitle: "Switch between different providers",
+      },
+      Model: {
+        Title: "Model",
+        SubTitle: "Select a model",
+      },
+      ApiKey: {
+        Title: "API Key",
+        SubTitle: "API Key",
+        Placeholder: "API Key",
+      },
+      Azure: {
+        Endpoint: {
+          Title: "Endpoint",
+          SubTitle: "Endpoint",
+        },
+        Deployment: {
+          Title: "Deployment Name",
+          SubTitle: "Deployment Name",
+        },
+      },
+      Temperature: {
+        Title: "Randomness (temperature)",
+        SubTitle: "Higher values result in more random responses",
+      },
     },
   },
   Store: {
@@ -630,6 +731,11 @@ const en: LocaleType = {
       Artifacts: {
         Title: "Enable Artifacts",
         SubTitle: "Can render HTML page when enable artifacts.",
+      },
+      CodeFold: {
+        Title: "Enable CodeFold",
+        SubTitle:
+          "Automatically collapse/expand overly long code blocks when CodeFold is enabled",
       },
       Share: {
         Title: "Share This Mask",

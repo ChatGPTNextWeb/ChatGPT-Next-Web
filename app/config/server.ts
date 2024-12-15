@@ -71,6 +71,14 @@ declare global {
       IFLYTEK_API_KEY?: string;
       IFLYTEK_API_SECRET?: string;
 
+      // xai only
+      XAI_URL?: string;
+      XAI_API_KEY?: string;
+
+      // chatglm only
+      CHATGLM_URL?: string;
+      CHATGLM_API_KEY?: string;
+
       // custom template for preprocessing user input
       DEFAULT_INPUT_TEMPLATE?: string;
     }
@@ -121,14 +129,15 @@ export const getServerSideConfig = () => {
     if (customModels) customModels += ",";
     customModels += DEFAULT_MODELS.filter(
       (m) =>
-        (m.name.startsWith("gpt-4") || m.name.startsWith("chatgpt-4o")) &&
+        (m.name.startsWith("gpt-4") || m.name.startsWith("chatgpt-4o") || m.name.startsWith("o1")) &&
         !m.name.startsWith("gpt-4o-mini"),
     )
       .map((m) => "-" + m.name)
       .join(",");
     if (
       (defaultModel.startsWith("gpt-4") ||
-        defaultModel.startsWith("chatgpt-4o")) &&
+        defaultModel.startsWith("chatgpt-4o") ||
+        defaultModel.startsWith("o1")) &&
       !defaultModel.startsWith("gpt-4o-mini")
     )
       defaultModel = "";
@@ -146,6 +155,8 @@ export const getServerSideConfig = () => {
   const isAlibaba = !!process.env.ALIBABA_API_KEY;
   const isMoonshot = !!process.env.MOONSHOT_API_KEY;
   const isIflytek = !!process.env.IFLYTEK_API_KEY;
+  const isXAI = !!process.env.XAI_API_KEY;
+  const isChatGLM = !!process.env.CHATGLM_API_KEY;
   // const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   // const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
   // const randomIndex = Math.floor(Math.random() * apiKeys.length);
@@ -154,8 +165,8 @@ export const getServerSideConfig = () => {
   //   `[Server Config] using ${randomIndex + 1} of ${apiKeys.length} api key`,
   // );
 
-  const allowedWebDevEndpoints = (
-    process.env.WHITE_WEBDEV_ENDPOINTS ?? ""
+  const allowedWebDavEndpoints = (
+    process.env.WHITE_WEBDAV_ENDPOINTS ?? ""
   ).split(",");
 
   return {
@@ -208,6 +219,14 @@ export const getServerSideConfig = () => {
     iflytekApiKey: process.env.IFLYTEK_API_KEY,
     iflytekApiSecret: process.env.IFLYTEK_API_SECRET,
 
+    isXAI,
+    xaiUrl: process.env.XAI_URL,
+    xaiApiKey: getApiKey(process.env.XAI_API_KEY),
+
+    isChatGLM,
+    chatglmUrl: process.env.CHATGLM_URL,
+    chatglmApiKey: getApiKey(process.env.CHATGLM_API_KEY),
+
     cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID,
     cloudflareKVNamespaceId: process.env.CLOUDFLARE_KV_NAMESPACE_ID,
     cloudflareKVApiKey: getApiKey(process.env.CLOUDFLARE_KV_API_KEY),
@@ -229,6 +248,6 @@ export const getServerSideConfig = () => {
     disableFastLink: !!process.env.DISABLE_FAST_LINK,
     customModels,
     defaultModel,
-    allowedWebDevEndpoints,
+    allowedWebDavEndpoints,
   };
 };
