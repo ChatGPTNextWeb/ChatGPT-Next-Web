@@ -29,7 +29,17 @@ import { getClientConfig } from "../config/client";
 import { type ClientApi, getClientApi } from "../client/api";
 import { useAccessStore } from "../store";
 import clsx from "clsx";
+import Hotjar from "@hotjar/browser";
+const siteId = 5237727;
+const hotjarVersion = 6;
 
+const serverConfig = getServerSideConfig();
+Hotjar.init(siteId, hotjarVersion);
+
+// Initializing with `debug` option:
+Hotjar.init(siteId, hotjarVersion, {
+  debug: true,
+});
 export function Loading(props: { noLogo?: boolean }) {
   return (
     <div className={clsx("no-dark", styles["loading-content"])}>
