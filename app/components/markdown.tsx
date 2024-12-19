@@ -71,6 +71,51 @@ export function Mermaid(props: { code: string }) {
   );
 }
 
+function CodeActions({ onCopy }: { onCopy: () => void }) {
+  return <span className="copy-code-button" onClick={onCopy}></span>;
+}
+
+function CodePreview({
+  mermaidCode,
+  htmlCode,
+  enableArtifacts,
+  previewRef,
+  height,
+}: {
+  mermaidCode: string;
+  htmlCode: string;
+  enableArtifacts: boolean;
+  previewRef: RefObject<HTMLPreviewHander>;
+  height: number;
+}) {
+  return (
+    <>
+      {mermaidCode && <Mermaid code={mermaidCode} key={mermaidCode} />}
+      {htmlCode && enableArtifacts && (
+        <FullScreen className="no-dark html" right={70}>
+          <ArtifactsShareButton
+            style={{ position: "absolute", right: 20, top: 10 }}
+            getCode={() => htmlCode}
+          />
+          <IconButton
+            style={{ position: "absolute", right: 120, top: 10 }}
+            bordered
+            icon={<ReloadButtonIcon />}
+            shadow
+            onClick={() => previewRef.current?.reload()}
+          />
+          <HTMLPreview
+            ref={previewRef}
+            code={htmlCode}
+            autoHeight={!document.fullscreenElement}
+            height={!document.fullscreenElement ? 600 : height}
+          />
+        </FullScreen>
+      )}
+    </>
+  );
+}
+
 export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);
   const previewRef = useRef<HTMLPreviewHander>(null);
@@ -133,42 +178,20 @@ export function PreCode(props: { children: any }) {
   return (
     <>
       <pre ref={ref}>
-        <span
-          className="copy-code-button"
-          onClick={() => {
-            if (ref.current) {
-              copyToClipboard(
-                ref.current.querySelector("code")?.innerText ?? "",
-              );
-            }
-          }}
-        ></span>
+        <CodeActions
+          onCopy={() =>
+            copyToClipboard(ref.current?.querySelector("code")?.innerText ?? "")
+          }
+        />
         {props.children}
       </pre>
-      {mermaidCode.length > 0 && (
-        <Mermaid code={mermaidCode} key={mermaidCode} />
-      )}
-      {htmlCode.length > 0 && enableArtifacts && (
-        <FullScreen className="no-dark html" right={70}>
-          <ArtifactsShareButton
-            style={{ position: "absolute", right: 20, top: 10 }}
-            getCode={() => htmlCode}
-          />
-          <IconButton
-            style={{ position: "absolute", right: 120, top: 10 }}
-            bordered
-            icon={<ReloadButtonIcon />}
-            shadow
-            onClick={() => previewRef.current?.reload()}
-          />
-          <HTMLPreview
-            ref={previewRef}
-            code={htmlCode}
-            autoHeight={!document.fullscreenElement}
-            height={!document.fullscreenElement ? 600 : height}
-          />
-        </FullScreen>
-      )}
+      <CodePreview
+        mermaidCode={mermaidCode}
+        htmlCode={htmlCode}
+        enableArtifacts={enableArtifacts}
+        previewRef={previewRef}
+        height={height}
+      />
     </>
   );
 }
