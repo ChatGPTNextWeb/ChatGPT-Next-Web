@@ -25,6 +25,32 @@ const DEFAULT_SD_STATE = {
   currentParams: defaultParams,
 };
 
+const createDrawStore = (set: any, get: any) => ({
+  draw: [],
+  updateDraw: (_draw: any) => {
+    const draw = get().draw || [];
+    draw.some((item, index) => {
+      if (item.id === _draw.id) {
+        draw[index] = _draw;
+        set(() => ({ draw }));
+        return true;
+      }
+    });
+  },
+});
+
+const createModelStore = (set: any) => ({
+  currentModel: null,
+  currentParams: null,
+  setCurrentModel: (model: any) => set({ currentModel: model }),
+  setCurrentParams: (data: any) => set({ currentParams: data }),
+});
+
+export const createStore = (set: any, get: any) => ({
+  ...createDrawStore(set, get),
+  ...createModelStore(set),
+});
+
 export const useSdStore = createPersistStore<
   {
     currentId: number;
