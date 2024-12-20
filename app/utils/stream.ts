@@ -74,7 +74,7 @@ export function fetch(url: string, options?: RequestInit): Promise<Response> {
     for (const item of new Headers(_headers || {})) {
       headers[item[0]] = item[1];
     }
-    return window.__TAURI__
+    return window.__TAURI__.core
       .invoke("stream_fetch", {
         method: method.toUpperCase(),
         url,
