@@ -297,6 +297,7 @@ export const VISION_MODEL_REGEXES = [
   /claude-3/,
   /gemini-1\.5/,
   /gemini-exp/,
+  /gemini-2\.0/,
   /learnlm/,
   /qwen-vl/,
   /qwen2-vl/,
@@ -332,13 +333,14 @@ const openaiModels = [
 ];
 
 const googleModels = [
-  "gemini-1.0-pro",
+  "gemini-1.0-pro", // Deprecated on 2/15/2025
   "gemini-1.5-pro-latest",
   "gemini-1.5-flash-latest",
+  "gemini-1.5-flash-8b-latest",
   "gemini-exp-1114",
   "gemini-exp-1121",
   "learnlm-1.5-pro-experimental",
-  "gemini-pro-vision",
+  "gemini-2.0-flash-exp",
 ];
 
 const anthropicModels = [
