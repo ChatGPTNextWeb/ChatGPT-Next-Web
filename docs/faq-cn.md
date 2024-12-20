@@ -13,21 +13,6 @@
 
 Docker 版本相当于稳定版，latest Docker 总是与 latest release version 一致，目前我们的发版频率是一到两天发一次，所以 Docker 版本会总是落后最新的提交一到两天，这在预期内。
 
-## 如何部署在 Vercel 上
-
-1. 注册 Github 账号，fork 该项目
-2. 注册 Vercel（需手机验证，可以用中国号码），连接你的 Github 账户
-3. Vercel 上新建项目，选择你在 Github fork 的项目，按需填写环境变量，开始部署。部署之后，你可以在有梯子的条件下，通过 vercel 提供的域名访问你的项目。
-4. 如果需要在国内无墙访问：在你的域名管理网站，添加一条域名的 CNAME 记录，指向 cname.vercel-dns.com。之后在 Vercel 上设置你的域名访问。
-
-## 如何修改 Vercel 环境变量
-
-- 进入 vercel 的控制台页面；
-- 选中你的 NextChat 项目；
-- 点击页面头部的 Settings 选项；
-- 找到侧边栏的 Environment Variables 选项；
-- 修改对应的值即可。
-
 ## 环境变量 CODE 是什么？必须设置吗？
 
 这是你自定义的访问密码，你可以选择：
@@ -50,8 +35,6 @@ tcp_nopush on;  # 开启TCP NOPUSH选项，禁止Nagle算法
 tcp_nodelay on;  # 开启TCP NODELAY选项，禁止延迟ACK算法
 keepalive_timeout 300;  # 设定keep-alive超时时间为65秒
 ```
-
-如果你是在 netlify 部署，此问题依然等待解决，请耐心等待。
 
 ## 我部署好了，但是无法访问
 
