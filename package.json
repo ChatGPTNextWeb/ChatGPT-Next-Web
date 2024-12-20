@@ -2,6 +2,7 @@
   "name": "nextchat",
   "version": "1.0.0",
   "private": true,
+  "packageManager": "pnpm@8.15.5",
   "license": "mit",
   "scripts": {
     "mask": "npx tsx app/masks/build.ts",
@@ -77,9 +78,5 @@
     "typescript": "5.2.2",
     "watch": "^1.0.2",
     "webpack": "^5.88.1"
-  },
-  "resolutions": {
-    "lint-staged/yaml": "^2.2.2"
-  },
-  "packageManager": "yarn@1.22.19"
+  }
 }
