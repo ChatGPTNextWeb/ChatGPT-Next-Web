@@ -1,0 +1,37 @@
+on:
+    push:
+        tags:
+            - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+name: Create Release
+
+# https://docs.github.com/en/actions/learn-github-actions/contexts#env-context
+env:
+    RELEASE_VERSION: ''
+
+jobs:
+    build:
+        name: Create Release
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@master
+
+            - name: Get the release version from the tag
+              shell: bash
+              if: env.RELEASE_VERSION == ''
+              run: |
+                  echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+            - name: Generate Release Notes
+              run: |
+                  ./.github/workflows/release-notes.js ${{ env.RELEASE_VERSION }}
+                  cat notes-${{ env.RELEASE_VERSION }}.md
+
+            - name: Create Release for Tag
+              id: release_tag
+              uses: softprops/action-gh-release@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  body_path: notes-${{ env.RELEASE_VERSION }}.md
