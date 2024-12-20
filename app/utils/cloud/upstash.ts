@@ -1,8 +1,8 @@
-import { STORAGE_KEY } from "@/app/constant";
-import { SyncStore } from "@/app/store/sync";
-import { chunks } from "../format";
+import type { SyncStore } from '@/app/store/sync';
+import { STORAGE_KEY } from '@/app/constant';
+import { chunks } from '../format';
 
-export type UpstashConfig = SyncStore["upstash"];
+export type UpstashConfig = SyncStore['upstash'];
 export type UpStashClient = ReturnType<typeof createUpstashClient>;
 
 export function createUpstashClient(store: SyncStore) {
@@ -11,31 +11,31 @@ export function createUpstashClient(store: SyncStore) {
   const chunkCountKey = `${storeKey}-chunk-count`;
   const chunkIndexKey = (i: number) => `${storeKey}-chunk-${i}`;
 
-  const proxyUrl =
-    store.useProxy && store.proxyUrl.length > 0 ? store.proxyUrl : undefined;
+  const proxyUrl
+    = store.useProxy && store.proxyUrl.length > 0 ? store.proxyUrl : undefined;
 
   return {
     async check() {
       try {
         const res = await fetch(this.path(`get/${storeKey}`, proxyUrl), {
-          method: "GET",
+          method: 'GET',
           headers: this.headers(),
         });
-        console.log("[Upstash] check", res.status, res.statusText);
+        console.log('[Upstash] check', res.status, res.statusText);
         return [200].includes(res.status);
       } catch (e) {
-        console.error("[Upstash] failed to check", e);
+        console.error('[Upstash] failed to check', e);
       }
       return false;
     },
 
     async redisGet(key: string) {
       const res = await fetch(this.path(`get/${key}`, proxyUrl), {
-        method: "GET",
+        method: 'GET',
         headers: this.headers(),
       });
 
-      console.log("[Upstash] get key = ", key, res.status, res.statusText);
+      console.log('[Upstash] get key = ', key, res.status, res.statusText);
       const resJson = (await res.json()) as { result: string };
 
       return resJson.result;
@@ -43,25 +43,26 @@ export function createUpstashClient(store: SyncStore) {
 
     async redisSet(key: string, value: string) {
       const res = await fetch(this.path(`set/${key}`, proxyUrl), {
-        method: "POST",
+        method: 'POST',
         headers: this.headers(),
         body: value,
       });
 
-      console.log("[Upstash] set key = ", key, res.status, res.statusText);
+      console.log('[Upstash] set key = ', key, res.status, res.statusText);
     },
 
     async get() {
       const chunkCount = Number(await this.redisGet(chunkCountKey));
-      if (!Number.isInteger(chunkCount)) return;
+      if (!Number.isInteger(chunkCount))
+      { return; }
 
       const chunks = await Promise.all(
         new Array(chunkCount)
           .fill(0)
           .map((_, i) => this.redisGet(chunkIndexKey(i))),
       );
-      console.log("[Upstash] get full chunks", chunks);
-      return chunks.join("");
+      console.log('[Upstash] get full chunks', chunks);
+      return chunks.join('');
     },
 
     async set(_: string, value: string) {
@@ -80,28 +81,28 @@ export function createUpstashClient(store: SyncStore) {
         Authorization: `Bearer ${config.apiKey}`,
       };
     },
-    path(path: string, proxyUrl: string = "") {
-      if (!path.endsWith("/")) {
-        path += "/";
+    path(path: string, proxyUrl: string = '') {
+      if (!path.endsWith('/')) {
+        path += '/';
       }
-      if (path.startsWith("/")) {
+      if (path.startsWith('/')) {
         path = path.slice(1);
       }
 
-      if (proxyUrl.length > 0 && !proxyUrl.endsWith("/")) {
-        proxyUrl += "/";
+      if (proxyUrl.length > 0 && !proxyUrl.endsWith('/')) {
+        proxyUrl += '/';
       }
 
       let url;
-      const pathPrefix = "/api/upstash/";
+      const pathPrefix = '/api/upstash/';
 
       try {
-        let u = new URL(proxyUrl + pathPrefix + path);
+        const u = new URL(proxyUrl + pathPrefix + path);
         // add query params
-        u.searchParams.append("endpoint", config.endpoint);
+        u.searchParams.append('endpoint', config.endpoint);
         url = u.toString();
       } catch (e) {
-        url = pathPrefix + path + "?endpoint=" + config.endpoint;
+        url = `${pathPrefix + path}?endpoint=${config.endpoint}`;
       }
 
       return url;

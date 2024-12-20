@@ -11,7 +11,7 @@
 1. 准备好你的 [OpenAI API Key](https://platform.openai.com/account/api-keys);
 
 <div align="center">
-   
+
 ![主界面](./docs/images/cover.png)
 
 </div>
@@ -158,7 +158,6 @@ ChatGLM Api Key.
 
 ChatGLM Api Url.
 
-
 ### `HIDE_USER_API_KEY` （可选）
 
 如果你不想让用户自行填入 API Key，将此环境变量设置为 1 即可。
@@ -178,8 +177,9 @@ ChatGLM Api Url.
 ### `WHITE_WEBDAV_ENDPOINTS` (可选)
 
 如果你想增加允许访问的webdav服务地址，可以使用该选项，格式要求：
+
 - 每一个地址必须是一个完整的 endpoint
-> `https://xxxx/xxx`
+  > `https://xxxx/xxx`
 - 多个地址以`,`相连
 
 ### `CUSTOM_MODELS` （可选）
@@ -190,12 +190,13 @@ ChatGLM Api Url.
 用来控制模型列表，使用 `+` 增加一个模型，使用 `-` 来隐藏一个模型，使用 `模型名=展示名` 来自定义模型的展示名，用英文逗号隔开。
 
 在Azure的模式下，支持使用`modelName@Azure=deploymentName`的方式配置模型名称和部署名称(deploy-name)
+
 > 示例：`+gpt-3.5-turbo@Azure=gpt35`这个配置会在模型列表显示一个`gpt35(Azure)`的选项。
 > 如果你只能使用Azure模式，那么设置 `-all,+gpt-3.5-turbo@Azure=gpt35` 则可以让对话的默认使用 `gpt35(Azure)`
 
 在ByteDance的模式下，支持使用`modelName@bytedance=deploymentName`的方式配置模型名称和部署名称(deploy-name)
-> 示例: `+Doubao-lite-4k@bytedance=ep-xxxxx-xxx`这个配置会在模型列表显示一个`Doubao-lite-4k(ByteDance)`的选项
 
+> 示例: `+Doubao-lite-4k@bytedance=ep-xxxxx-xxx`这个配置会在模型列表显示一个`Doubao-lite-4k(ByteDance)`的选项
 
 ### `DEFAULT_MODEL` （可选）
 
@@ -212,7 +213,6 @@ Stability API密钥
 ### `STABILITY_URL` (optional)
 
 自定义的Stability API请求地址
-
 
 ## 开发
 

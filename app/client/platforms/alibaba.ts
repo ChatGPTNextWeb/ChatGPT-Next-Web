@@ -1,29 +1,31 @@
-"use client";
-import {
-  ApiPath,
-  Alibaba,
-  ALIBABA_BASE_URL,
-  REQUEST_TIMEOUT_MS,
-} from "@/app/constant";
-import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
-
-import {
+'use client';
+import type {
   ChatOptions,
-  getHeaders,
   LLMApi,
   LLMModel,
-  SpeechOptions,
   MultimodalContent,
-} from "../api";
-import Locale from "../../locales";
+  SpeechOptions,
+} from '../api';
+import { getClientConfig } from '@/app/config/client';
+
+import {
+  Alibaba,
+  ALIBABA_BASE_URL,
+  ApiPath,
+  REQUEST_TIMEOUT_MS,
+} from '@/app/constant';
+import { useAccessStore, useAppConfig, useChatStore } from '@/app/store';
+import { getMessageTextContent } from '@/app/utils';
+import { prettyObject } from '@/app/utils/format';
+import { fetch } from '@/app/utils/stream';
 import {
   EventStreamContentType,
   fetchEventSource,
-} from "@fortaine/fetch-event-source";
-import { prettyObject } from "@/app/utils/format";
-import { getClientConfig } from "@/app/config/client";
-import { getMessageTextContent } from "@/app/utils";
-import { fetch } from "@/app/utils/stream";
+} from '@fortaine/fetch-event-source';
+import Locale from '../../locales';
+import {
+  getHeaders,
+} from '../api';
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -36,7 +38,7 @@ export interface OpenAIListModelResponse {
 
 interface RequestInput {
   messages: {
-    role: "system" | "user" | "assistant";
+    role: 'system' | 'user' | 'assistant';
     content: string | MultimodalContent[];
   }[];
 }
@@ -58,7 +60,7 @@ export class QwenApi implements LLMApi {
   path(path: string): string {
     const accessStore = useAccessStore.getState();
 
-    let baseUrl = "";
+    let baseUrl = '';
 
     if (accessStore.useCustomConfig) {
       baseUrl = accessStore.alibabaUrl;
@@ -69,28 +71,28 @@ export class QwenApi implements LLMApi {
       baseUrl = isApp ? ALIBABA_BASE_URL : ApiPath.Alibaba;
     }
 
-    if (baseUrl.endsWith("/")) {
+    if (baseUrl.endsWith('/')) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
     }
-    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.Alibaba)) {
-      baseUrl = "https://" + baseUrl;
+    if (!baseUrl.startsWith('http') && !baseUrl.startsWith(ApiPath.Alibaba)) {
+      baseUrl = `https://${baseUrl}`;
     }
 
-    console.log("[Proxy Endpoint] ", baseUrl, path);
+    console.log('[Proxy Endpoint] ', baseUrl, path);
 
-    return [baseUrl, path].join("/");
+    return [baseUrl, path].join('/');
   }
 
   extractMessage(res: any) {
-    return res?.output?.choices?.at(0)?.message?.content ?? "";
+    return res?.output?.choices?.at(0)?.message?.content ?? '';
   }
 
   speech(options: SpeechOptions): Promise<ArrayBuffer> {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
 
   async chat(options: ChatOptions) {
-    const messages = options.messages.map((v) => ({
+    const messages = options.messages.map(v => ({
       role: v.role,
       content: getMessageTextContent(v),
     }));
@@ -110,7 +112,7 @@ export class QwenApi implements LLMApi {
         messages,
       },
       parameters: {
-        result_format: "message",
+        result_format: 'message',
         incremental_output: shouldStream,
         temperature: modelConfig.temperature,
         // max_tokens: modelConfig.max_tokens,
@@ -124,12 +126,12 @@ export class QwenApi implements LLMApi {
     try {
       const chatPath = this.path(Alibaba.ChatPath);
       const chatPayload = {
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
         headers: {
           ...getHeaders(),
-          "X-DashScope-SSE": shouldStream ? "enable" : "disable",
+          'X-DashScope-SSE': shouldStream ? 'enable' : 'disable',
         },
       };
 
@@ -140,8 +142,8 @@ export class QwenApi implements LLMApi {
       );
 
       if (shouldStream) {
-        let responseText = "";
-        let remainText = "";
+        let responseText = '';
+        let remainText = '';
         let finished = false;
         let responseRes: Response;
 
@@ -149,9 +151,9 @@ export class QwenApi implements LLMApi {
         function animateResponseText() {
           if (finished || controller.signal.aborted) {
             responseText += remainText;
-            console.log("[Response Animation] finished");
+            console.log('[Response Animation] finished');
             if (responseText?.length === 0) {
-              options.onError?.(new Error("empty response from server"));
+              options.onError?.(new Error('empty response from server'));
             }
             return;
           }
@@ -184,24 +186,24 @@ export class QwenApi implements LLMApi {
           ...chatPayload,
           async onopen(res) {
             clearTimeout(requestTimeoutId);
-            const contentType = res.headers.get("content-type");
+            const contentType = res.headers.get('content-type');
             console.log(
-              "[Alibaba] request response content type: ",
+              '[Alibaba] request response content type: ',
               contentType,
             );
             responseRes = res;
 
-            if (contentType?.startsWith("text/plain")) {
+            if (contentType?.startsWith('text/plain')) {
               responseText = await res.clone().text();
               return finish();
             }
 
             if (
-              !res.ok ||
-              !res.headers
-                .get("content-type")
-                ?.startsWith(EventStreamContentType) ||
-              res.status !== 200
+              !res.ok
+              || !res.headers
+                .get('content-type')
+                ?.startsWith(EventStreamContentType)
+                || res.status !== 200
             ) {
               const responseTexts = [responseText];
               let extraInfo = await res.clone().text();
@@ -218,13 +220,13 @@ export class QwenApi implements LLMApi {
                 responseTexts.push(extraInfo);
               }
 
-              responseText = responseTexts.join("\n\n");
+              responseText = responseTexts.join('\n\n');
 
               return finish();
             }
           },
           onmessage(msg) {
-            if (msg.data === "[DONE]" || finished) {
+            if (msg.data === '[DONE]' || finished) {
               return finish();
             }
             const text = msg.data;
@@ -238,7 +240,7 @@ export class QwenApi implements LLMApi {
                 remainText += delta;
               }
             } catch (e) {
-              console.error("[Request] parse error", text, msg);
+              console.error('[Request] parse error', text, msg);
             }
           },
           onclose() {
@@ -259,10 +261,11 @@ export class QwenApi implements LLMApi {
         options.onFinish(message, res);
       }
     } catch (e) {
-      console.log("[Request] failed to make a chat request", e);
+      console.log('[Request] failed to make a chat request', e);
       options.onError?.(e as Error);
     }
   }
+
   async usage() {
     return {
       used: 0,

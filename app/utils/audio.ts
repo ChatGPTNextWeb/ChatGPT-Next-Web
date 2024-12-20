@@ -1,8 +1,8 @@
-type TTSPlayer = {
+interface TTSPlayer {
   init: () => void;
   play: (audioBuffer: ArrayBuffer, onended: () => void | null) => Promise<void>;
   stop: () => void;
-};
+}
 
 export function createTTSPlayer(): TTSPlayer {
   let audioContext: AudioContext | null = null;

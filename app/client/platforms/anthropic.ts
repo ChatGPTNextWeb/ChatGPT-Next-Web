@@ -1,34 +1,36 @@
-import { Anthropic, ApiPath } from "@/app/constant";
-import { ChatOptions, getHeaders, LLMApi, SpeechOptions } from "../api";
+import type {
+  ChatMessageTool,
+} from '@/app/store';
+import type { ChatOptions, LLMApi, SpeechOptions } from '../api';
+import type { RequestPayload } from './openai';
+import { getClientConfig } from '@/app/config/client';
+import { Anthropic, ANTHROPIC_BASE_URL, ApiPath } from '@/app/constant';
 import {
   useAccessStore,
   useAppConfig,
   useChatStore,
   usePluginStore,
-  ChatMessageTool,
-} from "@/app/store";
-import { getClientConfig } from "@/app/config/client";
-import { ANTHROPIC_BASE_URL } from "@/app/constant";
-import { getMessageTextContent, isVisionModel } from "@/app/utils";
-import { preProcessImageContent, stream } from "@/app/utils/chat";
-import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
-import { RequestPayload } from "./openai";
-import { fetch } from "@/app/utils/stream";
+} from '@/app/store';
+import { getMessageTextContent, isVisionModel } from '@/app/utils';
+import { preProcessImageContent, stream } from '@/app/utils/chat';
+import { cloudflareAIGatewayUrl } from '@/app/utils/cloudflare';
+import { fetch } from '@/app/utils/stream';
+import { getHeaders } from '../api';
 
-export type MultiBlockContent = {
-  type: "image" | "text";
+export interface MultiBlockContent {
+  type: 'image' | 'text';
   source?: {
     type: string;
     media_type: string;
     data: string;
   };
   text?: string;
-};
+}
 
-export type AnthropicMessage = {
+export interface AnthropicMessage {
   role: (typeof ClaudeMapper)[keyof typeof ClaudeMapper];
   content: string | MultiBlockContent[];
-};
+}
 
 export interface AnthropicChatRequest {
   model: string; // The model that will complete your prompt.
@@ -56,7 +58,7 @@ export interface ChatRequest {
 
 export interface ChatResponse {
   completion: string;
-  stop_reason: "stop_sequence" | "max_tokens";
+  stop_reason: 'stop_sequence' | 'max_tokens';
   model: string;
 }
 
@@ -66,23 +68,24 @@ export type ChatStreamResponse = ChatResponse & {
 };
 
 const ClaudeMapper = {
-  assistant: "assistant",
-  user: "user",
-  system: "user",
+  assistant: 'assistant',
+  user: 'user',
+  system: 'user',
 } as const;
 
-const keys = ["claude-2, claude-instant-1"];
+const keys = ['claude-2, claude-instant-1'];
 
 export class ClaudeApi implements LLMApi {
   speech(options: SpeechOptions): Promise<ArrayBuffer> {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
 
   extractMessage(res: any) {
-    console.log("[Response] claude response: ", res);
+    console.log('[Response] claude response: ', res);
 
     return res?.content?.[0]?.text;
   }
+
   async chat(options: ChatOptions): Promise<void> {
     const visionModel = isVisionModel(options.config.model);
 
@@ -99,13 +102,13 @@ export class ClaudeApi implements LLMApi {
     };
 
     // try get base64image from local cache image_url
-    const messages: ChatOptions["messages"] = [];
+    const messages: ChatOptions['messages'] = [];
     for (const v of options.messages) {
       const content = await preProcessImageContent(v.content);
       messages.push({ role: v.role, content });
     }
 
-    const keys = ["system", "user"];
+    const keys = ['system', 'user'];
 
     // roles must alternate between "user" and "assistant" in claude, so add a fake assistant message between two user messages
     for (let i = 0; i < messages.length - 1; i++) {
@@ -116,8 +119,8 @@ export class ClaudeApi implements LLMApi {
         messages[i] = [
           message,
           {
-            role: "assistant",
-            content: ";",
+            role: 'assistant',
+            content: ';',
           },
         ] as any;
       }
@@ -126,15 +129,17 @@ export class ClaudeApi implements LLMApi {
     const prompt = messages
       .flat()
       .filter((v) => {
-        if (!v.content) return false;
-        if (typeof v.content === "string" && !v.content.trim()) return false;
+        if (!v.content)
+        { return false; }
+        if (typeof v.content === 'string' && !v.content.trim())
+        { return false; }
         return true;
       })
       .map((v) => {
         const { role, content } = v;
-        const insideRole = ClaudeMapper[role] ?? "user";
+        const insideRole = ClaudeMapper[role] ?? 'user';
 
-        if (!visionModel || typeof content === "string") {
+        if (!visionModel || typeof content === 'string') {
           return {
             role: insideRole,
             content: getMessageTextContent(v),
@@ -143,25 +148,25 @@ export class ClaudeApi implements LLMApi {
         return {
           role: insideRole,
           content: content
-            .filter((v) => v.image_url || v.text)
+            .filter(v => v.image_url || v.text)
             .map(({ type, text, image_url }) => {
-              if (type === "text") {
+              if (type === 'text') {
                 return {
                   type,
                   text: text!,
                 };
               }
-              const { url = "" } = image_url || {};
-              const colonIndex = url.indexOf(":");
-              const semicolonIndex = url.indexOf(";");
-              const comma = url.indexOf(",");
+              const { url = '' } = image_url || {};
+              const colonIndex = url.indexOf(':');
+              const semicolonIndex = url.indexOf(';');
+              const comma = url.indexOf(',');
 
               const mimeType = url.slice(colonIndex + 1, semicolonIndex);
               const encodeType = url.slice(semicolonIndex + 1, comma);
               const data = url.slice(comma + 1);
 
               return {
-                type: "image" as const,
+                type: 'image' as const,
                 source: {
                   type: encodeType,
                   media_type: mimeType,
@@ -172,10 +177,10 @@ export class ClaudeApi implements LLMApi {
         };
       });
 
-    if (prompt[0]?.role === "assistant") {
+    if (prompt[0]?.role === 'assistant') {
       prompt.unshift({
-        role: "user",
-        content: ";",
+        role: 'user',
+        content: ';',
       });
     }
 
@@ -208,10 +213,10 @@ export class ClaudeApi implements LLMApi {
         requestBody,
         {
           ...getHeaders(),
-          "anthropic-version": accessStore.anthropicApiVersion,
+          'anthropic-version': accessStore.anthropicApiVersion,
         },
         // @ts-ignore
-        tools.map((tool) => ({
+        tools.map(tool => ({
           name: tool?.function?.name,
           description: tool?.function?.description,
           input_schema: tool?.function?.parameters,
@@ -224,41 +229,41 @@ export class ClaudeApi implements LLMApi {
           let chunkJson:
             | undefined
             | {
-                type: "content_block_delta" | "content_block_stop";
-                content_block?: {
-                  type: "tool_use";
-                  id: string;
-                  name: string;
-                };
-                delta?: {
-                  type: "text_delta" | "input_json_delta";
-                  text?: string;
-                  partial_json?: string;
-                };
-                index: number;
+              type: 'content_block_delta' | 'content_block_stop';
+              content_block?: {
+                type: 'tool_use';
+                id: string;
+                name: string;
               };
+              delta?: {
+                type: 'text_delta' | 'input_json_delta';
+                text?: string;
+                partial_json?: string;
+              };
+              index: number;
+            };
           chunkJson = JSON.parse(text);
 
-          if (chunkJson?.content_block?.type == "tool_use") {
+          if (chunkJson?.content_block?.type == 'tool_use') {
             index += 1;
             const id = chunkJson?.content_block.id;
             const name = chunkJson?.content_block.name;
             runTools.push({
               id,
-              type: "function",
+              type: 'function',
               function: {
                 name,
-                arguments: "",
+                arguments: '',
               },
             });
           }
           if (
-            chunkJson?.delta?.type == "input_json_delta" &&
-            chunkJson?.delta?.partial_json
+            chunkJson?.delta?.type == 'input_json_delta'
+            && chunkJson?.delta?.partial_json
           ) {
             // @ts-ignore
-            runTools[index]["function"]["arguments"] +=
-              chunkJson?.delta?.partial_json;
+            runTools[index].function.arguments
+              += chunkJson?.delta?.partial_json;
           }
           return chunkJson?.delta?.text;
         },
@@ -276,10 +281,10 @@ export class ClaudeApi implements LLMApi {
             requestPayload?.messages?.length,
             0,
             {
-              role: "assistant",
+              role: 'assistant',
               content: toolCallMessage.tool_calls.map(
                 (tool: ChatMessageTool) => ({
-                  type: "tool_use",
+                  type: 'tool_use',
                   id: tool.id,
                   name: tool?.function?.name,
                   input: tool?.function?.arguments
@@ -289,11 +294,11 @@ export class ClaudeApi implements LLMApi {
               ),
             },
             // @ts-ignore
-            ...toolCallResult.map((result) => ({
-              role: "user",
+            ...toolCallResult.map(result => ({
+              role: 'user',
               content: [
                 {
-                  type: "tool_result",
+                  type: 'tool_result',
                   tool_use_id: result.tool_call_id,
                   content: result.content,
                 },
@@ -305,12 +310,12 @@ export class ClaudeApi implements LLMApi {
       );
     } else {
       const payload = {
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify(requestBody),
         signal: controller.signal,
         headers: {
           ...getHeaders(), // get common headers
-          "anthropic-version": accessStore.anthropicApiVersion,
+          'anthropic-version': accessStore.anthropicApiVersion,
           // do not send `anthropicApiKey` in browser!!!
           // Authorization: getAuthKey(accessStore.anthropicApiKey),
         },
@@ -318,7 +323,7 @@ export class ClaudeApi implements LLMApi {
 
       try {
         controller.signal.onabort = () =>
-          options.onFinish("", new Response(null, { status: 400 }));
+          options.onFinish('', new Response(null, { status: 400 }));
 
         const res = await fetch(path, payload);
         const resJson = await res.json();
@@ -326,17 +331,19 @@ export class ClaudeApi implements LLMApi {
         const message = this.extractMessage(resJson);
         options.onFinish(message, res);
       } catch (e) {
-        console.error("failed to chat", e);
+        console.error('failed to chat', e);
         options.onError?.(e as Error);
       }
     }
   }
+
   async usage() {
     return {
       used: 0,
       total: 0,
     };
   }
+
   async models() {
     // const provider = {
     //   id: "anthropic",
@@ -377,10 +384,11 @@ export class ClaudeApi implements LLMApi {
       // },
     ];
   }
+
   path(path: string): string {
     const accessStore = useAccessStore.getState();
 
-    let baseUrl: string = "";
+    let baseUrl: string = '';
 
     if (accessStore.useCustomConfig) {
       baseUrl = accessStore.anthropicUrl;
@@ -393,19 +401,20 @@ export class ClaudeApi implements LLMApi {
       baseUrl = isApp ? ANTHROPIC_BASE_URL : ApiPath.Anthropic;
     }
 
-    if (!baseUrl.startsWith("http") && !baseUrl.startsWith("/api")) {
-      baseUrl = "https://" + baseUrl;
+    if (!baseUrl.startsWith('http') && !baseUrl.startsWith('/api')) {
+      baseUrl = `https://${baseUrl}`;
     }
 
-    baseUrl = trimEnd(baseUrl, "/");
+    baseUrl = trimEnd(baseUrl, '/');
 
     // try rebuild url, when using cloudflare ai gateway in client
     return cloudflareAIGatewayUrl(`${baseUrl}/${path}`);
   }
 }
 
-function trimEnd(s: string, end = " ") {
-  if (end.length === 0) return s;
+function trimEnd(s: string, end = ' ') {
+  if (end.length === 0)
+  { return s; }
 
   while (s.endsWith(end)) {
     s = s.slice(0, -end.length);

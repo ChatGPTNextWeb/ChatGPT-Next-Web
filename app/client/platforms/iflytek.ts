@@ -1,30 +1,32 @@
-"use client";
-import {
-  ApiPath,
-  IFLYTEK_BASE_URL,
-  Iflytek,
-  REQUEST_TIMEOUT_MS,
-} from "@/app/constant";
-import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
-
-import {
+'use client';
+import type {
   ChatOptions,
-  getHeaders,
   LLMApi,
   LLMModel,
   SpeechOptions,
-} from "../api";
-import Locale from "../../locales";
+} from '../api';
+import type { RequestPayload } from './openai';
+
+import { getClientConfig } from '@/app/config/client';
+import {
+  ApiPath,
+  Iflytek,
+  IFLYTEK_BASE_URL,
+  REQUEST_TIMEOUT_MS,
+} from '@/app/constant';
+import { useAccessStore, useAppConfig, useChatStore } from '@/app/store';
+import { getMessageTextContent } from '@/app/utils';
+import { prettyObject } from '@/app/utils/format';
+import { fetch } from '@/app/utils/stream';
 import {
   EventStreamContentType,
   fetchEventSource,
-} from "@fortaine/fetch-event-source";
-import { prettyObject } from "@/app/utils/format";
-import { getClientConfig } from "@/app/config/client";
-import { getMessageTextContent } from "@/app/utils";
-import { fetch } from "@/app/utils/stream";
+} from '@fortaine/fetch-event-source';
+import Locale from '../../locales';
 
-import { RequestPayload } from "./openai";
+import {
+  getHeaders,
+} from '../api';
 
 export class SparkApi implements LLMApi {
   private disableListModels = true;
@@ -32,7 +34,7 @@ export class SparkApi implements LLMApi {
   path(path: string): string {
     const accessStore = useAccessStore.getState();
 
-    let baseUrl = "";
+    let baseUrl = '';
 
     if (accessStore.useCustomConfig) {
       baseUrl = accessStore.iflytekUrl;
@@ -44,28 +46,28 @@ export class SparkApi implements LLMApi {
       baseUrl = isApp ? IFLYTEK_BASE_URL : apiPath;
     }
 
-    if (baseUrl.endsWith("/")) {
+    if (baseUrl.endsWith('/')) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
     }
-    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.Iflytek)) {
-      baseUrl = "https://" + baseUrl;
+    if (!baseUrl.startsWith('http') && !baseUrl.startsWith(ApiPath.Iflytek)) {
+      baseUrl = `https://${baseUrl}`;
     }
 
-    console.log("[Proxy Endpoint] ", baseUrl, path);
+    console.log('[Proxy Endpoint] ', baseUrl, path);
 
-    return [baseUrl, path].join("/");
+    return [baseUrl, path].join('/');
   }
 
   extractMessage(res: any) {
-    return res.choices?.at(0)?.message?.content ?? "";
+    return res.choices?.at(0)?.message?.content ?? '';
   }
 
   speech(options: SpeechOptions): Promise<ArrayBuffer> {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
 
   async chat(options: ChatOptions) {
-    const messages: ChatOptions["messages"] = [];
+    const messages: ChatOptions['messages'] = [];
     for (const v of options.messages) {
       const content = getMessageTextContent(v);
       messages.push({ role: v.role, content });
@@ -92,7 +94,7 @@ export class SparkApi implements LLMApi {
       // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
     };
 
-    console.log("[Request] Spark payload: ", requestPayload);
+    console.log('[Request] Spark payload: ', requestPayload);
 
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();
@@ -101,7 +103,7 @@ export class SparkApi implements LLMApi {
     try {
       const chatPath = this.path(Iflytek.ChatPath);
       const chatPayload = {
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
         headers: getHeaders(),
@@ -114,8 +116,8 @@ export class SparkApi implements LLMApi {
       );
 
       if (shouldStream) {
-        let responseText = "";
-        let remainText = "";
+        let responseText = '';
+        let remainText = '';
         let finished = false;
         let responseRes: Response;
 
@@ -123,7 +125,7 @@ export class SparkApi implements LLMApi {
         function animateResponseText() {
           if (finished || controller.signal.aborted) {
             responseText += remainText;
-            console.log("[Response Animation] finished");
+            console.log('[Response Animation] finished');
             return;
           }
 
@@ -155,21 +157,21 @@ export class SparkApi implements LLMApi {
           ...chatPayload,
           async onopen(res) {
             clearTimeout(requestTimeoutId);
-            const contentType = res.headers.get("content-type");
-            console.log("[Spark] request response content type: ", contentType);
+            const contentType = res.headers.get('content-type');
+            console.log('[Spark] request response content type: ', contentType);
             responseRes = res;
-            if (contentType?.startsWith("text/plain")) {
+            if (contentType?.startsWith('text/plain')) {
               responseText = await res.clone().text();
               return finish();
             }
 
             // Handle different error scenarios
             if (
-              !res.ok ||
-              !res.headers
-                .get("content-type")
-                ?.startsWith(EventStreamContentType) ||
-              res.status !== 200
+              !res.ok
+              || !res.headers
+                .get('content-type')
+                ?.startsWith(EventStreamContentType)
+                || res.status !== 200
             ) {
               let extraInfo = await res.clone().text();
               try {
@@ -190,7 +192,7 @@ export class SparkApi implements LLMApi {
             }
           },
           onmessage(msg) {
-            if (msg.data === "[DONE]" || finished) {
+            if (msg.data === '[DONE]' || finished) {
               return finish();
             }
             const text = msg.data;
@@ -205,7 +207,7 @@ export class SparkApi implements LLMApi {
                 remainText += delta;
               }
             } catch (e) {
-              console.error("[Request] parse error", text);
+              console.error('[Request] parse error', text);
               options.onError?.(new Error(`Failed to parse response: ${text}`));
             }
           },
@@ -235,7 +237,7 @@ export class SparkApi implements LLMApi {
         options.onFinish(message, res);
       }
     } catch (e) {
-      console.log("[Request] failed to make a chat request", e);
+      console.log('[Request] failed to make a chat request', e);
       options.onError?.(e as Error);
     }
   }

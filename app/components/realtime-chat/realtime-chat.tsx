@@ -1,26 +1,28 @@
-import VoiceIcon from "@/app/icons/voice.svg";
-import VoiceOffIcon from "@/app/icons/voice-off.svg";
-import PowerIcon from "@/app/icons/power.svg";
-
-import styles from "./realtime-chat.module.scss";
-import clsx from "clsx";
-
-import { useState, useRef, useEffect } from "react";
-
-import { useChatStore, createMessage, useAppConfig } from "@/app/store";
-
-import { IconButton } from "@/app/components/button";
-
-import {
+import type {
   Modality,
-  RTClient,
   RTInputAudioItem,
   RTResponse,
   TurnDetection,
-} from "rt-client";
-import { AudioHandler } from "@/app/lib/audio";
-import { uploadImage } from "@/app/utils/chat";
-import { VoicePrint } from "@/app/components/voice-print";
+} from 'rt-client';
+import { IconButton } from '@/app/components/button';
+import { VoicePrint } from '@/app/components/voice-print';
+
+import PowerIcon from '@/app/icons/power.svg';
+import VoiceIcon from '@/app/icons/voice.svg';
+
+import VoiceOffIcon from '@/app/icons/voice-off.svg';
+
+import { AudioHandler } from '@/app/lib/audio';
+
+import { createMessage, useAppConfig, useChatStore } from '@/app/store';
+
+import { uploadImage } from '@/app/utils/chat';
+import clsx from 'clsx';
+import { useEffect, useRef, useState } from 'react';
+import {
+  RTClient,
+} from 'rt-client';
+import styles from './realtime-chat.module.scss';
 
 interface RealtimeChatProps {
   onClose?: () => void;
@@ -36,11 +38,11 @@ export function RealtimeChat({
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
   const config = useAppConfig();
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState('');
   const [isRecording, setIsRecording] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
-  const [modality, setModality] = useState("audio");
+  const [modality, setModality] = useState('audio');
   const [useVAD, setUseVAD] = useState(true);
   const [frequencies, setFrequencies] = useState<Uint8Array | undefined>();
 
@@ -51,32 +53,33 @@ export function RealtimeChat({
   const temperature = config.realtimeConfig.temperature;
   const apiKey = config.realtimeConfig.apiKey;
   const model = config.realtimeConfig.model;
-  const azure = config.realtimeConfig.provider === "Azure";
+  const azure = config.realtimeConfig.provider === 'Azure';
   const azureEndpoint = config.realtimeConfig.azure.endpoint;
   const azureDeployment = config.realtimeConfig.azure.deployment;
   const voice = config.realtimeConfig.voice;
 
   const handleConnect = async () => {
-    if (isConnecting) return;
+    if (isConnecting)
+    { return; }
     if (!isConnected) {
       try {
         setIsConnecting(true);
         clientRef.current = azure
           ? new RTClient(
-              new URL(azureEndpoint),
-              { key: apiKey },
-              { deployment: azureDeployment },
-            )
+            new URL(azureEndpoint),
+            { key: apiKey },
+            { deployment: azureDeployment },
+          )
           : new RTClient({ key: apiKey }, { model });
-        const modalities: Modality[] =
-          modality === "audio" ? ["text", "audio"] : ["text"];
+        const modalities: Modality[]
+          = modality === 'audio' ? ['text', 'audio'] : ['text'];
         const turnDetection: TurnDetection = useVAD
-          ? { type: "server_vad" }
+          ? { type: 'server_vad' }
           : null;
         await clientRef.current.configure({
-          instructions: "",
+          instructions: '',
           voice,
-          input_audio_transcription: { model: "whisper-1" },
+          input_audio_transcription: { model: 'whisper-1' },
           turn_detection: turnDetection,
           tools: [],
           temperature,
@@ -108,8 +111,8 @@ export function RealtimeChat({
         //   console.error("Set message failed:", error);
         // }
       } catch (error) {
-        console.error("Connection failed:", error);
-        setStatus("Connection failed");
+        console.error('Connection failed:', error);
+        setStatus('Connection failed');
       } finally {
         setIsConnecting(false);
       }
@@ -125,35 +128,36 @@ export function RealtimeChat({
         clientRef.current = null;
         setIsConnected(false);
       } catch (error) {
-        console.error("Disconnect failed:", error);
+        console.error('Disconnect failed:', error);
       }
     }
   };
 
   const startResponseListener = async () => {
-    if (!clientRef.current) return;
+    if (!clientRef.current)
+    { return; }
 
     try {
       for await (const serverEvent of clientRef.current.events()) {
-        if (serverEvent.type === "response") {
+        if (serverEvent.type === 'response') {
           await handleResponse(serverEvent);
-        } else if (serverEvent.type === "input_audio") {
+        } else if (serverEvent.type === 'input_audio') {
           await handleInputAudio(serverEvent);
         }
       }
     } catch (error) {
       if (clientRef.current) {
-        console.error("Response iteration error:", error);
+        console.error('Response iteration error:', error);
       }
     }
   };
 
   const handleResponse = async (response: RTResponse) => {
     for await (const item of response) {
-      if (item.type === "message" && item.role === "assistant") {
+      if (item.type === 'message' && item.role === 'assistant') {
         const botMessage = createMessage({
           role: item.role,
-          content: "",
+          content: '',
         });
         // add bot message first
         chatStore.updateTargetSession(session, (session) => {
@@ -161,11 +165,11 @@ export function RealtimeChat({
         });
         let hasAudio = false;
         for await (const content of item) {
-          if (content.type === "text") {
+          if (content.type === 'text') {
             for await (const text of content.textChunks()) {
               botMessage.content += text;
             }
-          } else if (content.type === "audio") {
+          } else if (content.type === 'audio') {
             const textTask = async () => {
               for await (const text of content.transcriptChunks()) {
                 botMessage.content += text;
@@ -204,7 +208,7 @@ export function RealtimeChat({
     await item.waitForCompletion();
     if (item.transcription) {
       const userMessage = createMessage({
-        role: "user",
+        role: 'user',
         content: item.transcription,
       });
       chatStore.updateTargetSession(session, (session) => {
@@ -240,7 +244,7 @@ export function RealtimeChat({
         });
         setIsRecording(true);
       } catch (error) {
-        console.error("Failed to start recording:", error);
+        console.error('Failed to start recording:', error);
       }
     } else if (audioHandlerRef.current) {
       try {
@@ -252,14 +256,15 @@ export function RealtimeChat({
         }
         setIsRecording(false);
       } catch (error) {
-        console.error("Failed to stop recording:", error);
+        console.error('Failed to stop recording:', error);
       }
     }
   };
 
   useEffect(() => {
     // 防止重复初始化
-    if (initRef.current) return;
+    if (initRef.current)
+    { return; }
     initRef.current = true;
 
     const initAudioHandler = async () => {
@@ -325,16 +330,16 @@ export function RealtimeChat({
   };
 
   return (
-    <div className={styles["realtime-chat"]}>
+    <div className={styles['realtime-chat']}>
       <div
-        className={clsx(styles["circle-mic"], {
-          [styles["pulse"]]: isRecording,
+        className={clsx(styles['circle-mic'], {
+          [styles.pulse]: isRecording,
         })}
       >
         <VoicePrint frequencies={frequencies} isActive={isRecording} />
       </div>
 
-      <div className={styles["bottom-icons"]}>
+      <div className={styles['bottom-icons']}>
         <div>
           <IconButton
             icon={isRecording ? <VoiceIcon /> : <VoiceOffIcon />}
@@ -344,7 +349,7 @@ export function RealtimeChat({
             bordered
           />
         </div>
-        <div className={styles["icon-center"]}>{status}</div>
+        <div className={styles['icon-center']}>{status}</div>
         <div>
           <IconButton
             icon={<PowerIcon />}

@@ -1,8 +1,8 @@
-import Fuse from "fuse.js";
-import { nanoid } from "nanoid";
-import { StoreKey } from "../constant";
-import { getLang } from "../locales";
-import { createPersistStore } from "../utils/store";
+import Fuse from 'fuse.js';
+import { nanoid } from 'nanoid';
+import { StoreKey } from '../constant';
+import { getLang } from '../locales';
+import { createPersistStore } from '../utils/store';
 
 export interface Prompt {
   id: string;
@@ -14,8 +14,8 @@ export interface Prompt {
 
 export const SearchService = {
   ready: false,
-  builtinEngine: new Fuse<Prompt>([], { keys: ["title"] }),
-  userEngine: new Fuse<Prompt>([], { keys: ["title"] }),
+  builtinEngine: new Fuse<Prompt>([], { keys: ['title'] }),
+  userEngine: new Fuse<Prompt>([], { keys: ['title'] }),
   count: {
     builtin: 0,
   },
@@ -34,7 +34,7 @@ export const SearchService = {
   },
 
   remove(id: string) {
-    this.userEngine.remove((doc) => doc.id === id);
+    this.userEngine.remove(doc => doc.id === id);
   },
 
   add(prompt: Prompt) {
@@ -44,7 +44,7 @@ export const SearchService = {
   search(text: string) {
     const userResults = this.userEngine.search(text);
     const builtinResults = this.builtinEngine.search(text);
-    return userResults.concat(builtinResults).map((v) => v.item);
+    return userResults.concat(builtinResults).map(v => v.item);
   },
 };
 
@@ -63,7 +63,7 @@ export const usePromptStore = createPersistStore(
       prompts[prompt.id] = prompt;
 
       set(() => ({
-        prompts: prompts,
+        prompts,
       }));
 
       return prompt.id!;
@@ -73,7 +73,7 @@ export const usePromptStore = createPersistStore(
       const targetPrompt = get().prompts[id];
 
       if (!targetPrompt) {
-        return SearchService.builtinPrompts.find((v) => v.id === id);
+        return SearchService.builtinPrompts.find(v => v.id === id);
       }
 
       return targetPrompt;
@@ -109,8 +109,8 @@ export const usePromptStore = createPersistStore(
 
     updatePrompt(id: string, updater: (prompt: Prompt) => void) {
       const prompt = get().prompts[id] ?? {
-        title: "",
-        content: "",
+        title: '',
+        content: '',
         id,
       };
 
@@ -140,7 +140,7 @@ export const usePromptStore = createPersistStore(
       };
 
       if (version < 3) {
-        Object.values(newState.prompts).forEach((p) => (p.id = nanoid()));
+        Object.values(newState.prompts).forEach(p => (p.id = nanoid()));
       }
 
       return newState as any;
@@ -148,19 +148,19 @@ export const usePromptStore = createPersistStore(
 
     onRehydrateStorage(state) {
       // Skip store rehydration on server side
-      if (typeof window === "undefined") {
+      if (typeof window === 'undefined') {
         return;
       }
 
-      const PROMPT_URL = "./prompts.json";
+      const PROMPT_URL = './prompts.json';
 
       type PromptList = Array<[string, string]>;
 
       fetch(PROMPT_URL)
-        .then((res) => res.json())
+        .then(res => res.json())
         .then((res) => {
           let fetchPrompts = [res.en, res.tw, res.cn];
-          if (getLang() === "cn") {
+          if (getLang() === 'cn') {
             fetchPrompts = fetchPrompts.reverse();
           }
           const builtinPrompts = fetchPrompts.map((promptList: PromptList) => {
@@ -179,9 +179,9 @@ export const usePromptStore = createPersistStore(
 
           const allPromptsForSearch = builtinPrompts
             .reduce((pre, cur) => pre.concat(cur), [])
-            .filter((v) => !!v.title && !!v.content);
-          SearchService.count.builtin =
-            res.en.length + res.cn.length + res.tw.length;
+            .filter(v => !!v.title && !!v.content);
+          SearchService.count.builtin
+            = res.en.length + res.cn.length + res.tw.length;
           SearchService.init(allPromptsForSearch, userPrompts);
         });
     },

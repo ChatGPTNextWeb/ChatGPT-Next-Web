@@ -1,6 +1,6 @@
-import { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
-import Locale from "./locales";
+import { useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import Locale from './locales';
 
 type Command = (param: string) => void;
 interface Commands {
@@ -18,7 +18,7 @@ export function useCommand(commands: Commands = {}) {
     let shouldUpdate = false;
     searchParams.forEach((param, name) => {
       const commandName = name as keyof Commands;
-      if (typeof commands[commandName] === "function") {
+      if (typeof commands[commandName] === 'function') {
         commands[commandName]!(param);
         searchParams.delete(name);
         shouldUpdate = true;
@@ -58,16 +58,16 @@ export function useChatCommand(commands: ChatCommands = {}) {
     const input = extract(userInput);
     const desc = Locale.Chat.Commands;
     return Object.keys(commands)
-      .filter((c) => c.startsWith(input))
-      .map((c) => ({
+      .filter(c => c.startsWith(input))
+      .map(c => ({
         title: desc[c as keyof ChatCommands],
-        content: ":" + c,
+        content: `:${c}`,
       }));
   }
 
   function match(userInput: string) {
     const command = extract(userInput);
-    const matched = typeof commands[command] === "function";
+    const matched = typeof commands[command] === 'function';
 
     return {
       matched,

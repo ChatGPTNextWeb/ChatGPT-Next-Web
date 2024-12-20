@@ -6,7 +6,7 @@
 // Chrome loaded over HTTP instead of HTTPS), this library can create SHA-256
 // HMAC signatures using nothing but raw JavaScript
 
-/* eslint-disable no-magic-numbers, id-length, no-param-reassign, new-cap */
+/* eslint-disable new-cap */
 
 // By giving internal functions names that we can mangle, future calls to
 // them are reduced to a single byte (minor space savings in minified file)
@@ -31,7 +31,7 @@ const M = new uint32Array(64);
 // good educational aide for anyone wondering where the magic numbers come
 // from. No magic numbers FTW!
 function getFractionalBits(n: number) {
-  return ((n - (n | 0)) * pow(2, 32)) | 0;
+  return ((n - (n | 0)) * 2 ** 32) | 0;
 }
 
 let n = 2;
@@ -55,9 +55,9 @@ while (nPrime < 64) {
   }
   if (isPrime) {
     if (nPrime < 8) {
-      DEFAULT_STATE[nPrime] = getFractionalBits(pow(n, 1 / 2));
+      DEFAULT_STATE[nPrime] = getFractionalBits(n ** (1 / 2));
     }
-    ROUND_CONSTANTS[nPrime] = getFractionalBits(pow(n, 1 / 3));
+    ROUND_CONSTANTS[nPrime] = getFractionalBits(n ** (1 / 3));
 
     nPrime++;
   }
@@ -75,13 +75,13 @@ function convertEndian(word: number) {
   if (LittleEndian) {
     return (
       // byte 1 -> byte 4
-      (word >>> 24) |
+      (word >>> 24)
       // byte 2 -> byte 3
-      (((word >>> 16) & 0xff) << 8) |
+      | (((word >>> 16) & 0xFF) << 8)
       // byte 3 -> byte 2
-      ((word & 0xff00) << 8) |
+      | ((word & 0xFF00) << 8)
       // byte 4 -> byte 1
-      (word << 24)
+      | (word << 24)
     );
   } else {
     return word;
@@ -131,36 +131,36 @@ function sha256(data: Uint8Array) {
       } else {
         const gamma0x = M[round - 15];
         const gamma1x = M[round - 2];
-        MRound =
-          M[round - 7] +
-          M[round - 16] +
-          (rightRotate(gamma0x, 7) ^
-            rightRotate(gamma0x, 18) ^
-            (gamma0x >>> 3)) +
-          (rightRotate(gamma1x, 17) ^
-            rightRotate(gamma1x, 19) ^
-            (gamma1x >>> 10));
+        MRound
+          = M[round - 7]
+          + M[round - 16]
+          + (rightRotate(gamma0x, 7)
+            ^ rightRotate(gamma0x, 18)
+            ^ (gamma0x >>> 3))
+          + (rightRotate(gamma1x, 17)
+            ^ rightRotate(gamma1x, 19)
+            ^ (gamma1x >>> 10));
       }
 
       // M array matches platform endianness
       M[round] = MRound |= 0;
 
       // Computation
-      const t1 =
-        (rightRotate(workingState[4], 6) ^
-          rightRotate(workingState[4], 11) ^
-          rightRotate(workingState[4], 25)) +
-        ((workingState[4] & workingState[5]) ^
-          (~workingState[4] & workingState[6])) +
-        workingState[7] +
-        MRound +
-        ROUND_CONSTANTS[round];
-      const t2 =
-        (rightRotate(workingState[0], 2) ^
-          rightRotate(workingState[0], 13) ^
-          rightRotate(workingState[0], 22)) +
-        ((workingState[0] & workingState[1]) ^
-          (workingState[2] & (workingState[0] ^ workingState[1])));
+      const t1
+        = (rightRotate(workingState[4], 6)
+          ^ rightRotate(workingState[4], 11)
+          ^ rightRotate(workingState[4], 25))
+        + ((workingState[4] & workingState[5])
+          ^ (~workingState[4] & workingState[6]))
+        + workingState[7]
+        + MRound
+        + ROUND_CONSTANTS[round];
+      const t2
+        = (rightRotate(workingState[0], 2)
+          ^ rightRotate(workingState[0], 13)
+          ^ rightRotate(workingState[0], 22))
+        + ((workingState[0] & workingState[1])
+          ^ (workingState[2] & (workingState[0] ^ workingState[1])));
       for (let i = 7; i > 0; i--) {
         workingState[i] = workingState[i - 1];
       }
@@ -178,7 +178,7 @@ function sha256(data: Uint8Array) {
   // And we want to return a Uint8Array, not a Uint32Array
   return new uint8Array(
     new uint32Array(
-      STATE.map(function (val) {
+      STATE.map((val) => {
         return convertEndian(val);
       }),
     ).buffer,
@@ -186,7 +186,8 @@ function sha256(data: Uint8Array) {
 }
 
 function hmac(key: Uint8Array, data: ArrayLike<number>) {
-  if (key.length > 64) key = sha256(key);
+  if (key.length > 64)
+  { key = sha256(key); }
 
   if (key.length < 64) {
     const tmp = new Uint8Array(64);
@@ -199,7 +200,7 @@ function hmac(key: Uint8Array, data: ArrayLike<number>) {
   const outerKey = new Uint8Array(64);
   for (let i = 0; i < 64; i++) {
     innerKey[i] = 0x36 ^ key[i];
-    outerKey[i] = 0x5c ^ key[i];
+    outerKey[i] = 0x5C ^ key[i];
   }
 
   // Append the innerKey
@@ -223,18 +224,18 @@ export function sign(
   inputKey: string | Uint8Array,
   inputData: string | Uint8Array,
 ) {
-  const key =
-    typeof inputKey === "string" ? encoder.encode(inputKey) : inputKey;
-  const data =
-    typeof inputData === "string" ? encoder.encode(inputData) : inputData;
+  const key
+    = typeof inputKey === 'string' ? encoder.encode(inputKey) : inputKey;
+  const data
+    = typeof inputData === 'string' ? encoder.encode(inputData) : inputData;
   return hmac(key, data);
 }
 
 export function hex(bin: Uint8Array) {
   return bin.reduce((acc, val) => {
-    const hexVal = "00" + val.toString(16);
+    const hexVal = `00${val.toString(16)}`;
     return acc + hexVal.substring(hexVal.length - 2);
-  }, "");
+  }, '');
 }
 
 export function hash(str: string) {

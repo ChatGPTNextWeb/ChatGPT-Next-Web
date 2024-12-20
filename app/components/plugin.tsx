@@ -1,34 +1,35 @@
-import { useDebouncedCallback } from "use-debounce";
-import OpenAPIClientAxios from "openapi-client-axios";
-import yaml from "js-yaml";
-import { PLUGINS_REPO_URL } from "../constant";
-import { IconButton } from "./button";
-import { ErrorBoundary } from "./error";
+import type { Plugin } from '../store/plugin';
+import clsx from 'clsx';
+import yaml from 'js-yaml';
+import OpenAPIClientAxios from 'openapi-client-axios';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import styles from "./mask.module.scss";
-import pluginStyles from "./plugin.module.scss";
+import { useDebouncedCallback } from 'use-debounce';
+import { PLUGINS_REPO_URL } from '../constant';
 
-import EditIcon from "../icons/edit.svg";
-import AddIcon from "../icons/add.svg";
-import CloseIcon from "../icons/close.svg";
-import DeleteIcon from "../icons/delete.svg";
-import ConfirmIcon from "../icons/confirm.svg";
-import ReloadIcon from "../icons/reload.svg";
-import GithubIcon from "../icons/github.svg";
+import AddIcon from '../icons/add.svg';
+import CloseIcon from '../icons/close.svg';
+import ConfirmIcon from '../icons/confirm.svg';
+import DeleteIcon from '../icons/delete.svg';
+import EditIcon from '../icons/edit.svg';
+import GithubIcon from '../icons/github.svg';
+import ReloadIcon from '../icons/reload.svg';
 
-import { Plugin, usePluginStore, FunctionToolService } from "../store/plugin";
+import Locale from '../locales';
+import { FunctionToolService, usePluginStore } from '../store/plugin';
+import { IconButton } from './button';
+import { ErrorBoundary } from './error';
+import styles from './mask.module.scss';
+import pluginStyles from './plugin.module.scss';
 import {
-  PasswordInput,
   List,
   ListItem,
   Modal,
+  PasswordInput,
   showConfirm,
   showToast,
-} from "./ui-lib";
-import Locale from "../locales";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import clsx from "clsx";
+} from './ui-lib';
 
 export function PluginPage() {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ export function PluginPage() {
 
   const allPlugins = pluginStore.getAll();
   const [searchPlugins, setSearchPlugins] = useState<Plugin[]>([]);
-  const [searchText, setSearchText] = useState("");
+  const [searchText, setSearchText] = useState('');
   const plugins = searchText.length > 0 ? searchPlugins : allPlugins;
 
   // refactored already, now it accurate
@@ -44,7 +45,7 @@ export function PluginPage() {
     setSearchText(text);
     if (text.length > 0) {
       const result = allPlugins.filter(
-        (m) => m?.title.toLowerCase().includes(text.toLowerCase()),
+        m => m?.title.toLowerCase().includes(text.toLowerCase()),
       );
       setSearchPlugins(result);
     } else {
@@ -85,21 +86,21 @@ export function PluginPage() {
     }
   }, 100).bind(null, editingPlugin);
 
-  const [loadUrl, setLoadUrl] = useState<string>("");
+  const [loadUrl, setLoadUrl] = useState<string>('');
   const loadFromUrl = (loadUrl: string) =>
     fetch(loadUrl)
       .catch((e) => {
         const p = new URL(loadUrl);
         return fetch(`/api/proxy/${p.pathname}?${p.search}`, {
           headers: {
-            "X-Base-URL": p.origin,
+            'X-Base-URL': p.origin,
           },
         });
       })
-      .then((res) => res.text())
+      .then(res => res.text())
       .then((content) => {
         try {
-          return JSON.stringify(JSON.parse(content), null, "  ");
+          return JSON.stringify(JSON.parse(content), null, '  ');
         } catch (e) {
           return content;
         }
@@ -118,7 +119,7 @@ export function PluginPage() {
 
   return (
     <ErrorBoundary>
-      <div className={styles["mask-page"]}>
+      <div className={styles['mask-page']}>
         <div className="window-header">
           <div className="window-header-title">
             <div className="window-header-main-title">
@@ -149,18 +150,18 @@ export function PluginPage() {
           </div>
         </div>
 
-        <div className={styles["mask-page-body"]}>
-          <div className={styles["mask-filter"]}>
+        <div className={styles['mask-page-body']}>
+          <div className={styles['mask-filter']}>
             <input
               type="text"
-              className={styles["search-bar"]}
+              className={styles['search-bar']}
               placeholder={Locale.Plugin.Page.Search}
               autoFocus
-              onInput={(e) => onSearch(e.currentTarget.value)}
+              onInput={e => onSearch(e.currentTarget.value)}
             />
 
             <IconButton
-              className={styles["mask-create"]}
+              className={styles['mask-create']}
               icon={<AddIcon />}
               text={Locale.Plugin.Page.Create}
               bordered
@@ -175,10 +176,10 @@ export function PluginPage() {
             {plugins.length == 0 && (
               <div
                 style={{
-                  display: "flex",
-                  margin: "60px auto",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  display: 'flex',
+                  margin: '60px auto',
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }}
               >
                 {Locale.Plugin.Page.Find}
@@ -192,22 +193,24 @@ export function PluginPage() {
                 </a>
               </div>
             )}
-            {plugins.map((m) => (
-              <div className={styles["mask-item"]} key={m.id}>
-                <div className={styles["mask-header"]}>
-                  <div className={styles["mask-icon"]}></div>
-                  <div className={styles["mask-title"]}>
-                    <div className={styles["mask-name"]}>
-                      {m.title}@<small>{m.version}</small>
+            {plugins.map(m => (
+              <div className={styles['mask-item']} key={m.id}>
+                <div className={styles['mask-header']}>
+                  <div className={styles['mask-icon']}></div>
+                  <div className={styles['mask-title']}>
+                    <div className={styles['mask-name']}>
+                      {m.title}
+                      @
+                      <small>{m.version}</small>
                     </div>
-                    <div className={clsx(styles["mask-info"], "one-line")}>
+                    <div className={clsx(styles['mask-info'], 'one-line')}>
                       {Locale.Plugin.Item.Info(
                         FunctionToolService.add(m).length,
                       )}
                     </div>
                   </div>
                 </div>
-                <div className={styles["mask-actions"]}>
+                <div className={styles['mask-actions']}>
                   <IconButton
                     icon={<EditIcon />}
                     text={Locale.Plugin.Item.Edit}
@@ -244,7 +247,7 @@ export function PluginPage() {
                 text={Locale.UI.Confirm}
                 key="export"
                 bordered
-                onClick={() => setEditingPluginId("")}
+                onClick={() => setEditingPluginId('')}
               />,
             ]}
           >
@@ -264,7 +267,7 @@ export function PluginPage() {
                   <option value="custom">{Locale.Plugin.Auth.Custom}</option>
                 </select>
               </ListItem>
-              {["bearer", "basic", "custom"].includes(
+              {['bearer', 'basic', 'custom'].includes(
                 editingPlugin.authType as string,
               ) && (
                 <ListItem title={Locale.Plugin.Auth.Location}>
@@ -288,7 +291,7 @@ export function PluginPage() {
                   </select>
                 </ListItem>
               )}
-              {editingPlugin.authType == "custom" && (
+              {editingPlugin.authType == 'custom' && (
                 <ListItem title={Locale.Plugin.Auth.CustomHeader}>
                   <input
                     type="text"
@@ -298,10 +301,11 @@ export function PluginPage() {
                         plugin.authHeader = e.target.value;
                       });
                     }}
-                  ></input>
+                  >
+                  </input>
                 </ListItem>
               )}
-              {["bearer", "basic", "custom"].includes(
+              {['bearer', 'basic', 'custom'].includes(
                 editingPlugin.authType as string,
               ) && (
                 <ListItem title={Locale.Plugin.Auth.Token}>
@@ -313,18 +317,20 @@ export function PluginPage() {
                         plugin.authToken = e.currentTarget.value;
                       });
                     }}
-                  ></PasswordInput>
+                  >
+                  </PasswordInput>
                 </ListItem>
               )}
             </List>
             <List>
               <ListItem title={Locale.Plugin.EditModal.Content}>
-                <div className={pluginStyles["plugin-schema"]}>
+                <div className={pluginStyles['plugin-schema']}>
                   <input
                     type="text"
                     style={{ minWidth: 200 }}
-                    onInput={(e) => setLoadUrl(e.currentTarget.value)}
-                  ></input>
+                    onInput={e => setLoadUrl(e.currentTarget.value)}
+                  >
+                  </input>
                   <IconButton
                     icon={<ReloadIcon />}
                     text={Locale.Plugin.EditModal.Load}
@@ -334,26 +340,28 @@ export function PluginPage() {
                 </div>
               </ListItem>
               <ListItem
-                subTitle={
+                subTitle={(
                   <div
                     className={clsx(
-                      "markdown-body",
-                      pluginStyles["plugin-content"],
+                      'markdown-body',
+                      pluginStyles['plugin-content'],
                     )}
                     dir="auto"
                   >
                     <pre>
                       <code
-                        contentEditable={true}
+                        contentEditable
                         dangerouslySetInnerHTML={{
                           __html: editingPlugin.content,
                         }}
                         onBlur={onChangePlugin}
-                      ></code>
+                      >
+                      </code>
                     </pre>
                   </div>
-                }
-              ></ListItem>
+                )}
+              >
+              </ListItem>
               {editingPluginTool?.tools.map((tool, index) => (
                 <ListItem
                   key={index}

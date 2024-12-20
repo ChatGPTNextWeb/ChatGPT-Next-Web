@@ -1,25 +1,81 @@
-import { useState, useEffect, useMemo } from "react";
+import type { Prompt } from '../store/prompt';
 
-import styles from "./settings.module.scss";
+import { nanoid } from 'nanoid';
 
-import ResetIcon from "../icons/reload.svg";
-import AddIcon from "../icons/add.svg";
-import CloseIcon from "../icons/close.svg";
-import CopyIcon from "../icons/copy.svg";
-import ClearIcon from "../icons/clear.svg";
-import LoadingIcon from "../icons/three-dots.svg";
-import EditIcon from "../icons/edit.svg";
-import FireIcon from "../icons/fire.svg";
-import EyeIcon from "../icons/eye.svg";
-import DownloadIcon from "../icons/download.svg";
-import UploadIcon from "../icons/upload.svg";
-import ConfigIcon from "../icons/config.svg";
-import ConfirmIcon from "../icons/confirm.svg";
+import Link from 'next/link';
+import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getClientConfig } from '../config/client';
+import {
+  Alibaba,
+  Anthropic,
+  Azure,
+  Baidu,
+  ByteDance,
+  ChatGLM,
+  Google,
+  GoogleSafetySettingsThreshold,
+  Iflytek,
+  Moonshot,
+  OPENAI_BASE_URL,
+  Path,
+  RELEASE_URL,
+  SAAS_CHAT_URL,
+  ServiceProvider,
+  SlotID,
+  Stability,
+  STORAGE_KEY,
+  Tencent,
+  UPDATE_URL,
+  XAI,
+} from '../constant';
+import AddIcon from '../icons/add.svg';
+import ClearIcon from '../icons/clear.svg';
+import CloseIcon from '../icons/close.svg';
+import CloudFailIcon from '../icons/cloud-fail.svg';
+import CloudSuccessIcon from '../icons/cloud-success.svg';
+import ConfigIcon from '../icons/config.svg';
+import ConfirmIcon from '../icons/confirm.svg';
+import ConnectionIcon from '../icons/connection.svg';
 
-import ConnectionIcon from "../icons/connection.svg";
-import CloudSuccessIcon from "../icons/cloud-success.svg";
-import CloudFailIcon from "../icons/cloud-fail.svg";
-import { trackSettingsPageGuideToCPaymentClick } from "../utils/auth-settings-events";
+import CopyIcon from '../icons/copy.svg';
+import DownloadIcon from '../icons/download.svg';
+import EditIcon from '../icons/edit.svg';
+import EyeIcon from '../icons/eye.svg';
+import FireIcon from '../icons/fire.svg';
+import ResetIcon from '../icons/reload.svg';
+
+import LoadingIcon from '../icons/three-dots.svg';
+import UploadIcon from '../icons/upload.svg';
+
+import Locale, {
+  ALL_LANG_OPTIONS,
+  AllLangs,
+  changeLang,
+  getLang,
+} from '../locales';
+import {
+  SubmitKey,
+  Theme,
+  useAccessStore,
+  useAppConfig,
+  useChatStore,
+  useUpdateStore,
+} from '../store';
+import { useMaskStore } from '../store/mask';
+import { SearchService, usePromptStore } from '../store/prompt';
+import { useSyncStore } from '../store/sync';
+import { clientUpdate, copyToClipboard, semverCompare } from '../utils';
+import { trackSettingsPageGuideToCPaymentClick } from '../utils/auth-settings-events';
+import { ProviderType } from '../utils/cloud';
+import { IconButton } from './button';
+import { Avatar, AvatarPicker } from './emoji';
+import { ErrorBoundary } from './error';
+import { InputRange } from './input-range';
+import { ModelConfigList } from './model-config';
+import { RealtimeConfigList } from './realtime-chat/realtime-config';
+import styles from './settings.module.scss';
+import { TTSConfigList } from './tts-config';
 import {
   Input,
   List,
@@ -30,110 +86,57 @@ import {
   Select,
   showConfirm,
   showToast,
-} from "./ui-lib";
-import { ModelConfigList } from "./model-config";
-
-import { IconButton } from "./button";
-import {
-  SubmitKey,
-  useChatStore,
-  Theme,
-  useUpdateStore,
-  useAccessStore,
-  useAppConfig,
-} from "../store";
-
-import Locale, {
-  AllLangs,
-  ALL_LANG_OPTIONS,
-  changeLang,
-  getLang,
-} from "../locales";
-import { copyToClipboard, clientUpdate, semverCompare } from "../utils";
-import Link from "next/link";
-import {
-  Anthropic,
-  Azure,
-  Baidu,
-  Tencent,
-  ByteDance,
-  Alibaba,
-  Moonshot,
-  XAI,
-  Google,
-  GoogleSafetySettingsThreshold,
-  OPENAI_BASE_URL,
-  Path,
-  RELEASE_URL,
-  STORAGE_KEY,
-  ServiceProvider,
-  SlotID,
-  UPDATE_URL,
-  Stability,
-  Iflytek,
-  SAAS_CHAT_URL,
-  ChatGLM,
-} from "../constant";
-import { Prompt, SearchService, usePromptStore } from "../store/prompt";
-import { ErrorBoundary } from "./error";
-import { InputRange } from "./input-range";
-import { useNavigate } from "react-router-dom";
-import { Avatar, AvatarPicker } from "./emoji";
-import { getClientConfig } from "../config/client";
-import { useSyncStore } from "../store/sync";
-import { nanoid } from "nanoid";
-import { useMaskStore } from "../store/mask";
-import { ProviderType } from "../utils/cloud";
-import { TTSConfigList } from "./tts-config";
-import { RealtimeConfigList } from "./realtime-chat/realtime-config";
+} from './ui-lib';
 
 function EditPromptModal(props: { id: string; onClose: () => void }) {
   const promptStore = usePromptStore();
   const prompt = promptStore.get(props.id);
 
-  return prompt ? (
-    <div className="modal-mask">
-      <Modal
-        title={Locale.Settings.Prompt.EditModal.Title}
-        onClose={props.onClose}
-        actions={[
-          <IconButton
-            key=""
-            onClick={props.onClose}
-            text={Locale.UI.Confirm}
-            bordered
-          />,
-        ]}
-      >
-        <div className={styles["edit-prompt-modal"]}>
-          <input
-            type="text"
-            value={prompt.title}
-            readOnly={!prompt.isUser}
-            className={styles["edit-prompt-title"]}
-            onInput={(e) =>
-              promptStore.updatePrompt(
-                props.id,
-                (prompt) => (prompt.title = e.currentTarget.value),
-              )
-            }
-          ></input>
-          <Input
-            value={prompt.content}
-            readOnly={!prompt.isUser}
-            className={styles["edit-prompt-content"]}
-            rows={10}
-            onInput={(e) =>
-              promptStore.updatePrompt(
-                props.id,
-                (prompt) => (prompt.content = e.currentTarget.value),
-              )
-            }
-          ></Input>
+  return prompt
+    ? (
+        <div className="modal-mask">
+          <Modal
+            title={Locale.Settings.Prompt.EditModal.Title}
+            onClose={props.onClose}
+            actions={[
+              <IconButton
+                key=""
+                onClick={props.onClose}
+                text={Locale.UI.Confirm}
+                bordered
+              />,
+            ]}
+          >
+            <div className={styles['edit-prompt-modal']}>
+              <input
+                type="text"
+                value={prompt.title}
+                readOnly={!prompt.isUser}
+                className={styles['edit-prompt-title']}
+                onInput={e =>
+                  promptStore.updatePrompt(
+                    props.id,
+                    prompt => (prompt.title = e.currentTarget.value),
+                  )}
+              >
+              </input>
+              <Input
+                value={prompt.content}
+                readOnly={!prompt.isUser}
+                className={styles['edit-prompt-content']}
+                rows={10}
+                onInput={e =>
+                  promptStore.updatePrompt(
+                    props.id,
+                    prompt => (prompt.content = e.currentTarget.value),
+                  )}
+              >
+              </Input>
+            </div>
+          </Modal>
         </div>
-      </Modal>
-    </div>
-  ) : null;
+      )
+    : null;
 }
 
 function UserPromptModal(props: { onClose?: () => void }) {
@@ -141,7 +144,7 @@ function UserPromptModal(props: { onClose?: () => void }) {
   const userPrompts = promptStore.getUserPrompts();
   const builtinPrompts = SearchService.builtinPrompts;
   const allPrompts = userPrompts.concat(builtinPrompts);
-  const [searchInput, setSearchInput] = useState("");
+  const [searchInput, setSearchInput] = useState('');
   const [searchPrompts, setSearchPrompts] = useState<Prompt[]>([]);
   const prompts = searchInput.length > 0 ? searchPrompts : allPrompts;
 
@@ -168,8 +171,8 @@ function UserPromptModal(props: { onClose?: () => void }) {
               const promptId = promptStore.add({
                 id: nanoid(),
                 createdAt: Date.now(),
-                title: "Empty Prompt",
-                content: "Empty Prompt Content",
+                title: 'Empty Prompt',
+                content: 'Empty Prompt Content',
               });
               setEditingPromptId(promptId);
             }}
@@ -179,49 +182,52 @@ function UserPromptModal(props: { onClose?: () => void }) {
           />,
         ]}
       >
-        <div className={styles["user-prompt-modal"]}>
+        <div className={styles['user-prompt-modal']}>
           <input
             type="text"
-            className={styles["user-prompt-search"]}
+            className={styles['user-prompt-search']}
             placeholder={Locale.Settings.Prompt.Modal.Search}
             value={searchInput}
-            onInput={(e) => setSearchInput(e.currentTarget.value)}
-          ></input>
+            onInput={e => setSearchInput(e.currentTarget.value)}
+          >
+          </input>
 
-          <div className={styles["user-prompt-list"]}>
+          <div className={styles['user-prompt-list']}>
             {prompts.map((v, _) => (
-              <div className={styles["user-prompt-item"]} key={v.id ?? v.title}>
-                <div className={styles["user-prompt-header"]}>
-                  <div className={styles["user-prompt-title"]}>{v.title}</div>
-                  <div className={styles["user-prompt-content"] + " one-line"}>
+              <div className={styles['user-prompt-item']} key={v.id ?? v.title}>
+                <div className={styles['user-prompt-header']}>
+                  <div className={styles['user-prompt-title']}>{v.title}</div>
+                  <div className={`${styles['user-prompt-content']} one-line`}>
                     {v.content}
                   </div>
                 </div>
 
-                <div className={styles["user-prompt-buttons"]}>
+                <div className={styles['user-prompt-buttons']}>
                   {v.isUser && (
                     <IconButton
                       icon={<ClearIcon />}
-                      className={styles["user-prompt-button"]}
+                      className={styles['user-prompt-button']}
                       onClick={() => promptStore.remove(v.id!)}
                     />
                   )}
-                  {v.isUser ? (
-                    <IconButton
-                      icon={<EditIcon />}
-                      className={styles["user-prompt-button"]}
-                      onClick={() => setEditingPromptId(v.id)}
-                    />
-                  ) : (
-                    <IconButton
-                      icon={<EyeIcon />}
-                      className={styles["user-prompt-button"]}
-                      onClick={() => setEditingPromptId(v.id)}
-                    />
-                  )}
+                  {v.isUser
+                    ? (
+                        <IconButton
+                          icon={<EditIcon />}
+                          className={styles['user-prompt-button']}
+                          onClick={() => setEditingPromptId(v.id)}
+                        />
+                      )
+                    : (
+                        <IconButton
+                          icon={<EyeIcon />}
+                          className={styles['user-prompt-button']}
+                          onClick={() => setEditingPromptId(v.id)}
+                        />
+                      )}
                   <IconButton
                     icon={<CopyIcon />}
-                    className={styles["user-prompt-button"]}
+                    className={styles['user-prompt-button']}
                     onClick={() => copyToClipboard(v.content)}
                   />
                 </div>
@@ -289,16 +295,17 @@ function CheckButton() {
   }, [syncStore]);
 
   const [checkState, setCheckState] = useState<
-    "none" | "checking" | "success" | "failed"
-  >("none");
+    'none' | 'checking' | 'success' | 'failed'
+  >('none');
 
   async function check() {
-    setCheckState("checking");
+    setCheckState('checking');
     const valid = await syncStore.check();
-    setCheckState(valid ? "success" : "failed");
+    setCheckState(valid ? 'success' : 'failed');
   }
 
-  if (!couldCheck) return null;
+  if (!couldCheck)
+  { return null; }
 
   return (
     <IconButton
@@ -306,19 +313,28 @@ function CheckButton() {
       bordered
       onClick={check}
       icon={
-        checkState === "none" ? (
-          <ConnectionIcon />
-        ) : checkState === "checking" ? (
-          <LoadingIcon />
-        ) : checkState === "success" ? (
-          <CloudSuccessIcon />
-        ) : checkState === "failed" ? (
-          <CloudFailIcon />
-        ) : (
-          <ConnectionIcon />
-        )
+        checkState === 'none'
+          ? (
+              <ConnectionIcon />
+            )
+          : checkState === 'checking'
+            ? (
+                <LoadingIcon />
+              )
+            : checkState === 'success'
+              ? (
+                  <CloudSuccessIcon />
+                )
+              : checkState === 'failed'
+                ? (
+                    <CloudFailIcon />
+                  )
+                : (
+                    <ConnectionIcon />
+                  )
       }
-    ></IconButton>
+    >
+    </IconButton>
   );
 }
 
@@ -350,7 +366,7 @@ function SyncConfigModal(props: { onClose?: () => void }) {
               value={syncStore.provider}
               onChange={(e) => {
                 syncStore.update(
-                  (config) =>
+                  config =>
                     (config.provider = e.target.value as ProviderType),
                 );
               }}
@@ -372,27 +388,31 @@ function SyncConfigModal(props: { onClose?: () => void }) {
               checked={syncStore.useProxy}
               onChange={(e) => {
                 syncStore.update(
-                  (config) => (config.useProxy = e.currentTarget.checked),
+                  config => (config.useProxy = e.currentTarget.checked),
                 );
               }}
-            ></input>
-          </ListItem>
-          {syncStore.useProxy ? (
-            <ListItem
-              title={Locale.Settings.Sync.Config.ProxyUrl.Title}
-              subTitle={Locale.Settings.Sync.Config.ProxyUrl.SubTitle}
             >
-              <input
-                type="text"
-                value={syncStore.proxyUrl}
-                onChange={(e) => {
-                  syncStore.update(
-                    (config) => (config.proxyUrl = e.currentTarget.value),
-                  );
-                }}
-              ></input>
-            </ListItem>
-          ) : null}
+            </input>
+          </ListItem>
+          {syncStore.useProxy
+            ? (
+                <ListItem
+                  title={Locale.Settings.Sync.Config.ProxyUrl.Title}
+                  subTitle={Locale.Settings.Sync.Config.ProxyUrl.SubTitle}
+                >
+                  <input
+                    type="text"
+                    value={syncStore.proxyUrl}
+                    onChange={(e) => {
+                      syncStore.update(
+                        config => (config.proxyUrl = e.currentTarget.value),
+                      );
+                    }}
+                  >
+                  </input>
+                </ListItem>
+              )
+            : null}
         </List>
 
         {syncStore.provider === ProviderType.WebDAV && (
@@ -404,11 +424,12 @@ function SyncConfigModal(props: { onClose?: () => void }) {
                   value={syncStore.webdav.endpoint}
                   onChange={(e) => {
                     syncStore.update(
-                      (config) =>
+                      config =>
                         (config.webdav.endpoint = e.currentTarget.value),
                     );
                   }}
-                ></input>
+                >
+                </input>
               </ListItem>
 
               <ListItem title={Locale.Settings.Sync.Config.WebDav.UserName}>
@@ -417,22 +438,24 @@ function SyncConfigModal(props: { onClose?: () => void }) {
                   value={syncStore.webdav.username}
                   onChange={(e) => {
                     syncStore.update(
-                      (config) =>
+                      config =>
                         (config.webdav.username = e.currentTarget.value),
                     );
                   }}
-                ></input>
+                >
+                </input>
               </ListItem>
               <ListItem title={Locale.Settings.Sync.Config.WebDav.Password}>
                 <PasswordInput
                   value={syncStore.webdav.password}
                   onChange={(e) => {
                     syncStore.update(
-                      (config) =>
+                      config =>
                         (config.webdav.password = e.currentTarget.value),
                     );
                   }}
-                ></PasswordInput>
+                >
+                </PasswordInput>
               </ListItem>
             </List>
           </>
@@ -446,11 +469,12 @@ function SyncConfigModal(props: { onClose?: () => void }) {
                 value={syncStore.upstash.endpoint}
                 onChange={(e) => {
                   syncStore.update(
-                    (config) =>
+                    config =>
                       (config.upstash.endpoint = e.currentTarget.value),
                   );
                 }}
-              ></input>
+              >
+              </input>
             </ListItem>
 
             <ListItem title={Locale.Settings.Sync.Config.UpStash.UserName}>
@@ -460,21 +484,23 @@ function SyncConfigModal(props: { onClose?: () => void }) {
                 placeholder={STORAGE_KEY}
                 onChange={(e) => {
                   syncStore.update(
-                    (config) =>
+                    config =>
                       (config.upstash.username = e.currentTarget.value),
                   );
                 }}
-              ></input>
+              >
+              </input>
             </ListItem>
             <ListItem title={Locale.Settings.Sync.Config.UpStash.Password}>
               <PasswordInput
                 value={syncStore.upstash.apiKey}
                 onChange={(e) => {
                   syncStore.update(
-                    (config) => (config.upstash.apiKey = e.currentTarget.value),
+                    config => (config.upstash.apiKey = e.currentTarget.value),
                   );
                 }}
-              ></PasswordInput>
+              >
+              </PasswordInput>
             </ListItem>
           </List>
         )}
@@ -514,12 +540,12 @@ function SyncItems() {
           subTitle={
             syncStore.lastProvider
               ? `${new Date(syncStore.lastSyncTime).toLocaleString()} [${
-                  syncStore.lastProvider
-                }]`
+                syncStore.lastProvider
+              }]`
               : Locale.Settings.Sync.NotSyncYet
           }
         >
-          <div style={{ display: "flex" }}>
+          <div style={{ display: 'flex' }}>
             <IconButton
               aria={Locale.Settings.Sync.CloudState + Locale.UI.Config}
               icon={<ConfigIcon />}
@@ -538,7 +564,7 @@ function SyncItems() {
                     showToast(Locale.Settings.Sync.Success);
                   } catch (e) {
                     showToast(Locale.Settings.Sync.Fail);
-                    console.error("[Sync]", e);
+                    console.error('[Sync]', e);
                   }
                 }}
               />
@@ -550,7 +576,7 @@ function SyncItems() {
           title={Locale.Settings.Sync.LocalState}
           subTitle={Locale.Settings.Sync.Overview(stateOverview)}
         >
-          <div style={{ display: "flex" }}>
+          <div style={{ display: 'flex' }}>
             <IconButton
               aria={Locale.Settings.Sync.LocalState + Locale.UI.Export}
               icon={<UploadIcon />}
@@ -597,8 +623,8 @@ export function Settings() {
       setCheckingUpdate(false);
     });
 
-    console.log("[Update] local version ", updateStore.version);
-    console.log("[Update] remote version ", updateStore.remoteVersion);
+    console.log('[Update] local version ', updateStore.version);
+    console.log('[Update] remote version ', updateStore.remoteVersion);
   }
 
   const accessStore = useAccessStore();
@@ -606,9 +632,9 @@ export function Settings() {
     const isOpenAiUrl = accessStore.openaiUrl.includes(OPENAI_BASE_URL);
 
     return (
-      accessStore.hideBalanceQuery ||
-      isOpenAiUrl ||
-      accessStore.provider === ServiceProvider.Azure
+      accessStore.hideBalanceQuery
+      || isOpenAiUrl
+      || accessStore.provider === ServiceProvider.Azure
     );
   }, [
     accessStore.hideBalanceQuery,
@@ -653,7 +679,7 @@ export function Settings() {
 
   useEffect(() => {
     const keydownEvent = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === 'Escape') {
         navigate(Path.Home);
       }
     };
@@ -663,9 +689,9 @@ export function Settings() {
         state.useCustomConfig = true;
       });
     }
-    document.addEventListener("keydown", keydownEvent);
+    document.addEventListener('keydown', keydownEvent);
     return () => {
-      document.removeEventListener("keydown", keydownEvent);
+      document.removeEventListener('keydown', keydownEvent);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -684,7 +710,7 @@ export function Settings() {
         placeholder={Locale.Settings.Access.AccessCode.Placeholder}
         onChange={(e) => {
           accessStore.update(
-            (access) => (access.accessCode = e.currentTarget.value),
+            access => (access.accessCode = e.currentTarget.value),
           );
         }}
       />
@@ -693,20 +719,20 @@ export function Settings() {
 
   const saasStartComponent = (
     <ListItem
-      className={styles["subtitle-button"]}
+      className={styles['subtitle-button']}
       title={
-        Locale.Settings.Access.SaasStart.Title +
-        `${Locale.Settings.Access.SaasStart.Label}`
+        `${Locale.Settings.Access.SaasStart.Title
+        }${Locale.Settings.Access.SaasStart.Label}`
       }
       subTitle={Locale.Settings.Access.SaasStart.SubTitle}
     >
       <IconButton
         aria={
-          Locale.Settings.Access.SaasStart.Title +
-          Locale.Settings.Access.SaasStart.ChatNow
+          Locale.Settings.Access.SaasStart.Title
+          + Locale.Settings.Access.SaasStart.ChatNow
         }
         icon={<FireIcon />}
-        type={"primary"}
+        type="primary"
         text={Locale.Settings.Access.SaasStart.ChatNow}
         onClick={() => {
           trackSettingsPageGuideToCPaymentClick();
@@ -716,8 +742,8 @@ export function Settings() {
     </ListItem>
   );
 
-  const useCustomConfigComponent = // Conditionally render the following ListItem based on clientConfig.isApp
-    !clientConfig?.isApp && ( // only show if isApp is false
+  const useCustomConfigComponent // Conditionally render the following ListItem based on clientConfig.isApp
+    = !clientConfig?.isApp && ( // only show if isApp is false
       <ListItem
         title={Locale.Settings.Access.CustomEndpoint.Title}
         subTitle={Locale.Settings.Access.CustomEndpoint.SubTitle}
@@ -726,17 +752,17 @@ export function Settings() {
           aria-label={Locale.Settings.Access.CustomEndpoint.Title}
           type="checkbox"
           checked={accessStore.useCustomConfig}
-          onChange={(e) =>
+          onChange={e =>
             accessStore.update(
-              (access) => (access.useCustomConfig = e.currentTarget.checked),
-            )
-          }
-        ></input>
+              access => (access.useCustomConfig = e.currentTarget.checked),
+            )}
+        >
+        </input>
       </ListItem>
     );
 
-  const openAIConfigComponent = accessStore.provider ===
-    ServiceProvider.OpenAI && (
+  const openAIConfigComponent = accessStore.provider
+    === ServiceProvider.OpenAI && (
     <>
       <ListItem
         title={Locale.Settings.Access.OpenAI.Endpoint.Title}
@@ -747,12 +773,12 @@ export function Settings() {
           type="text"
           value={accessStore.openaiUrl}
           placeholder={OPENAI_BASE_URL}
-          onChange={(e) =>
+          onChange={e =>
             accessStore.update(
-              (access) => (access.openaiUrl = e.currentTarget.value),
-            )
-          }
-        ></input>
+              access => (access.openaiUrl = e.currentTarget.value),
+            )}
+        >
+        </input>
       </ListItem>
       <ListItem
         title={Locale.Settings.Access.OpenAI.ApiKey.Title}
@@ -766,7 +792,7 @@ export function Settings() {
           placeholder={Locale.Settings.Access.OpenAI.ApiKey.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.openaiApiKey = e.currentTarget.value),
+              access => (access.openaiApiKey = e.currentTarget.value),
             );
           }}
         />
@@ -774,8 +800,8 @@ export function Settings() {
     </>
   );
 
-  const azureConfigComponent = accessStore.provider ===
-    ServiceProvider.Azure && (
+  const azureConfigComponent = accessStore.provider
+    === ServiceProvider.Azure && (
     <>
       <ListItem
         title={Locale.Settings.Access.Azure.Endpoint.Title}
@@ -788,12 +814,12 @@ export function Settings() {
           type="text"
           value={accessStore.azureUrl}
           placeholder={Azure.ExampleEndpoint}
-          onChange={(e) =>
+          onChange={e =>
             accessStore.update(
-              (access) => (access.azureUrl = e.currentTarget.value),
-            )
-          }
-        ></input>
+              access => (access.azureUrl = e.currentTarget.value),
+            )}
+        >
+        </input>
       </ListItem>
       <ListItem
         title={Locale.Settings.Access.Azure.ApiKey.Title}
@@ -806,7 +832,7 @@ export function Settings() {
           placeholder={Locale.Settings.Access.Azure.ApiKey.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.azureApiKey = e.currentTarget.value),
+              access => (access.azureApiKey = e.currentTarget.value),
             );
           }}
         />
@@ -820,24 +846,24 @@ export function Settings() {
           type="text"
           value={accessStore.azureApiVersion}
           placeholder="2023-08-01-preview"
-          onChange={(e) =>
+          onChange={e =>
             accessStore.update(
-              (access) => (access.azureApiVersion = e.currentTarget.value),
-            )
-          }
-        ></input>
+              access => (access.azureApiVersion = e.currentTarget.value),
+            )}
+        >
+        </input>
       </ListItem>
     </>
   );
 
-  const googleConfigComponent = accessStore.provider ===
-    ServiceProvider.Google && (
+  const googleConfigComponent = accessStore.provider
+    === ServiceProvider.Google && (
     <>
       <ListItem
         title={Locale.Settings.Access.Google.Endpoint.Title}
         subTitle={
-          Locale.Settings.Access.Google.Endpoint.SubTitle +
-          Google.ExampleEndpoint
+          Locale.Settings.Access.Google.Endpoint.SubTitle
+          + Google.ExampleEndpoint
         }
       >
         <input
@@ -845,12 +871,12 @@ export function Settings() {
           type="text"
           value={accessStore.googleUrl}
           placeholder={Google.ExampleEndpoint}
-          onChange={(e) =>
+          onChange={e =>
             accessStore.update(
-              (access) => (access.googleUrl = e.currentTarget.value),
-            )
-          }
-        ></input>
+              access => (access.googleUrl = e.currentTarget.value),
+            )}
+        >
+        </input>
       </ListItem>
       <ListItem
         title={Locale.Settings.Access.Google.ApiKey.Title}
@@ -863,7 +889,7 @@ export function Settings() {
           placeholder={Locale.Settings.Access.Google.ApiKey.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.googleApiKey = e.currentTarget.value),
+              access => (access.googleApiKey = e.currentTarget.value),
             );
           }}
         />
@@ -877,12 +903,12 @@ export function Settings() {
           type="text"
           value={accessStore.googleApiVersion}
           placeholder="2023-08-01-preview"
-          onChange={(e) =>
+          onChange={e =>
             accessStore.update(
-              (access) => (access.googleApiVersion = e.currentTarget.value),
-            )
-          }
-        ></input>
+              access => (access.googleApiVersion = e.currentTarget.value),
+            )}
+        >
+        </input>
       </ListItem>
       <ListItem
         title={Locale.Settings.Access.Google.GoogleSafetySettings.Title}
@@ -893,7 +919,7 @@ export function Settings() {
           value={accessStore.googleSafetySettings}
           onChange={(e) => {
             accessStore.update(
-              (access) =>
+              access =>
                 (access.googleSafetySettings = e.target
                   .value as GoogleSafetySettingsThreshold),
             );
@@ -909,14 +935,14 @@ export function Settings() {
     </>
   );
 
-  const anthropicConfigComponent = accessStore.provider ===
-    ServiceProvider.Anthropic && (
+  const anthropicConfigComponent = accessStore.provider
+    === ServiceProvider.Anthropic && (
     <>
       <ListItem
         title={Locale.Settings.Access.Anthropic.Endpoint.Title}
         subTitle={
-          Locale.Settings.Access.Anthropic.Endpoint.SubTitle +
-          Anthropic.ExampleEndpoint
+          Locale.Settings.Access.Anthropic.Endpoint.SubTitle
+          + Anthropic.ExampleEndpoint
         }
       >
         <input
@@ -924,12 +950,12 @@ export function Settings() {
           type="text"
           value={accessStore.anthropicUrl}
           placeholder={Anthropic.ExampleEndpoint}
-          onChange={(e) =>
+          onChange={e =>
             accessStore.update(
-              (access) => (access.anthropicUrl = e.currentTarget.value),
-            )
-          }
-        ></input>
+              access => (access.anthropicUrl = e.currentTarget.value),
+            )}
+        >
+        </input>
       </ListItem>
       <ListItem
         title={Locale.Settings.Access.Anthropic.ApiKey.Title}
@@ -942,7 +968,7 @@ export function Settings() {
           placeholder={Locale.Settings.Access.Anthropic.ApiKey.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.anthropicApiKey = e.currentTarget.value),
+              access => (access.anthropicApiKey = e.currentTarget.value),
             );
           }}
         />
@@ -956,18 +982,18 @@ export function Settings() {
           type="text"
           value={accessStore.anthropicApiVersion}
           placeholder={Anthropic.Vision}
-          onChange={(e) =>
+          onChange={e =>
             accessStore.update(
-              (access) => (access.anthropicApiVersion = e.currentTarget.value),
-            )
-          }
-        ></input>
+              access => (access.anthropicApiVersion = e.currentTarget.value),
+            )}
+        >
+        </input>
       </ListItem>
     </>
   );
 
-  const baiduConfigComponent = accessStore.provider ===
-    ServiceProvider.Baidu && (
+  const baiduConfigComponent = accessStore.provider
+    === ServiceProvider.Baidu && (
     <>
       <ListItem
         title={Locale.Settings.Access.Baidu.Endpoint.Title}
@@ -978,12 +1004,12 @@ export function Settings() {
           type="text"
           value={accessStore.baiduUrl}
           placeholder={Baidu.ExampleEndpoint}
-          onChange={(e) =>
+          onChange={e =>
             accessStore.update(
-              (access) => (access.baiduUrl = e.currentTarget.value),
-            )
-          }
-        ></input>
+              access => (access.baiduUrl = e.currentTarget.value),
+            )}
+        >
+        </input>
       </ListItem>
       <ListItem
         title={Locale.Settings.Access.Baidu.ApiKey.Title}
@@ -996,7 +1022,7 @@ export function Settings() {
           placeholder={Locale.Settings.Access.Baidu.ApiKey.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.baiduApiKey = e.currentTarget.value),
+              access => (access.baiduApiKey = e.currentTarget.value),
             );
           }}
         />
@@ -1012,7 +1038,7 @@ export function Settings() {
           placeholder={Locale.Settings.Access.Baidu.SecretKey.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.baiduSecretKey = e.currentTarget.value),
+              access => (access.baiduSecretKey = e.currentTarget.value),
             );
           }}
         />
@@ -1020,8 +1046,8 @@ export function Settings() {
     </>
   );
 
-  const tencentConfigComponent = accessStore.provider ===
-    ServiceProvider.Tencent && (
+  const tencentConfigComponent = accessStore.provider
+    === ServiceProvider.Tencent && (
     <>
       <ListItem
         title={Locale.Settings.Access.Tencent.Endpoint.Title}
@@ -1032,12 +1058,12 @@ export function Settings() {
           type="text"
           value={accessStore.tencentUrl}
           placeholder={Tencent.ExampleEndpoint}
-          onChange={(e) =>
+          onChange={e =>
             accessStore.update(
-              (access) => (access.tencentUrl = e.currentTarget.value),
-            )
-          }
-        ></input>
+              access => (access.tencentUrl = e.currentTarget.value),
+            )}
+        >
+        </input>
       </ListItem>
       <ListItem
         title={Locale.Settings.Access.Tencent.ApiKey.Title}
@@ -1050,7 +1076,7 @@ export function Settings() {
           placeholder={Locale.Settings.Access.Tencent.ApiKey.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.tencentSecretId = e.currentTarget.value),
+              access => (access.tencentSecretId = e.currentTarget.value),
             );
           }}
         />
@@ -1066,7 +1092,7 @@ export function Settings() {
           placeholder={Locale.Settings.Access.Tencent.SecretKey.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.tencentSecretKey = e.currentTarget.value),
+              access => (access.tencentSecretKey = e.currentTarget.value),
             );
           }}
         />
@@ -1074,14 +1100,14 @@ export function Settings() {
     </>
   );
 
-  const byteDanceConfigComponent = accessStore.provider ===
-    ServiceProvider.ByteDance && (
+  const byteDanceConfigComponent = accessStore.provider
+    === ServiceProvider.ByteDance && (
     <>
       <ListItem
         title={Locale.Settings.Access.ByteDance.Endpoint.Title}
         subTitle={
-          Locale.Settings.Access.ByteDance.Endpoint.SubTitle +
-          ByteDance.ExampleEndpoint
+          Locale.Settings.Access.ByteDance.Endpoint.SubTitle
+          + ByteDance.ExampleEndpoint
         }
       >
         <input
@@ -1089,12 +1115,12 @@ export function Settings() {
           type="text"
           value={accessStore.bytedanceUrl}
           placeholder={ByteDance.ExampleEndpoint}
-          onChange={(e) =>
+          onChange={e =>
             accessStore.update(
-              (access) => (access.bytedanceUrl = e.currentTarget.value),
-            )
-          }
-        ></input>
+              access => (access.bytedanceUrl = e.currentTarget.value),
+            )}
+        >
+        </input>
       </ListItem>
       <ListItem
         title={Locale.Settings.Access.ByteDance.ApiKey.Title}
@@ -1107,7 +1133,7 @@ export function Settings() {
           placeholder={Locale.Settings.Access.ByteDance.ApiKey.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.bytedanceApiKey = e.currentTarget.value),
+              access => (access.bytedanceApiKey = e.currentTarget.value),
             );
           }}
         />
@@ -1115,14 +1141,14 @@ export function Settings() {
     </>
   );
 
-  const alibabaConfigComponent = accessStore.provider ===
-    ServiceProvider.Alibaba && (
+  const alibabaConfigComponent = accessStore.provider
+    === ServiceProvider.Alibaba && (
     <>
       <ListItem
         title={Locale.Settings.Access.Alibaba.Endpoint.Title}
         subTitle={
-          Locale.Settings.Access.Alibaba.Endpoint.SubTitle +
-          Alibaba.ExampleEndpoint
+          Locale.Settings.Access.Alibaba.Endpoint.SubTitle
+          + Alibaba.ExampleEndpoint
         }
       >
         <input
@@ -1130,12 +1156,12 @@ export function Settings() {
           type="text"
           value={accessStore.alibabaUrl}
           placeholder={Alibaba.ExampleEndpoint}
-          onChange={(e) =>
+          onChange={e =>
             accessStore.update(
-              (access) => (access.alibabaUrl = e.currentTarget.value),
-            )
-          }
-        ></input>
+              access => (access.alibabaUrl = e.currentTarget.value),
+            )}
+        >
+        </input>
       </ListItem>
       <ListItem
         title={Locale.Settings.Access.Alibaba.ApiKey.Title}
@@ -1148,7 +1174,7 @@ export function Settings() {
           placeholder={Locale.Settings.Access.Alibaba.ApiKey.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.alibabaApiKey = e.currentTarget.value),
+              access => (access.alibabaApiKey = e.currentTarget.value),
             );
           }}
         />
@@ -1156,14 +1182,14 @@ export function Settings() {
     </>
   );
 
-  const moonshotConfigComponent = accessStore.provider ===
-    ServiceProvider.Moonshot && (
+  const moonshotConfigComponent = accessStore.provider
+    === ServiceProvider.Moonshot && (
     <>
       <ListItem
         title={Locale.Settings.Access.Moonshot.Endpoint.Title}
         subTitle={
-          Locale.Settings.Access.Moonshot.Endpoint.SubTitle +
-          Moonshot.ExampleEndpoint
+          Locale.Settings.Access.Moonshot.Endpoint.SubTitle
+          + Moonshot.ExampleEndpoint
         }
       >
         <input
@@ -1171,12 +1197,12 @@ export function Settings() {
           type="text"
           value={accessStore.moonshotUrl}
           placeholder={Moonshot.ExampleEndpoint}
-          onChange={(e) =>
+          onChange={e =>
             accessStore.update(
-              (access) => (access.moonshotUrl = e.currentTarget.value),
-            )
-          }
-        ></input>
+              access => (access.moonshotUrl = e.currentTarget.value),
+            )}
+        >
+        </input>
       </ListItem>
       <ListItem
         title={Locale.Settings.Access.Moonshot.ApiKey.Title}
@@ -1189,7 +1215,7 @@ export function Settings() {
           placeholder={Locale.Settings.Access.Moonshot.ApiKey.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.moonshotApiKey = e.currentTarget.value),
+              access => (access.moonshotApiKey = e.currentTarget.value),
             );
           }}
         />
@@ -1210,12 +1236,12 @@ export function Settings() {
           type="text"
           value={accessStore.xaiUrl}
           placeholder={XAI.ExampleEndpoint}
-          onChange={(e) =>
+          onChange={e =>
             accessStore.update(
-              (access) => (access.xaiUrl = e.currentTarget.value),
-            )
-          }
-        ></input>
+              access => (access.xaiUrl = e.currentTarget.value),
+            )}
+        >
+        </input>
       </ListItem>
       <ListItem
         title={Locale.Settings.Access.XAI.ApiKey.Title}
@@ -1228,7 +1254,7 @@ export function Settings() {
           placeholder={Locale.Settings.Access.XAI.ApiKey.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.xaiApiKey = e.currentTarget.value),
+              access => (access.xaiApiKey = e.currentTarget.value),
             );
           }}
         />
@@ -1236,14 +1262,14 @@ export function Settings() {
     </>
   );
 
-  const chatglmConfigComponent = accessStore.provider ===
-    ServiceProvider.ChatGLM && (
+  const chatglmConfigComponent = accessStore.provider
+    === ServiceProvider.ChatGLM && (
     <>
       <ListItem
         title={Locale.Settings.Access.ChatGLM.Endpoint.Title}
         subTitle={
-          Locale.Settings.Access.ChatGLM.Endpoint.SubTitle +
-          ChatGLM.ExampleEndpoint
+          Locale.Settings.Access.ChatGLM.Endpoint.SubTitle
+          + ChatGLM.ExampleEndpoint
         }
       >
         <input
@@ -1251,12 +1277,12 @@ export function Settings() {
           type="text"
           value={accessStore.chatglmUrl}
           placeholder={ChatGLM.ExampleEndpoint}
-          onChange={(e) =>
+          onChange={e =>
             accessStore.update(
-              (access) => (access.chatglmUrl = e.currentTarget.value),
-            )
-          }
-        ></input>
+              access => (access.chatglmUrl = e.currentTarget.value),
+            )}
+        >
+        </input>
       </ListItem>
       <ListItem
         title={Locale.Settings.Access.ChatGLM.ApiKey.Title}
@@ -1269,7 +1295,7 @@ export function Settings() {
           placeholder={Locale.Settings.Access.ChatGLM.ApiKey.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.chatglmApiKey = e.currentTarget.value),
+              access => (access.chatglmApiKey = e.currentTarget.value),
             );
           }}
         />
@@ -1277,14 +1303,14 @@ export function Settings() {
     </>
   );
 
-  const stabilityConfigComponent = accessStore.provider ===
-    ServiceProvider.Stability && (
+  const stabilityConfigComponent = accessStore.provider
+    === ServiceProvider.Stability && (
     <>
       <ListItem
         title={Locale.Settings.Access.Stability.Endpoint.Title}
         subTitle={
-          Locale.Settings.Access.Stability.Endpoint.SubTitle +
-          Stability.ExampleEndpoint
+          Locale.Settings.Access.Stability.Endpoint.SubTitle
+          + Stability.ExampleEndpoint
         }
       >
         <input
@@ -1292,12 +1318,12 @@ export function Settings() {
           type="text"
           value={accessStore.stabilityUrl}
           placeholder={Stability.ExampleEndpoint}
-          onChange={(e) =>
+          onChange={e =>
             accessStore.update(
-              (access) => (access.stabilityUrl = e.currentTarget.value),
-            )
-          }
-        ></input>
+              access => (access.stabilityUrl = e.currentTarget.value),
+            )}
+        >
+        </input>
       </ListItem>
       <ListItem
         title={Locale.Settings.Access.Stability.ApiKey.Title}
@@ -1310,21 +1336,21 @@ export function Settings() {
           placeholder={Locale.Settings.Access.Stability.ApiKey.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.stabilityApiKey = e.currentTarget.value),
+              access => (access.stabilityApiKey = e.currentTarget.value),
             );
           }}
         />
       </ListItem>
     </>
   );
-  const lflytekConfigComponent = accessStore.provider ===
-    ServiceProvider.Iflytek && (
+  const lflytekConfigComponent = accessStore.provider
+    === ServiceProvider.Iflytek && (
     <>
       <ListItem
         title={Locale.Settings.Access.Iflytek.Endpoint.Title}
         subTitle={
-          Locale.Settings.Access.Iflytek.Endpoint.SubTitle +
-          Iflytek.ExampleEndpoint
+          Locale.Settings.Access.Iflytek.Endpoint.SubTitle
+          + Iflytek.ExampleEndpoint
         }
       >
         <input
@@ -1332,12 +1358,12 @@ export function Settings() {
           type="text"
           value={accessStore.iflytekUrl}
           placeholder={Iflytek.ExampleEndpoint}
-          onChange={(e) =>
+          onChange={e =>
             accessStore.update(
-              (access) => (access.iflytekUrl = e.currentTarget.value),
-            )
-          }
-        ></input>
+              access => (access.iflytekUrl = e.currentTarget.value),
+            )}
+        >
+        </input>
       </ListItem>
       <ListItem
         title={Locale.Settings.Access.Iflytek.ApiKey.Title}
@@ -1350,7 +1376,7 @@ export function Settings() {
           placeholder={Locale.Settings.Access.Iflytek.ApiKey.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.iflytekApiKey = e.currentTarget.value),
+              access => (access.iflytekApiKey = e.currentTarget.value),
             );
           }}
         />
@@ -1367,7 +1393,7 @@ export function Settings() {
           placeholder={Locale.Settings.Access.Iflytek.ApiSecret.Placeholder}
           onChange={(e) => {
             accessStore.update(
-              (access) => (access.iflytekApiSecret = e.currentTarget.value),
+              access => (access.iflytekApiSecret = e.currentTarget.value),
             );
           }}
         />
@@ -1399,19 +1425,19 @@ export function Settings() {
           </div>
         </div>
       </div>
-      <div className={styles["settings"]}>
+      <div className={styles.settings}>
         <List>
           <ListItem title={Locale.Settings.Avatar}>
             <Popover
               onClose={() => setShowEmojiPicker(false)}
-              content={
+              content={(
                 <AvatarPicker
                   onEmojiClick={(avatar: string) => {
-                    updateConfig((config) => (config.avatar = avatar));
+                    updateConfig(config => (config.avatar = avatar));
                     setShowEmojiPicker(false);
                   }}
                 />
-              }
+              )}
               open={showEmojiPicker}
             >
               <div
@@ -1428,36 +1454,42 @@ export function Settings() {
           </ListItem>
 
           <ListItem
-            title={Locale.Settings.Update.Version(currentVersion ?? "unknown")}
+            title={Locale.Settings.Update.Version(currentVersion ?? 'unknown')}
             subTitle={
               checkingUpdate
                 ? Locale.Settings.Update.IsChecking
                 : hasNewVersion
-                ? Locale.Settings.Update.FoundUpdate(remoteId ?? "ERROR")
-                : Locale.Settings.Update.IsLatest
+                  ? Locale.Settings.Update.FoundUpdate(remoteId ?? 'ERROR')
+                  : Locale.Settings.Update.IsLatest
             }
           >
-            {checkingUpdate ? (
-              <LoadingIcon />
-            ) : hasNewVersion ? (
-              clientConfig?.isApp ? (
-                <IconButton
-                  icon={<ResetIcon></ResetIcon>}
-                  text={Locale.Settings.Update.GoToUpdate}
-                  onClick={() => clientUpdate()}
-                />
-              ) : (
-                <Link href={updateUrl} target="_blank" className="link">
-                  {Locale.Settings.Update.GoToUpdate}
-                </Link>
-              )
-            ) : (
-              <IconButton
-                icon={<ResetIcon></ResetIcon>}
-                text={Locale.Settings.Update.CheckUpdate}
-                onClick={() => checkUpdate(true)}
-              />
-            )}
+            {checkingUpdate
+              ? (
+                  <LoadingIcon />
+                )
+              : hasNewVersion
+                ? (
+                    clientConfig?.isApp
+                      ? (
+                          <IconButton
+                            icon={<ResetIcon></ResetIcon>}
+                            text={Locale.Settings.Update.GoToUpdate}
+                            onClick={() => clientUpdate()}
+                          />
+                        )
+                      : (
+                          <Link href={updateUrl} target="_blank" className="link">
+                            {Locale.Settings.Update.GoToUpdate}
+                          </Link>
+                        )
+                  )
+                : (
+                    <IconButton
+                      icon={<ResetIcon></ResetIcon>}
+                      text={Locale.Settings.Update.CheckUpdate}
+                      onClick={() => checkUpdate(true)}
+                    />
+                  )}
           </ListItem>
 
           <ListItem title={Locale.Settings.SendKey}>
@@ -1466,12 +1498,12 @@ export function Settings() {
               value={config.submitKey}
               onChange={(e) => {
                 updateConfig(
-                  (config) =>
+                  config =>
                     (config.submitKey = e.target.value as any as SubmitKey),
                 );
               }}
             >
-              {Object.values(SubmitKey).map((v) => (
+              {Object.values(SubmitKey).map(v => (
                 <option value={v} key={v}>
                   {v}
                 </option>
@@ -1485,11 +1517,11 @@ export function Settings() {
               value={config.theme}
               onChange={(e) => {
                 updateConfig(
-                  (config) => (config.theme = e.target.value as any as Theme),
+                  config => (config.theme = e.target.value as any as Theme),
                 );
               }}
             >
-              {Object.values(Theme).map((v) => (
+              {Object.values(Theme).map(v => (
                 <option value={v} key={v}>
                   {v}
                 </option>
@@ -1505,7 +1537,7 @@ export function Settings() {
                 changeLang(e.target.value as any);
               }}
             >
-              {AllLangs.map((lang) => (
+              {AllLangs.map(lang => (
                 <option value={lang} key={lang}>
                   {ALL_LANG_OPTIONS[lang]}
                 </option>
@@ -1524,13 +1556,13 @@ export function Settings() {
               min="12"
               max="40"
               step="1"
-              onChange={(e) =>
+              onChange={e =>
                 updateConfig(
-                  (config) =>
+                  config =>
                     (config.fontSize = Number.parseInt(e.currentTarget.value)),
-                )
-              }
-            ></InputRange>
+                )}
+            >
+            </InputRange>
           </ListItem>
 
           <ListItem
@@ -1542,12 +1574,12 @@ export function Settings() {
               type="text"
               value={config.fontFamily}
               placeholder={Locale.Settings.FontFamily.Placeholder}
-              onChange={(e) =>
+              onChange={e =>
                 updateConfig(
-                  (config) => (config.fontFamily = e.currentTarget.value),
-                )
-              }
-            ></input>
+                  config => (config.fontFamily = e.currentTarget.value),
+                )}
+            >
+            </input>
           </ListItem>
 
           <ListItem
@@ -1558,13 +1590,13 @@ export function Settings() {
               aria-label={Locale.Settings.AutoGenerateTitle.Title}
               type="checkbox"
               checked={config.enableAutoGenerateTitle}
-              onChange={(e) =>
+              onChange={e =>
                 updateConfig(
-                  (config) =>
+                  config =>
                     (config.enableAutoGenerateTitle = e.currentTarget.checked),
-                )
-              }
-            ></input>
+                )}
+            >
+            </input>
           </ListItem>
 
           <ListItem
@@ -1575,13 +1607,13 @@ export function Settings() {
               aria-label={Locale.Settings.SendPreviewBubble.Title}
               type="checkbox"
               checked={config.sendPreviewBubble}
-              onChange={(e) =>
+              onChange={e =>
                 updateConfig(
-                  (config) =>
+                  config =>
                     (config.sendPreviewBubble = e.currentTarget.checked),
-                )
-              }
-            ></input>
+                )}
+            >
+            </input>
           </ListItem>
 
           <ListItem
@@ -1592,13 +1624,13 @@ export function Settings() {
               aria-label={Locale.Mask.Config.Artifacts.Title}
               type="checkbox"
               checked={config.enableArtifacts}
-              onChange={(e) =>
+              onChange={e =>
                 updateConfig(
-                  (config) =>
+                  config =>
                     (config.enableArtifacts = e.currentTarget.checked),
-                )
-              }
-            ></input>
+                )}
+            >
+            </input>
           </ListItem>
           <ListItem
             title={Locale.Mask.Config.CodeFold.Title}
@@ -1609,12 +1641,12 @@ export function Settings() {
               type="checkbox"
               checked={config.enableCodeFold}
               data-testid="enable-code-fold-checkbox"
-              onChange={(e) =>
+              onChange={e =>
                 updateConfig(
-                  (config) => (config.enableCodeFold = e.currentTarget.checked),
-                )
-              }
-            ></input>
+                  config => (config.enableCodeFold = e.currentTarget.checked),
+                )}
+            >
+            </input>
           </ListItem>
         </List>
 
@@ -1629,14 +1661,14 @@ export function Settings() {
               aria-label={Locale.Settings.Mask.Splash.Title}
               type="checkbox"
               checked={!config.dontShowMaskSplashScreen}
-              onChange={(e) =>
+              onChange={e =>
                 updateConfig(
-                  (config) =>
-                    (config.dontShowMaskSplashScreen =
-                      !e.currentTarget.checked),
-                )
-              }
-            ></input>
+                  config =>
+                    (config.dontShowMaskSplashScreen
+                      = !e.currentTarget.checked),
+                )}
+            >
+            </input>
           </ListItem>
 
           <ListItem
@@ -1647,13 +1679,13 @@ export function Settings() {
               aria-label={Locale.Settings.Mask.Builtin.Title}
               type="checkbox"
               checked={config.hideBuiltinMasks}
-              onChange={(e) =>
+              onChange={e =>
                 updateConfig(
-                  (config) =>
+                  config =>
                     (config.hideBuiltinMasks = e.currentTarget.checked),
-                )
-              }
-            ></input>
+                )}
+            >
+            </input>
           </ListItem>
         </List>
 
@@ -1666,13 +1698,13 @@ export function Settings() {
               aria-label={Locale.Settings.Prompt.Disable.Title}
               type="checkbox"
               checked={config.disablePromptHint}
-              onChange={(e) =>
+              onChange={e =>
                 updateConfig(
-                  (config) =>
+                  config =>
                     (config.disablePromptHint = e.currentTarget.checked),
-                )
-              }
-            ></input>
+                )}
+            >
+            </input>
           </ListItem>
 
           <ListItem
@@ -1710,7 +1742,7 @@ export function Settings() {
                       value={accessStore.provider}
                       onChange={(e) => {
                         accessStore.update(
-                          (access) =>
+                          access =>
                             (access.provider = e.target
                               .value as ServiceProvider),
                         );
@@ -1742,49 +1774,53 @@ export function Settings() {
             </>
           )}
 
-          {!shouldHideBalanceQuery && !clientConfig?.isApp ? (
-            <ListItem
-              title={Locale.Settings.Usage.Title}
-              subTitle={
-                showUsage
-                  ? loadingUsage
-                    ? Locale.Settings.Usage.IsChecking
-                    : Locale.Settings.Usage.SubTitle(
-                        usage?.used ?? "[?]",
-                        usage?.subscription ?? "[?]",
+          {!shouldHideBalanceQuery && !clientConfig?.isApp
+            ? (
+                <ListItem
+                  title={Locale.Settings.Usage.Title}
+                  subTitle={
+                    showUsage
+                      ? loadingUsage
+                        ? Locale.Settings.Usage.IsChecking
+                        : Locale.Settings.Usage.SubTitle(
+                            usage?.used ?? '[?]',
+                            usage?.subscription ?? '[?]',
+                          )
+                      : Locale.Settings.Usage.NoAccess
+                  }
+                >
+                  {!showUsage || loadingUsage
+                    ? (
+                        <div />
                       )
-                  : Locale.Settings.Usage.NoAccess
-              }
-            >
-              {!showUsage || loadingUsage ? (
-                <div />
-              ) : (
-                <IconButton
-                  icon={<ResetIcon></ResetIcon>}
-                  text={Locale.Settings.Usage.Check}
-                  onClick={() => checkUsage(true)}
-                />
-              )}
-            </ListItem>
-          ) : null}
+                    : (
+                        <IconButton
+                          icon={<ResetIcon></ResetIcon>}
+                          text={Locale.Settings.Usage.Check}
+                          onClick={() => checkUsage(true)}
+                        />
+                      )}
+                </ListItem>
+              )
+            : null}
 
           <ListItem
             title={Locale.Settings.Access.CustomModel.Title}
             subTitle={Locale.Settings.Access.CustomModel.SubTitle}
-            vertical={true}
+            vertical
           >
             <input
               aria-label={Locale.Settings.Access.CustomModel.Title}
-              style={{ width: "100%", maxWidth: "unset", textAlign: "left" }}
+              style={{ width: '100%', maxWidth: 'unset', textAlign: 'left' }}
               type="text"
               value={config.customModels}
               placeholder="model1,model2,model3"
-              onChange={(e) =>
+              onChange={e =>
                 config.update(
-                  (config) => (config.customModels = e.currentTarget.value),
-                )
-              }
-            ></input>
+                  config => (config.customModels = e.currentTarget.value),
+                )}
+            >
+            </input>
           </ListItem>
         </List>
 
@@ -1794,7 +1830,7 @@ export function Settings() {
             updateConfig={(updater) => {
               const modelConfig = { ...config.modelConfig };
               updater(modelConfig);
-              config.update((config) => (config.modelConfig = modelConfig));
+              config.update(config => (config.modelConfig = modelConfig));
             }}
           />
         </List>
@@ -1809,7 +1845,7 @@ export function Settings() {
               const realtimeConfig = { ...config.realtimeConfig };
               updater(realtimeConfig);
               config.update(
-                (config) => (config.realtimeConfig = realtimeConfig),
+                config => (config.realtimeConfig = realtimeConfig),
               );
             }}
           />
@@ -1820,7 +1856,7 @@ export function Settings() {
             updateConfig={(updater) => {
               const ttsConfig = { ...config.ttsConfig };
               updater(ttsConfig);
-              config.update((config) => (config.ttsConfig = ttsConfig));
+              config.update(config => (config.ttsConfig = ttsConfig));
             }}
           />
         </List>

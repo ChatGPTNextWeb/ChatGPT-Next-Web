@@ -1,1 +1,1 @@
-export * from "./voice-print";
+export * from './voice-print';

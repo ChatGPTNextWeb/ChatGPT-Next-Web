@@ -1,7 +1,7 @@
 // import axios from "axios";
-import { Buffer } from "buffer";
-import { randomBytes } from "crypto";
-import { Readable } from "stream";
+import { Buffer } from 'node:buffer';
+import { randomBytes } from 'node:crypto';
+import { Readable } from 'node:stream';
 
 // Modified according to https://github.com/Migushthe2nd/MsEdgeTTS
 
@@ -9,37 +9,37 @@ import { Readable } from "stream";
  * https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-synthesis-markup-voice#:~:text=Optional-,volume,-Indicates%20the%20volume
  */
 export enum VOLUME {
-  SILENT = "silent",
-  X_SOFT = "x-soft",
-  SOFT = "soft",
-  MEDIUM = "medium",
-  LOUD = "loud",
-  X_LOUD = "x-LOUD",
-  DEFAULT = "default",
+  SILENT = 'silent',
+  X_SOFT = 'x-soft',
+  SOFT = 'soft',
+  MEDIUM = 'medium',
+  LOUD = 'loud',
+  X_LOUD = 'x-LOUD',
+  DEFAULT = 'default',
 }
 
 /**
  * https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-synthesis-markup-voice#:~:text=Optional-,rate,-Indicates%20the%20speaking
  */
 export enum RATE {
-  X_SLOW = "x-slow",
-  SLOW = "slow",
-  MEDIUM = "medium",
-  FAST = "fast",
-  X_FAST = "x-fast",
-  DEFAULT = "default",
+  X_SLOW = 'x-slow',
+  SLOW = 'slow',
+  MEDIUM = 'medium',
+  FAST = 'fast',
+  X_FAST = 'x-fast',
+  DEFAULT = 'default',
 }
 
 /**
  * https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-synthesis-markup-voice#:~:text=Optional-,pitch,-Indicates%20the%20baseline
  */
 export enum PITCH {
-  X_LOW = "x-low",
-  LOW = "low",
-  MEDIUM = "medium",
-  HIGH = "high",
-  X_HIGH = "x-high",
-  DEFAULT = "default",
+  X_LOW = 'x-low',
+  LOW = 'low',
+  MEDIUM = 'medium',
+  HIGH = 'high',
+  X_HIGH = 'x-high',
+  DEFAULT = 'default',
 }
 
 /**
@@ -54,8 +54,8 @@ export enum OUTPUT_FORMAT {
   // AUDIO_16KHZ_128KBITRATE_MONO_MP3 = "audio-16khz-128kbitrate-mono-mp3",
   // AUDIO_24KHZ_16BIT_24KBPS_MONO_OPUS = "audio-24khz-16bit-24kbps-mono-opus",
   // AUDIO_24KHZ_16BIT_48KBPS_MONO_OPUS = "audio-24khz-16bit-48kbps-mono-opus",
-  AUDIO_24KHZ_48KBITRATE_MONO_MP3 = "audio-24khz-48kbitrate-mono-mp3",
-  AUDIO_24KHZ_96KBITRATE_MONO_MP3 = "audio-24khz-96kbitrate-mono-mp3",
+  AUDIO_24KHZ_48KBITRATE_MONO_MP3 = 'audio-24khz-48kbitrate-mono-mp3',
+  AUDIO_24KHZ_96KBITRATE_MONO_MP3 = 'audio-24khz-96kbitrate-mono-mp3',
   // AUDIO_24KHZ_160KBITRATE_MONO_MP3 = "audio-24khz-160kbitrate-mono-mp3",
   // AUDIO_48KHZ_96KBITRATE_MONO_MP3 = "audio-48khz-96kbitrate-mono-mp3",
   // AUDIO_48KHZ_192KBITRATE_MONO_MP3 = "audio-48khz-192kbitrate-mono-mp3",
@@ -74,7 +74,7 @@ export enum OUTPUT_FORMAT {
   // RAW_48KHZ_16BIT_MONO_PCM = "raw-48khz-16bit-mono-pcm",
   // WEBM_16KHZ_16BIT_MONO_OPUS = "webm-16khz-16bit-mono-opus",
   // WEBM_24KHZ_16BIT_24KBPS_MONO_OPUS = "webm-24khz-16bit-24kbps-mono-opus",
-  WEBM_24KHZ_16BIT_MONO_OPUS = "webm-24khz-16bit-mono-opus",
+  WEBM_24KHZ_16BIT_MONO_OPUS = 'webm-24khz-16bit-mono-opus',
   // Non-streaming =============================
   // RIFF_8KHZ_8BIT_MONO_ALAW = "riff-8khz-8bit-mono-alaw",
   // RIFF_8KHZ_8BIT_MONO_MULAW = "riff-8khz-8bit-mono-mulaw",
@@ -85,7 +85,7 @@ export enum OUTPUT_FORMAT {
   // RIFF_48KHZ_16BIT_MONO_PCM = "riff-48khz-16bit-mono-pcm",
 }
 
-export type Voice = {
+export interface Voice {
   Name: string;
   ShortName: string;
   Gender: string;
@@ -93,7 +93,7 @@ export type Voice = {
   SuggestedCodec: string;
   FriendlyName: string;
   Status: string;
-};
+}
 
 export class ProsodyOptions {
   /**
@@ -101,7 +101,7 @@ export class ProsodyOptions {
    * Can be any {@link PITCH}, or a relative frequency in Hz (+50Hz), a relative semitone (+2st), or a relative percentage (+50%).
    * [SSML documentation](https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-synthesis-markup-voice#:~:text=Optional-,pitch,-Indicates%20the%20baseline)
    */
-  pitch?: PITCH | string = "+0Hz";
+  pitch?: PITCH | string = '+0Hz';
   /**
    * The rate to use.
    * Can be any {@link RATE}, or a relative number (0.5), or string with a relative percentage (+50%).
@@ -118,10 +118,10 @@ export class ProsodyOptions {
 
 export class MsEdgeTTS {
   static OUTPUT_FORMAT = OUTPUT_FORMAT;
-  private static TRUSTED_CLIENT_TOKEN = "6A5AA1D4EAFF4E9FB37E23D68491D6F4";
+  private static TRUSTED_CLIENT_TOKEN = '6A5AA1D4EAFF4E9FB37E23D68491D6F4';
   private static VOICES_URL = `https://speech.platform.bing.com/consumer/speech/synthesize/readaloud/voices/list?trustedclienttoken=${MsEdgeTTS.TRUSTED_CLIENT_TOKEN}`;
   private static SYNTH_URL = `wss://speech.platform.bing.com/consumer/speech/synthesize/readaloud/edge/v1?TrustedClientToken=${MsEdgeTTS.TRUSTED_CLIENT_TOKEN}`;
-  private static BINARY_DELIM = "Path:audio\r\n";
+  private static BINARY_DELIM = 'Path:audio\r\n';
   private static VOICE_LANG_REGEX = /\w{2}-\w{2}/;
   private readonly _enableLogger;
   private _ws: WebSocket | undefined;
@@ -149,10 +149,10 @@ export class MsEdgeTTS {
 
   private async _send(message: any) {
     for (let i = 1; i <= 3 && this._ws!.readyState !== this._ws!.OPEN; i++) {
-      if (i == 1) {
+      if (i === 1) {
         this._startTime = Date.now();
       }
-      this._log("connecting: ", i);
+      this._log('connecting: ', i);
       await this._initClient();
     }
     this._ws!.send(message);
@@ -161,13 +161,13 @@ export class MsEdgeTTS {
   private _initClient() {
     this._ws = new WebSocket(MsEdgeTTS.SYNTH_URL);
 
-    this._ws.binaryType = "arraybuffer";
+    this._ws.binaryType = 'arraybuffer';
     return new Promise((resolve, reject) => {
       this._ws!.onopen = () => {
         this._log(
-          "Connected in",
+          'Connected in',
           (Date.now() - this._startTime) / 1000,
-          "seconds",
+          'seconds',
         );
         this._send(
           `Content-Type:application/json; charset=utf-8\r\nPath:speech.config\r\n\r\n
@@ -190,46 +190,46 @@ export class MsEdgeTTS {
       this._ws!.onmessage = (m: any) => {
         const buffer = Buffer.from(m.data as ArrayBuffer);
         const message = buffer.toString();
-        const requestId = /X-RequestId:(.*?)\r\n/gm.exec(message)![1];
-        if (message.includes("Path:turn.start")) {
+        const requestId = /X-RequestId:(.*)\r\n/.exec(message)![1];
+        if (message.includes('Path:turn.start')) {
           // start of turn, ignore
-        } else if (message.includes("Path:turn.end")) {
+        } else if (message.includes('Path:turn.end')) {
           // end of turn, close stream
           this._streams[requestId].push(null);
-        } else if (message.includes("Path:response")) {
+        } else if (message.includes('Path:response')) {
           // context response, ignore
         } else if (
-          message.includes("Path:audio") &&
-          m.data instanceof ArrayBuffer
+          message.includes('Path:audio')
+          && m.data instanceof ArrayBuffer
         ) {
           this._pushAudioData(buffer, requestId);
         } else {
-          this._log("UNKNOWN MESSAGE", message);
+          this._log('UNKNOWN MESSAGE', message);
         }
       };
       this._ws!.onclose = () => {
         this._log(
-          "disconnected after:",
+          'disconnected after:',
           (Date.now() - this._startTime) / 1000,
-          "seconds",
+          'seconds',
         );
         for (const requestId in this._streams) {
           this._streams[requestId].push(null);
         }
       };
       this._ws!.onerror = function (error: any) {
-        reject("Connect Error: " + error);
+        reject(`Connect Error: ${error}`);
       };
     });
   }
 
   private _pushAudioData(audioBuffer: Buffer, requestId: string) {
-    const audioStartIndex =
-      audioBuffer.indexOf(MsEdgeTTS.BINARY_DELIM) +
-      MsEdgeTTS.BINARY_DELIM.length;
+    const audioStartIndex
+      = audioBuffer.indexOf(MsEdgeTTS.BINARY_DELIM)
+      + MsEdgeTTS.BINARY_DELIM.length;
     const audioData = audioBuffer.subarray(audioStartIndex);
     this._streams[requestId].push(audioData);
-    this._log("received audio chunk, size: ", audioData?.length);
+    this._log('received audio chunk, size: ', audioData?.length);
   }
 
   private _SSMLTemplate(input: string, options: ProsodyOptions = {}): string {
@@ -260,11 +260,11 @@ export class MsEdgeTTS {
     return fetch(MsEdgeTTS.VOICES_URL)
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          throw new Error('Network response was not ok');
         }
         return response.json();
       })
-      .then((data) => data as Voice[])
+      .then(data => data as Voice[])
       .catch((error) => {
         throw error;
       });
@@ -293,15 +293,15 @@ export class MsEdgeTTS {
     if (!this._voiceLocale) {
       const voiceLangMatch = MsEdgeTTS.VOICE_LANG_REGEX.exec(this._voice);
       if (!voiceLangMatch)
-        throw new Error("Could not infer voiceLocale from voiceName!");
+      { throw new Error('Could not infer voiceLocale from voiceName!'); }
       this._voiceLocale = voiceLangMatch[0];
     }
     this._outputFormat = outputFormat;
 
-    const changed =
-      oldVoice !== this._voice ||
-      oldVoiceLocale !== this._voiceLocale ||
-      oldOutputFormat !== this._outputFormat;
+    const changed
+      = oldVoice !== this._voice
+      || oldVoiceLocale !== this._voiceLocale
+      || oldOutputFormat !== this._outputFormat;
 
     // create new client
     if (changed || this._ws!.readyState !== this._ws!.OPEN) {
@@ -311,10 +311,11 @@ export class MsEdgeTTS {
   }
 
   private _metadataCheck() {
-    if (!this._ws)
+    if (!this._ws) {
       throw new Error(
-        "Speech synthesis not configured yet. Run setMetadata before calling toStream or toFile.",
+        'Speech synthesis not configured yet. Run setMetadata before calling toStream or toFile.',
       );
+    }
   }
 
   /**
@@ -338,17 +339,17 @@ export class MsEdgeTTS {
 
   toArrayBuffer(input: string, options?: ProsodyOptions): Promise<ArrayBuffer> {
     return new Promise((resolve, reject) => {
-      let data: Uint8Array[] = [];
+      const data: Uint8Array[] = [];
       const readable = this.toStream(input, options);
-      readable.on("data", (chunk) => {
+      readable.on('data', (chunk) => {
         data.push(chunk);
       });
 
-      readable.on("end", () => {
+      readable.on('end', () => {
         resolve(Buffer.concat(data).buffer);
       });
 
-      readable.on("error", (err) => {
+      readable.on('error', (err) => {
         reject(err);
       });
     });
@@ -371,10 +372,10 @@ export class MsEdgeTTS {
   } {
     this._metadataCheck();
 
-    const requestId = randomBytes(16).toString("hex");
-    const request =
-      `X-RequestId:${requestId}\r\nContent-Type:application/ssml+xml\r\nPath:ssml\r\n\r\n
-                ` + requestSSML.trim();
+    const requestId = randomBytes(16).toString('hex');
+    const request
+      = `X-RequestId:${requestId}\r\nContent-Type:application/ssml+xml\r\nPath:ssml\r\n\r\n
+      ${requestSSML.trim()}`;
     // https://docs.microsoft.com/en-us/azure/cognitive-services/speech-service/speech-synthesis-markup
     const self = this;
     const stream = new Readable({

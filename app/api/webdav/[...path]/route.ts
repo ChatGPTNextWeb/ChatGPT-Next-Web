@@ -1,47 +1,48 @@
-import { NextRequest, NextResponse } from "next/server";
-import { STORAGE_KEY, internalAllowedWebDavEndpoints } from "../../../constant";
-import { getServerSideConfig } from "@/app/config/server";
+import type { NextRequest } from 'next/server';
+import { getServerSideConfig } from '@/app/config/server';
+import { NextResponse } from 'next/server';
+import { internalAllowedWebDavEndpoints, STORAGE_KEY } from '../../../constant';
 
 const config = getServerSideConfig();
 
 const mergedAllowedWebDavEndpoints = [
   ...internalAllowedWebDavEndpoints,
   ...config.allowedWebDavEndpoints,
-].filter((domain) => Boolean(domain.trim()));
+].filter(domain => Boolean(domain.trim()));
 
-const normalizeUrl = (url: string) => {
+function normalizeUrl(url: string) {
   try {
     return new URL(url);
   } catch (err) {
     return null;
   }
-};
+}
 
 async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
-  if (req.method === "OPTIONS") {
-    return NextResponse.json({ body: "OK" }, { status: 200 });
+  if (req.method === 'OPTIONS') {
+    return NextResponse.json({ body: 'OK' }, { status: 200 });
   }
   const folder = STORAGE_KEY;
   const fileName = `${folder}/backup.json`;
 
   const requestUrl = new URL(req.url);
-  let endpoint = requestUrl.searchParams.get("endpoint");
-  let proxy_method = requestUrl.searchParams.get("proxy_method") || req.method;
+  let endpoint = requestUrl.searchParams.get('endpoint');
+  const proxy_method = requestUrl.searchParams.get('proxy_method') || req.method;
 
   // Validate the endpoint to prevent potential SSRF attacks
   if (
-    !endpoint ||
-    !mergedAllowedWebDavEndpoints.some((allowedEndpoint) => {
+    !endpoint
+    || !mergedAllowedWebDavEndpoints.some((allowedEndpoint) => {
       const normalizedAllowedEndpoint = normalizeUrl(allowedEndpoint);
       const normalizedEndpoint = normalizeUrl(endpoint as string);
 
       return (
-        normalizedEndpoint &&
-        normalizedEndpoint.hostname === normalizedAllowedEndpoint?.hostname &&
-        normalizedEndpoint.pathname.startsWith(
+        normalizedEndpoint
+        && normalizedEndpoint.hostname === normalizedAllowedEndpoint?.hostname
+        && normalizedEndpoint.pathname.startsWith(
           normalizedAllowedEndpoint.pathname,
         )
       );
@@ -50,7 +51,7 @@ async function handle(
     return NextResponse.json(
       {
         error: true,
-        msg: "Invalid endpoint",
+        msg: 'Invalid endpoint',
       },
       {
         status: 400,
@@ -58,23 +59,23 @@ async function handle(
     );
   }
 
-  if (!endpoint?.endsWith("/")) {
-    endpoint += "/";
+  if (!endpoint?.endsWith('/')) {
+    endpoint += '/';
   }
 
-  const endpointPath = params.path.join("/");
+  const endpointPath = params.path.join('/');
   const targetPath = `${endpoint}${endpointPath}`;
 
   // only allow MKCOL, GET, PUT
   if (
-    proxy_method !== "MKCOL" &&
-    proxy_method !== "GET" &&
-    proxy_method !== "PUT"
+    proxy_method !== 'MKCOL'
+    && proxy_method !== 'GET'
+    && proxy_method !== 'PUT'
   ) {
     return NextResponse.json(
       {
         error: true,
-        msg: "you are not allowed to request " + targetPath,
+        msg: `you are not allowed to request ${targetPath}`,
       },
       {
         status: 403,
@@ -83,11 +84,11 @@ async function handle(
   }
 
   // for MKCOL request, only allow request ${folder}
-  if (proxy_method === "MKCOL" && !targetPath.endsWith(folder)) {
+  if (proxy_method === 'MKCOL' && !targetPath.endsWith(folder)) {
     return NextResponse.json(
       {
         error: true,
-        msg: "you are not allowed to request " + targetPath,
+        msg: `you are not allowed to request ${targetPath}`,
       },
       {
         status: 403,
@@ -96,11 +97,11 @@ async function handle(
   }
 
   // for GET request, only allow request ending with fileName
-  if (proxy_method === "GET" && !targetPath.endsWith(fileName)) {
+  if (proxy_method === 'GET' && !targetPath.endsWith(fileName)) {
     return NextResponse.json(
       {
         error: true,
-        msg: "you are not allowed to request " + targetPath,
+        msg: `you are not allowed to request ${targetPath}`,
       },
       {
         status: 403,
@@ -109,11 +110,11 @@ async function handle(
   }
 
   //   for PUT request, only allow request ending with fileName
-  if (proxy_method === "PUT" && !targetPath.endsWith(fileName)) {
+  if (proxy_method === 'PUT' && !targetPath.endsWith(fileName)) {
     return NextResponse.json(
       {
         error: true,
-        msg: "you are not allowed to request " + targetPath,
+        msg: `you are not allowed to request ${targetPath}`,
       },
       {
         status: 403,
@@ -124,19 +125,19 @@ async function handle(
   const targetUrl = targetPath;
 
   const method = proxy_method || req.method;
-  const shouldNotHaveBody = ["get", "head"].includes(
-    method?.toLowerCase() ?? "",
+  const shouldNotHaveBody = ['get', 'head'].includes(
+    method?.toLowerCase() ?? '',
   );
 
   const fetchOptions: RequestInit = {
     headers: {
-      authorization: req.headers.get("authorization") ?? "",
+      authorization: req.headers.get('authorization') ?? '',
     },
     body: shouldNotHaveBody ? null : req.body,
-    redirect: "manual",
+    redirect: 'manual',
     method,
     // @ts-ignore
-    duplex: "half",
+    duplex: 'half',
   };
 
   let fetchResult;
@@ -145,10 +146,10 @@ async function handle(
     fetchResult = await fetch(targetUrl, fetchOptions);
   } finally {
     console.log(
-      "[Any Proxy]",
+      '[Any Proxy]',
       targetUrl,
       {
-        method: method,
+        method,
       },
       {
         status: fetchResult?.status,
@@ -164,4 +165,4 @@ export const PUT = handle;
 export const GET = handle;
 export const OPTIONS = handle;
 
-export const runtime = "edge";
+export const runtime = 'edge';

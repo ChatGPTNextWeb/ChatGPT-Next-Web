@@ -29,7 +29,7 @@ export class AudioHandler {
   }
 
   async initialize() {
-    await this.context.audioWorklet.addModule("/audio-processor.js");
+    await this.context.audioWorklet.addModule('/audio-processor.js');
   }
 
   async startRecording(onChunk: (chunk: Uint8Array) => void) {
@@ -51,17 +51,17 @@ export class AudioHandler {
       this.source = this.context.createMediaStreamSource(this.stream);
       this.workletNode = new AudioWorkletNode(
         this.context,
-        "audio-recorder-processor",
+        'audio-recorder-processor',
       );
 
       this.workletNode.port.onmessage = (event) => {
-        if (event.data.eventType === "audio") {
+        if (event.data.eventType === 'audio') {
           const float32Data = event.data.audioData;
           const int16Data = new Int16Array(float32Data.length);
 
           for (let i = 0; i < float32Data.length; i++) {
             const s = Math.max(-1, Math.min(1, float32Data[i]));
-            int16Data[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
+            int16Data[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
           }
 
           const uint8Data = new Uint8Array(int16Data.buffer);
@@ -76,24 +76,25 @@ export class AudioHandler {
       this.source.connect(this.mergeNode, 0, 0);
       this.workletNode.connect(this.context.destination);
 
-      this.workletNode.port.postMessage({ command: "START_RECORDING" });
+      this.workletNode.port.postMessage({ command: 'START_RECORDING' });
     } catch (error) {
-      console.error("Error starting recording:", error);
+      console.error('Error starting recording:', error);
       throw error;
     }
   }
 
   stopRecording() {
     if (!this.workletNode || !this.source || !this.stream) {
-      throw new Error("Recording not started");
+      throw new Error('Recording not started');
     }
 
-    this.workletNode.port.postMessage({ command: "STOP_RECORDING" });
+    this.workletNode.port.postMessage({ command: 'STOP_RECORDING' });
 
     this.workletNode.disconnect();
     this.source.disconnect();
-    this.stream.getTracks().forEach((track) => track.stop());
+    this.stream.getTracks().forEach(track => track.stop());
   }
+
   startStreamingPlayback() {
     this.isPlaying = true;
     this.nextPlayTime = this.context.currentTime;
@@ -101,13 +102,14 @@ export class AudioHandler {
 
   stopStreamingPlayback() {
     this.isPlaying = false;
-    this.playbackQueue.forEach((source) => source.stop());
+    this.playbackQueue.forEach(source => source.stop());
     this.playbackQueue = [];
     this.playBuffer = [];
   }
 
   playChunk(chunk: Uint8Array) {
-    if (!this.isPlaying) return;
+    if (!this.isPlaying)
+    { return; }
 
     const int16Data = new Int16Array(chunk.buffer);
     // @ts-ignore
@@ -115,7 +117,7 @@ export class AudioHandler {
 
     const float32Data = new Float32Array(int16Data.length);
     for (let i = 0; i < int16Data.length; i++) {
-      float32Data[i] = int16Data[i] / (int16Data[i] < 0 ? 0x8000 : 0x7fff);
+      float32Data[i] = int16Data[i] / (int16Data[i] < 0 ? 0x8000 : 0x7FFF);
     }
 
     const audioBuffer = this.context.createBuffer(
@@ -148,6 +150,7 @@ export class AudioHandler {
       this.nextPlayTime = this.context.currentTime;
     }
   }
+
   _saveData(data: Int16Array, bytesPerSample = 16): Blob {
     const headerLength = 44;
     const numberOfChannels = 1;
@@ -169,12 +172,15 @@ export class AudioHandler {
     view.setUint32(40, byteLength, true); // data chunk length
 
     // using data.buffer, so no need to setUint16 to view.
-    return new Blob([view, data.buffer], { type: "audio/mpeg" });
+    // @ts-ignore
+    return new Blob([view, data.buffer], { type: 'audio/mpeg' });
   }
+
   savePlayFile() {
     // @ts-ignore
     return this._saveData(new Int16Array(this.playBuffer));
   }
+
   saveRecordFile(
     audioStartMillis: number | undefined,
     audioEndMillis: number | undefined,
@@ -190,11 +196,12 @@ export class AudioHandler {
       new Int16Array(this.recordBuffer.slice(startIndex, endIndex)),
     );
   }
+
   async close() {
     this.recordBuffer = [];
     this.workletNode?.disconnect();
     this.source?.disconnect();
-    this.stream?.getTracks().forEach((track) => track.stop());
+    this.stream?.getTracks().forEach(track => track.stop());
     await this.context.close();
   }
 }

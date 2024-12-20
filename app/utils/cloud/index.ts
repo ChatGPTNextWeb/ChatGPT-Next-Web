@@ -1,9 +1,9 @@
-import { createWebDavClient } from "./webdav";
-import { createUpstashClient } from "./upstash";
+import { createUpstashClient } from './upstash';
+import { createWebDavClient } from './webdav';
 
 export enum ProviderType {
-  WebDAV = "webdav",
-  UpStash = "upstash",
+  WebDAV = 'webdav',
+  UpStash = 'upstash',
 }
 
 export const SyncClients = {
@@ -19,11 +19,11 @@ type SyncClientConfig = {
     : never;
 };
 
-export type SyncClient = {
+export interface SyncClient {
   get: (key: string) => Promise<string>;
   set: (key: string, value: string) => Promise<void>;
   check: () => Promise<boolean>;
-};
+}
 
 export function createSyncClient<T extends ProviderType>(
   provider: T,

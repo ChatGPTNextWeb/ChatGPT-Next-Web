@@ -1,29 +1,31 @@
-"use client";
+'use client';
+import type {
+  ChatOptions,
+  LLMApi,
+  LLMModel,
+  MultimodalContent,
+  SpeechOptions,
+} from '../api';
+import { getClientConfig } from '@/app/config/client';
+
 import {
   ApiPath,
   ByteDance,
   BYTEDANCE_BASE_URL,
   REQUEST_TIMEOUT_MS,
-} from "@/app/constant";
-import { useAccessStore, useAppConfig, useChatStore } from "@/app/store";
-
-import {
-  ChatOptions,
-  getHeaders,
-  LLMApi,
-  LLMModel,
-  MultimodalContent,
-  SpeechOptions,
-} from "../api";
-import Locale from "../../locales";
+} from '@/app/constant';
+import { useAccessStore, useAppConfig, useChatStore } from '@/app/store';
+import { getMessageTextContent } from '@/app/utils';
+import { prettyObject } from '@/app/utils/format';
+import { fetch } from '@/app/utils/stream';
 import {
   EventStreamContentType,
   fetchEventSource,
-} from "@fortaine/fetch-event-source";
-import { prettyObject } from "@/app/utils/format";
-import { getClientConfig } from "@/app/config/client";
-import { getMessageTextContent } from "@/app/utils";
-import { fetch } from "@/app/utils/stream";
+} from '@fortaine/fetch-event-source';
+import Locale from '../../locales';
+import {
+  getHeaders,
+} from '../api';
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -36,7 +38,7 @@ export interface OpenAIListModelResponse {
 
 interface RequestPayload {
   messages: {
-    role: "system" | "user" | "assistant";
+    role: 'system' | 'user' | 'assistant';
     content: string | MultimodalContent[];
   }[];
   stream?: boolean;
@@ -52,7 +54,7 @@ export class DoubaoApi implements LLMApi {
   path(path: string): string {
     const accessStore = useAccessStore.getState();
 
-    let baseUrl = "";
+    let baseUrl = '';
 
     if (accessStore.useCustomConfig) {
       baseUrl = accessStore.bytedanceUrl;
@@ -63,28 +65,28 @@ export class DoubaoApi implements LLMApi {
       baseUrl = isApp ? BYTEDANCE_BASE_URL : ApiPath.ByteDance;
     }
 
-    if (baseUrl.endsWith("/")) {
+    if (baseUrl.endsWith('/')) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
     }
-    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.ByteDance)) {
-      baseUrl = "https://" + baseUrl;
+    if (!baseUrl.startsWith('http') && !baseUrl.startsWith(ApiPath.ByteDance)) {
+      baseUrl = `https://${baseUrl}`;
     }
 
-    console.log("[Proxy Endpoint] ", baseUrl, path);
+    console.log('[Proxy Endpoint] ', baseUrl, path);
 
-    return [baseUrl, path].join("/");
+    return [baseUrl, path].join('/');
   }
 
   extractMessage(res: any) {
-    return res.choices?.at(0)?.message?.content ?? "";
+    return res.choices?.at(0)?.message?.content ?? '';
   }
 
   speech(options: SpeechOptions): Promise<ArrayBuffer> {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
 
   async chat(options: ChatOptions) {
-    const messages = options.messages.map((v) => ({
+    const messages = options.messages.map(v => ({
       role: v.role,
       content: getMessageTextContent(v),
     }));
@@ -114,7 +116,7 @@ export class DoubaoApi implements LLMApi {
     try {
       const chatPath = this.path(ByteDance.ChatPath);
       const chatPayload = {
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
         headers: getHeaders(),
@@ -127,8 +129,8 @@ export class DoubaoApi implements LLMApi {
       );
 
       if (shouldStream) {
-        let responseText = "";
-        let remainText = "";
+        let responseText = '';
+        let remainText = '';
         let finished = false;
         let responseRes: Response;
 
@@ -136,9 +138,9 @@ export class DoubaoApi implements LLMApi {
         function animateResponseText() {
           if (finished || controller.signal.aborted) {
             responseText += remainText;
-            console.log("[Response Animation] finished");
+            console.log('[Response Animation] finished');
             if (responseText?.length === 0) {
-              options.onError?.(new Error("empty response from server"));
+              options.onError?.(new Error('empty response from server'));
             }
             return;
           }
@@ -171,23 +173,23 @@ export class DoubaoApi implements LLMApi {
           ...chatPayload,
           async onopen(res) {
             clearTimeout(requestTimeoutId);
-            const contentType = res.headers.get("content-type");
+            const contentType = res.headers.get('content-type');
             console.log(
-              "[ByteDance] request response content type: ",
+              '[ByteDance] request response content type: ',
               contentType,
             );
             responseRes = res;
-            if (contentType?.startsWith("text/plain")) {
+            if (contentType?.startsWith('text/plain')) {
               responseText = await res.clone().text();
               return finish();
             }
 
             if (
-              !res.ok ||
-              !res.headers
-                .get("content-type")
-                ?.startsWith(EventStreamContentType) ||
-              res.status !== 200
+              !res.ok
+              || !res.headers
+                .get('content-type')
+                ?.startsWith(EventStreamContentType)
+                || res.status !== 200
             ) {
               const responseTexts = [responseText];
               let extraInfo = await res.clone().text();
@@ -204,13 +206,13 @@ export class DoubaoApi implements LLMApi {
                 responseTexts.push(extraInfo);
               }
 
-              responseText = responseTexts.join("\n\n");
+              responseText = responseTexts.join('\n\n');
 
               return finish();
             }
           },
           onmessage(msg) {
-            if (msg.data === "[DONE]" || finished) {
+            if (msg.data === '[DONE]' || finished) {
               return finish();
             }
             const text = msg.data;
@@ -224,7 +226,7 @@ export class DoubaoApi implements LLMApi {
                 remainText += delta;
               }
             } catch (e) {
-              console.error("[Request] parse error", text, msg);
+              console.error('[Request] parse error', text, msg);
             }
           },
           onclose() {
@@ -245,10 +247,11 @@ export class DoubaoApi implements LLMApi {
         options.onFinish(message, res);
       }
     } catch (e) {
-      console.log("[Request] failed to make a chat request", e);
+      console.log('[Request] failed to make a chat request', e);
       options.onError?.(e as Error);
     }
   }
+
   async usage() {
     return {
       used: 0,

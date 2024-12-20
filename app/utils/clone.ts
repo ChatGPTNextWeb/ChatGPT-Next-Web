@@ -7,6 +7,6 @@ export function ensure<T extends object>(
   keys: Array<[keyof T][number]>,
 ) {
   return keys.every(
-    (k) => obj[k] !== undefined && obj[k] !== null && obj[k] !== "",
+    k => obj[k] !== undefined && obj[k] !== null && obj[k] !== '',
   );
 }

@@ -1,17 +1,19 @@
-import { getClientConfig } from "../config/client";
-import { ApiPath, STORAGE_KEY, StoreKey } from "../constant";
-import { createPersistStore } from "../utils/store";
-import {
+import type {
   AppState,
-  getLocalAppState,
   GetStoreState,
+} from '../utils/sync';
+import { showToast } from '../components/ui-lib';
+import { getClientConfig } from '../config/client';
+import { ApiPath, STORAGE_KEY, StoreKey } from '../constant';
+import Locale from '../locales';
+import { downloadAs, readFromFile } from '../utils';
+import { createSyncClient, ProviderType } from '../utils/cloud';
+import { createPersistStore } from '../utils/store';
+import {
+  getLocalAppState,
   mergeAppState,
   setLocalAppState,
-} from "../utils/sync";
-import { downloadAs, readFromFile } from "../utils";
-import { showToast } from "../components/ui-lib";
-import Locale from "../locales";
-import { createSyncClient, ProviderType } from "../utils/cloud";
+} from '../utils/sync';
 
 export interface WebDavConfig {
   server: string;
@@ -28,19 +30,19 @@ const DEFAULT_SYNC_STATE = {
   proxyUrl: ApiPath.Cors as string,
 
   webdav: {
-    endpoint: "",
-    username: "",
-    password: "",
+    endpoint: '',
+    username: '',
+    password: '',
   },
 
   upstash: {
-    endpoint: "",
+    endpoint: '',
     username: STORAGE_KEY,
-    apiKey: "",
+    apiKey: '',
   },
 
   lastSyncTime: 0,
-  lastProvider: "",
+  lastProvider: '',
 };
 
 export const useSyncStore = createPersistStore(
@@ -48,7 +50,7 @@ export const useSyncStore = createPersistStore(
   (set, get) => ({
     cloudSync() {
       const config = get()[get().provider];
-      return Object.values(config).every((c) => c.toString().length > 0);
+      return Object.values(config).every(c => c.toString().length > 0);
     },
 
     markSyncTime() {
@@ -58,9 +60,9 @@ export const useSyncStore = createPersistStore(
     export() {
       const state = getLocalAppState();
       const datePart = isApp
-        ? `${new Date().toLocaleDateString().replace(/\//g, "_")} ${new Date()
-            .toLocaleTimeString()
-            .replace(/:/g, "_")}`
+        ? `${new Date().toLocaleDateString().replace(/\//g, '_')} ${new Date()
+          .toLocaleTimeString()
+          .replace(/:/g, '_')}`
         : new Date().toLocaleString();
 
       const fileName = `Backup-${datePart}.json`;
@@ -77,7 +79,7 @@ export const useSyncStore = createPersistStore(
         setLocalAppState(localState);
         location.reload();
       } catch (e) {
-        console.error("[Import]", e);
+        console.error('[Import]', e);
         showToast(Locale.Settings.Sync.ImportFailed);
       }
     },
@@ -96,10 +98,10 @@ export const useSyncStore = createPersistStore(
 
       try {
         const remoteState = await client.get(config.username);
-        if (!remoteState || remoteState === "") {
+        if (!remoteState || remoteState === '') {
           await client.set(config.username, JSON.stringify(localState));
           console.log(
-            "[Sync] Remote state is empty, using local state instead.",
+            '[Sync] Remote state is empty, using local state instead.',
           );
           return;
         } else {
@@ -110,7 +112,7 @@ export const useSyncStore = createPersistStore(
           setLocalAppState(localState);
         }
       } catch (e) {
-        console.log("[Sync] failed to get remote state", e);
+        console.log('[Sync] failed to get remote state', e);
         throw e;
       }
 
@@ -137,10 +139,10 @@ export const useSyncStore = createPersistStore(
 
       if (version < 1.2) {
         if (
-          (persistedState as typeof DEFAULT_SYNC_STATE).proxyUrl ===
-          "/api/cors/"
+          (persistedState as typeof DEFAULT_SYNC_STATE).proxyUrl
+          === '/api/cors/'
         ) {
-          newState.proxyUrl = "";
+          newState.proxyUrl = '';
         }
       }
 

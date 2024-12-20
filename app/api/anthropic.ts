@@ -1,16 +1,17 @@
-import { getServerSideConfig } from "@/app/config/server";
+import type { NextRequest } from 'next/server';
+import { getServerSideConfig } from '@/app/config/server';
 import {
-  ANTHROPIC_BASE_URL,
   Anthropic,
+  ANTHROPIC_BASE_URL,
   ApiPath,
-  ServiceProvider,
   ModelProvider,
-} from "@/app/constant";
-import { prettyObject } from "@/app/utils/format";
-import { NextRequest, NextResponse } from "next/server";
-import { auth } from "./auth";
-import { isModelAvailableInServer } from "@/app/utils/model";
-import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
+  ServiceProvider,
+} from '@/app/constant';
+import { cloudflareAIGatewayUrl } from '@/app/utils/cloudflare';
+import { prettyObject } from '@/app/utils/format';
+import { isModelAvailableInServer } from '@/app/utils/model';
+import { NextResponse } from 'next/server';
+import { auth } from './auth';
 
 const ALLOWD_PATH = new Set([Anthropic.ChatPath, Anthropic.ChatPath1]);
 
@@ -18,20 +19,20 @@ export async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
-  console.log("[Anthropic Route] params ", params);
+  console.log('[Anthropic Route] params ', params);
 
-  if (req.method === "OPTIONS") {
-    return NextResponse.json({ body: "OK" }, { status: 200 });
+  if (req.method === 'OPTIONS') {
+    return NextResponse.json({ body: 'OK' }, { status: 200 });
   }
 
-  const subpath = params.path.join("/");
+  const subpath = params.path.join('/');
 
   if (!ALLOWD_PATH.has(subpath)) {
-    console.log("[Anthropic Route] forbidden path ", subpath);
+    console.log('[Anthropic Route] forbidden path ', subpath);
     return NextResponse.json(
       {
         error: true,
-        msg: "you are not allowed to request " + subpath,
+        msg: `you are not allowed to request ${subpath}`,
       },
       {
         status: 403,
@@ -50,7 +51,7 @@ export async function handle(
     const response = await request(req);
     return response;
   } catch (e) {
-    console.error("[Anthropic] ", e);
+    console.error('[Anthropic] ', e);
     return NextResponse.json(prettyObject(e));
   }
 }
@@ -60,28 +61,28 @@ const serverConfig = getServerSideConfig();
 async function request(req: NextRequest) {
   const controller = new AbortController();
 
-  let authHeaderName = "x-api-key";
-  let authValue =
-    req.headers.get(authHeaderName) ||
-    req.headers.get("Authorization")?.replaceAll("Bearer ", "").trim() ||
-    serverConfig.anthropicApiKey ||
-    "";
+  const authHeaderName = 'x-api-key';
+  const authValue
+    = req.headers.get(authHeaderName)
+    || req.headers.get('Authorization')?.replaceAll('Bearer ', '').trim()
+    || serverConfig.anthropicApiKey
+    || '';
 
-  let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Anthropic, "");
+  const path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Anthropic, '');
 
-  let baseUrl =
-    serverConfig.anthropicUrl || serverConfig.baseUrl || ANTHROPIC_BASE_URL;
+  let baseUrl
+    = serverConfig.anthropicUrl || serverConfig.baseUrl || ANTHROPIC_BASE_URL;
 
-  if (!baseUrl.startsWith("http")) {
+  if (!baseUrl.startsWith('http')) {
     baseUrl = `https://${baseUrl}`;
   }
 
-  if (baseUrl.endsWith("/")) {
+  if (baseUrl.endsWith('/')) {
     baseUrl = baseUrl.slice(0, -1);
   }
 
-  console.log("[Proxy] ", path);
-  console.log("[Base Url]", baseUrl);
+  console.log('[Proxy] ', path);
+  console.log('[Base Url]', baseUrl);
 
   const timeoutId = setTimeout(
     () => {
@@ -95,20 +96,20 @@ async function request(req: NextRequest) {
 
   const fetchOptions: RequestInit = {
     headers: {
-      "Content-Type": "application/json",
-      "Cache-Control": "no-store",
-      "anthropic-dangerous-direct-browser-access": "true",
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-store',
+      'anthropic-dangerous-direct-browser-access': 'true',
       [authHeaderName]: authValue,
-      "anthropic-version":
-        req.headers.get("anthropic-version") ||
-        serverConfig.anthropicApiVersion ||
-        Anthropic.Vision,
+      'anthropic-version':
+        req.headers.get('anthropic-version')
+        || serverConfig.anthropicApiVersion
+        || Anthropic.Vision,
     },
     method: req.method,
     body: req.body,
-    redirect: "manual",
+    redirect: 'manual',
     // @ts-ignore
-    duplex: "half",
+    duplex: 'half',
     signal: controller.signal,
   };
 
@@ -155,9 +156,9 @@ async function request(req: NextRequest) {
     // );
     // to prevent browser prompt for credentials
     const newHeaders = new Headers(res.headers);
-    newHeaders.delete("www-authenticate");
+    newHeaders.delete('www-authenticate');
     // to disable nginx buffering
-    newHeaders.set("X-Accel-Buffering", "no");
+    newHeaders.set('X-Accel-Buffering', 'no');
 
     return new Response(res.body, {
       status: res.status,

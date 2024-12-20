@@ -1,29 +1,30 @@
-/* eslint-disable @next/next/no-img-element */
-import styles from "./ui-lib.module.scss";
-import LoadingIcon from "../icons/three-dots.svg";
-import CloseIcon from "../icons/close.svg";
-import EyeIcon from "../icons/eye.svg";
-import EyeOffIcon from "../icons/eye-off.svg";
-import DownIcon from "../icons/down.svg";
-import ConfirmIcon from "../icons/confirm.svg";
-import CancelIcon from "../icons/cancel.svg";
-import MaxIcon from "../icons/max.svg";
-import MinIcon from "../icons/min.svg";
-
-import Locale from "../locales";
-
-import { createRoot } from "react-dom/client";
-import React, {
+import type {
   CSSProperties,
   HTMLProps,
   MouseEvent,
-  useEffect,
-  useState,
+} from 'react';
+import clsx from 'clsx';
+import React, {
   useCallback,
+  useEffect,
   useRef,
-} from "react";
-import { IconButton } from "./button";
-import clsx from "clsx";
+  useState,
+} from 'react';
+import { createRoot } from 'react-dom/client';
+import CancelIcon from '../icons/cancel.svg';
+import CloseIcon from '../icons/close.svg';
+import ConfirmIcon from '../icons/confirm.svg';
+import DownIcon from '../icons/down.svg';
+import EyeIcon from '../icons/eye.svg';
+import EyeOffIcon from '../icons/eye-off.svg';
+import MaxIcon from '../icons/max.svg';
+
+import MinIcon from '../icons/min.svg';
+
+import LoadingIcon from '../icons/three-dots.svg';
+import Locale from '../locales';
+import { IconButton } from './button';
+import styles from './ui-lib.module.scss';
 
 export function Popover(props: {
   children: JSX.Element;
@@ -35,10 +36,10 @@ export function Popover(props: {
     <div className={styles.popover}>
       {props.children}
       {props.open && (
-        <div className={styles["popover-mask"]} onClick={props.onClose}></div>
+        <div className={styles['popover-mask']} onClick={props.onClose}></div>
       )}
       {props.open && (
-        <div className={styles["popover-content"]}>{props.content}</div>
+        <div className={styles['popover-content']}>{props.content}</div>
       )}
     </div>
   );
@@ -62,20 +63,20 @@ export function ListItem(props: {
   return (
     <div
       className={clsx(
-        styles["list-item"],
+        styles['list-item'],
         {
-          [styles["vertical"]]: props.vertical,
+          [styles.vertical]: props.vertical,
         },
         props.className,
       )}
       onClick={props.onClick}
     >
-      <div className={styles["list-header"]}>
-        {props.icon && <div className={styles["list-icon"]}>{props.icon}</div>}
-        <div className={styles["list-item-title"]}>
+      <div className={styles['list-header']}>
+        {props.icon && <div className={styles['list-icon']}>{props.icon}</div>}
+        <div className={styles['list-item-title']}>
           <div>{props.title}</div>
           {props.subTitle && (
-            <div className={styles["list-item-sub-title"]}>
+            <div className={styles['list-item-sub-title']}>
               {props.subTitle}
             </div>
           )}
@@ -98,11 +99,11 @@ export function Loading() {
   return (
     <div
       style={{
-        height: "100vh",
-        width: "100vw",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        height: '100vh',
+        width: '100vw',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
       <LoadingIcon />
@@ -121,15 +122,15 @@ interface ModalProps {
 export function Modal(props: ModalProps) {
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === 'Escape') {
         props.onClose?.();
       }
     };
 
-    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener('keydown', onKeyDown);
 
     return () => {
-      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener('keydown', onKeyDown);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -138,22 +139,22 @@ export function Modal(props: ModalProps) {
 
   return (
     <div
-      className={clsx(styles["modal-container"], {
-        [styles["modal-container-max"]]: isMax,
+      className={clsx(styles['modal-container'], {
+        [styles['modal-container-max']]: isMax,
       })}
     >
-      <div className={styles["modal-header"]}>
-        <div className={styles["modal-title"]}>{props.title}</div>
+      <div className={styles['modal-header']}>
+        <div className={styles['modal-title']}>{props.title}</div>
 
-        <div className={styles["modal-header-actions"]}>
+        <div className={styles['modal-header-actions']}>
           <div
-            className={styles["modal-header-action"]}
+            className={styles['modal-header-action']}
             onClick={() => setMax(!isMax)}
           >
             {isMax ? <MinIcon /> : <MaxIcon />}
           </div>
           <div
-            className={styles["modal-header-action"]}
+            className={styles['modal-header-action']}
             onClick={props.onClose}
           >
             <CloseIcon />
@@ -161,13 +162,13 @@ export function Modal(props: ModalProps) {
         </div>
       </div>
 
-      <div className={styles["modal-content"]}>{props.children}</div>
+      <div className={styles['modal-content']}>{props.children}</div>
 
-      <div className={styles["modal-footer"]}>
+      <div className={styles['modal-footer']}>
         {props.footer}
-        <div className={styles["modal-actions"]}>
+        <div className={styles['modal-actions']}>
           {props.actions?.map((action, i) => (
-            <div key={i} className={styles["modal-action"]}>
+            <div key={i} className={styles['modal-action']}>
               {action}
             </div>
           ))}
@@ -178,8 +179,8 @@ export function Modal(props: ModalProps) {
 }
 
 export function showModal(props: ModalProps) {
-  const div = document.createElement("div");
-  div.className = "modal-mask";
+  const div = document.createElement('div');
+  div.className = 'modal-mask';
   document.body.appendChild(div);
 
   const root = createRoot(div);
@@ -198,19 +199,19 @@ export function showModal(props: ModalProps) {
   root.render(<Modal {...props} onClose={closeModal}></Modal>);
 }
 
-export type ToastProps = {
+export interface ToastProps {
   content: string;
   action?: {
     text: string;
     onClick: () => void;
   };
   onClose?: () => void;
-};
+}
 
 export function Toast(props: ToastProps) {
   return (
-    <div className={styles["toast-container"]}>
-      <div className={styles["toast-content"]}>
+    <div className={styles['toast-container']}>
+      <div className={styles['toast-content']}>
         <span>{props.content}</span>
         {props.action && (
           <button
@@ -218,7 +219,7 @@ export function Toast(props: ToastProps) {
               props.action?.onClick?.();
               props.onClose?.();
             }}
-            className={styles["toast-action"]}
+            className={styles['toast-action']}
           >
             {props.action.text}
           </button>
@@ -230,10 +231,10 @@ export function Toast(props: ToastProps) {
 
 export function showToast(
   content: string,
-  action?: ToastProps["action"],
+  action?: ToastProps['action'],
   delay = 3000,
 ) {
-  const div = document.createElement("div");
+  const div = document.createElement('div');
   div.className = styles.show;
   document.body.appendChild(div);
 
@@ -263,8 +264,9 @@ export function Input(props: InputProps) {
   return (
     <textarea
       {...props}
-      className={clsx(styles["input"], props.className)}
-    ></textarea>
+      className={clsx(styles.input, props.className)}
+    >
+    </textarea>
   );
 }
 
@@ -277,17 +279,17 @@ export function PasswordInput(
   }
 
   return (
-    <div className={"password-input-container"}>
+    <div className="password-input-container">
       <IconButton
         aria={props.aria}
         icon={visible ? <EyeIcon /> : <EyeOffIcon />}
         onClick={changeVisibility}
-        className={"password-eye"}
+        className="password-eye"
       />
       <input
         {...props}
-        type={visible ? "text" : "password"}
-        className={"password-input"}
+        type={visible ? 'text' : 'password'}
+        className="password-input"
       />
     </div>
   );
@@ -296,7 +298,7 @@ export function PasswordInput(
 export function Select(
   props: React.DetailedHTMLProps<
     React.SelectHTMLAttributes<HTMLSelectElement> & {
-      align?: "left" | "center";
+      align?: 'left' | 'center';
     },
     HTMLSelectElement
   >,
@@ -305,24 +307,24 @@ export function Select(
   return (
     <div
       className={clsx(
-        styles["select-with-icon"],
+        styles['select-with-icon'],
         {
-          [styles["left-align-option"]]: align === "left",
+          [styles['left-align-option']]: align === 'left',
         },
         className,
       )}
     >
-      <select className={styles["select-with-icon-select"]} {...otherProps}>
+      <select className={styles['select-with-icon-select']} {...otherProps}>
         {children}
       </select>
-      <DownIcon className={styles["select-with-icon-icon"]} />
+      <DownIcon className={styles['select-with-icon-icon']} />
     </div>
   );
 }
 
 export function showConfirm(content: any) {
-  const div = document.createElement("div");
-  div.className = "modal-mask";
+  const div = document.createElement('div');
+  div.className = 'modal-mask';
   document.body.appendChild(div);
 
   const root = createRoot(div);
@@ -347,7 +349,8 @@ export function showConfirm(content: any) {
             tabIndex={0}
             bordered
             shadow
-          ></IconButton>,
+          >
+          </IconButton>,
           <IconButton
             key="confirm"
             text={Locale.UI.Confirm}
@@ -361,7 +364,8 @@ export function showConfirm(content: any) {
             autoFocus
             bordered
             shadow
-          ></IconButton>,
+          >
+          </IconButton>,
         ]}
         onClose={closeModal}
       >
@@ -384,18 +388,19 @@ function PromptInput(props: {
 
   return (
     <textarea
-      className={styles["modal-input"]}
+      className={styles['modal-input']}
       autoFocus
       value={input}
-      onInput={(e) => onInput(e.currentTarget.value)}
+      onInput={e => onInput(e.currentTarget.value)}
       rows={props.rows ?? 3}
-    ></textarea>
+    >
+    </textarea>
   );
 }
 
-export function showPrompt(content: any, value = "", rows = 3) {
-  const div = document.createElement("div");
-  div.className = "modal-mask";
+export function showPrompt(content: any, value = '', rows = 3) {
+  const div = document.createElement('div');
+  div.className = 'modal-mask';
   document.body.appendChild(div);
 
   const root = createRoot(div);
@@ -421,7 +426,8 @@ export function showPrompt(content: any, value = "", rows = 3) {
             bordered
             shadow
             tabIndex={0}
-          ></IconButton>,
+          >
+          </IconButton>,
           <IconButton
             key="confirm"
             text={Locale.UI.Confirm}
@@ -434,15 +440,17 @@ export function showPrompt(content: any, value = "", rows = 3) {
             bordered
             shadow
             tabIndex={0}
-          ></IconButton>,
+          >
+          </IconButton>,
         ]}
         onClose={closeModal}
       >
         <PromptInput
-          onChange={(val) => (userInput = val)}
+          onChange={val => (userInput = val)}
           value={value}
           rows={rows}
-        ></PromptInput>
+        >
+        </PromptInput>
       </Modal>,
     );
   });
@@ -456,18 +464,19 @@ export function showImageModal(
 ) {
   showModal({
     title: Locale.Export.Image.Modal,
-    defaultMax: defaultMax,
+    defaultMax,
     children: (
-      <div style={{ display: "flex", justifyContent: "center", ...boxStyle }}>
+      <div style={{ display: 'flex', justifyContent: 'center', ...boxStyle }}>
         <img
           src={img}
           alt="preview"
           style={
             style ?? {
-              maxWidth: "100%",
+              maxWidth: '100%',
             }
           }
-        ></img>
+        >
+        </img>
       </div>
     ),
   });
@@ -489,15 +498,15 @@ export function Selector<T>(props: {
     Array.isArray(props.defaultSelectedValue)
       ? props.defaultSelectedValue
       : props.defaultSelectedValue !== undefined
-      ? [props.defaultSelectedValue]
-      : [],
+        ? [props.defaultSelectedValue]
+        : [],
   );
 
   const handleSelection = (e: MouseEvent, value: T) => {
     if (props.multiple) {
       e.stopPropagation();
       const newSelectedValues = selectedValues.includes(value)
-        ? selectedValues.filter((v) => v !== value)
+        ? selectedValues.filter(v => v !== value)
         : [...selectedValues, value];
       setSelectedValues(newSelectedValues);
       props.onSelection?.(newSelectedValues);
@@ -509,15 +518,15 @@ export function Selector<T>(props: {
   };
 
   return (
-    <div className={styles["selector"]} onClick={() => props.onClose?.()}>
-      <div className={styles["selector-content"]}>
+    <div className={styles.selector} onClick={() => props.onClose?.()}>
+      <div className={styles['selector-content']}>
         <List>
           {props.items.map((item, i) => {
             const selected = selectedValues.includes(item.value);
             return (
               <ListItem
-                className={clsx(styles["selector-item"], {
-                  [styles["selector-item-disabled"]]: item.disable,
+                className={clsx(styles['selector-item'], {
+                  [styles['selector-item-disabled']]: item.disable,
                 })}
                 key={i}
                 title={item.title}
@@ -530,18 +539,21 @@ export function Selector<T>(props: {
                   }
                 }}
               >
-                {selected ? (
-                  <div
-                    style={{
-                      height: 10,
-                      width: 10,
-                      backgroundColor: "var(--primary)",
-                      borderRadius: 10,
-                    }}
-                  ></div>
-                ) : (
-                  <></>
-                )}
+                {selected
+                  ? (
+                      <div
+                        style={{
+                          height: 10,
+                          width: 10,
+                          backgroundColor: 'var(--primary)',
+                          borderRadius: 10,
+                        }}
+                      >
+                      </div>
+                    )
+                  : (
+                      <></>
+                    )}
               </ListItem>
             );
           })}
@@ -567,14 +579,14 @@ export function FullScreen(props: any) {
         setFullScreen(!!document.fullscreenElement);
       }
     };
-    document.addEventListener("fullscreenchange", handleScreenChange);
+    document.addEventListener('fullscreenchange', handleScreenChange);
     return () => {
-      document.removeEventListener("fullscreenchange", handleScreenChange);
+      document.removeEventListener('fullscreenchange', handleScreenChange);
     };
   }, []);
   return (
-    <div ref={ref} style={{ position: "relative" }} {...rest}>
-      <div style={{ position: "absolute", right, top }}>
+    <div ref={ref} style={{ position: 'relative' }} {...rest}>
+      <div style={{ position: 'absolute', right, top }}>
         <IconButton
           icon={fullScreen ? <MinIcon /> : <MaxIcon />}
           onClick={toggleFullscreen}

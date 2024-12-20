@@ -1,14 +1,15 @@
-import { useEffect, useMemo, useState } from "react";
-import { ChatMessage, useAppConfig, useChatStore } from "../store";
-import { Updater } from "../typing";
-import { IconButton } from "./button";
-import { Avatar } from "./emoji";
-import { MaskAvatar } from "./mask";
-import Locale from "../locales";
+import type { ChatMessage } from '../store';
+import type { Updater } from '../typing';
+import clsx from 'clsx';
+import { useEffect, useMemo, useState } from 'react';
+import Locale from '../locales';
+import { useAppConfig, useChatStore } from '../store';
+import { getMessageTextContent } from '../utils';
+import { IconButton } from './button';
 
-import styles from "./message-selector.module.scss";
-import { getMessageTextContent } from "../utils";
-import clsx from "clsx";
+import { Avatar } from './emoji';
+import { MaskAvatar } from './mask';
+import styles from './message-selector.module.scss';
 
 function useShiftRange() {
   const [startIndex, setStartIndex] = useState<number>();
@@ -26,22 +27,24 @@ function useShiftRange() {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== "Shift") return;
+      if (e.key !== 'Shift')
+      { return; }
       setShiftDown(true);
     };
     const onKeyUp = (e: KeyboardEvent) => {
-      if (e.key !== "Shift") return;
+      if (e.key !== 'Shift')
+      { return; }
       setShiftDown(false);
       setStartIndex(undefined);
       setEndIndex(undefined);
     };
 
-    window.addEventListener("keyup", onKeyUp);
-    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener('keyup', onKeyUp);
+    window.addEventListener('keydown', onKeyDown);
 
     return () => {
-      window.removeEventListener("keyup", onKeyUp);
-      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener('keyup', onKeyUp);
+      window.removeEventListener('keydown', onKeyDown);
     };
   }, []);
 
@@ -88,16 +91,16 @@ export function MessageSelector(props: {
     () =>
       allMessages.filter(
         (m, i) =>
-          m.id && // message must have id
-          isValid(m) &&
-          (i >= allMessages.length - 1 || isValid(allMessages[i + 1])),
+          m.id // message must have id
+          && isValid(m)
+          && (i >= allMessages.length - 1 || isValid(allMessages[i + 1])),
       ),
     [allMessages],
   );
   const messageCount = messages.length;
   const config = useAppConfig();
 
-  const [searchInput, setSearchInput] = useState("");
+  const [searchInput, setSearchInput] = useState('');
   const [searchIds, setSearchIds] = useState(new Set<string>());
   const isInSearchResult = (id: string) => {
     return searchInput.length === 0 || searchIds.has(id);
@@ -105,7 +108,7 @@ export function MessageSelector(props: {
   const doSearch = (text: string) => {
     const searchResults = new Set<string>();
     if (text.length > 0) {
-      messages.forEach((m) =>
+      messages.forEach(m =>
         getMessageTextContent(m).includes(text)
           ? searchResults.add(m.id!)
           : null,
@@ -118,8 +121,8 @@ export function MessageSelector(props: {
   const { startIndex, endIndex, onClickIndex } = useShiftRange();
 
   const selectAll = () => {
-    props.updateSelection((selection) =>
-      messages.forEach((m) => selection.add(m.id!)),
+    props.updateSelection(selection =>
+      messages.forEach(m => selection.add(m.id!)),
     );
   };
 
@@ -144,60 +147,60 @@ export function MessageSelector(props: {
   }, [startIndex, endIndex]);
 
   return (
-    <div className={styles["message-selector"]}>
-      <div className={styles["message-filter"]}>
+    <div className={styles['message-selector']}>
+      <div className={styles['message-filter']}>
         <input
           type="text"
           placeholder={Locale.Select.Search}
-          className={clsx(styles["filter-item"], styles["search-bar"])}
+          className={clsx(styles['filter-item'], styles['search-bar'])}
           value={searchInput}
           onInput={(e) => {
             setSearchInput(e.currentTarget.value);
             doSearch(e.currentTarget.value);
           }}
-        ></input>
+        >
+        </input>
 
-        <div className={styles["actions"]}>
+        <div className={styles.actions}>
           <IconButton
             text={Locale.Select.All}
             bordered
-            className={styles["filter-item"]}
+            className={styles['filter-item']}
             onClick={selectAll}
           />
           <IconButton
             text={Locale.Select.Latest}
             bordered
-            className={styles["filter-item"]}
+            className={styles['filter-item']}
             onClick={() =>
               props.updateSelection((selection) => {
                 selection.clear();
                 messages
                   .slice(messageCount - LATEST_COUNT)
-                  .forEach((m) => selection.add(m.id!));
-              })
-            }
+                  .forEach(m => selection.add(m.id!));
+              })}
           />
           <IconButton
             text={Locale.Select.Clear}
             bordered
-            className={styles["filter-item"]}
+            className={styles['filter-item']}
             onClick={() =>
-              props.updateSelection((selection) => selection.clear())
-            }
+              props.updateSelection(selection => selection.clear())}
           />
         </div>
       </div>
 
-      <div className={styles["messages"]}>
+      <div className={styles.messages}>
         {messages.map((m, i) => {
-          if (!isInSearchResult(m.id!)) return null;
+          if (!isInSearchResult(m.id!))
+          { return null; }
           const id = m.id ?? i;
           const isSelected = props.selection.has(id);
 
           return (
             <div
-              className={clsx(styles["message"], {
-                [styles["message-selected"]]: props.selection.has(m.id!),
+              className={clsx(styles.message, {
+                [styles['message-selected']]: props.selection.has(m.id!),
               })}
               key={i}
               onClick={() => {
@@ -207,26 +210,28 @@ export function MessageSelector(props: {
                 onClickIndex(i);
               }}
             >
-              <div className={styles["avatar"]}>
-                {m.role === "user" ? (
-                  <Avatar avatar={config.avatar}></Avatar>
-                ) : (
-                  <MaskAvatar
-                    avatar={session.mask.avatar}
-                    model={m.model || session.mask.modelConfig.model}
-                  />
-                )}
+              <div className={styles.avatar}>
+                {m.role === 'user'
+                  ? (
+                      <Avatar avatar={config.avatar}></Avatar>
+                    )
+                  : (
+                      <MaskAvatar
+                        avatar={session.mask.avatar}
+                        model={m.model || session.mask.modelConfig.model}
+                      />
+                    )}
               </div>
-              <div className={styles["body"]}>
-                <div className={styles["date"]}>
+              <div className={styles.body}>
+                <div className={styles.date}>
                   {new Date(m.date).toLocaleString()}
                 </div>
-                <div className={clsx(styles["content"], "one-line")}>
+                <div className={clsx(styles.content, 'one-line')}>
                   {getMessageTextContent(m)}
                 </div>
               </div>
 
-              <div className={styles["checkbox"]}>
+              <div className={styles.checkbox}>
                 <input type="checkbox" checked={isSelected} readOnly></input>
               </div>
             </div>

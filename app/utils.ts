@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import { showToast } from "./components/ui-lib";
-import Locale from "./locales";
-import { RequestMessage } from "./client/api";
-import { ServiceProvider } from "./constant";
+import type { RequestMessage } from './client/api';
+import { useEffect, useState } from 'react';
+import { showToast } from './components/ui-lib';
+import { ServiceProvider } from './constant';
+import Locale from './locales';
 // import { fetch as tauriFetch, ResponseType } from "@tauri-apps/api/http";
-import { fetch as tauriStreamFetch } from "./utils/stream";
+import { fetch as tauriStreamFetch } from './utils/stream';
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
@@ -13,8 +13,8 @@ export function trimTopic(topic: string) {
   return (
     topic
       // fix for gemini
-      .replace(/^["“”*]+|["“”*]+$/g, "")
-      .replace(/[，。！？”“"、,.!?*]*$/, "")
+      .replace(/^["“”*]+|["“”*]+$/g, '')
+      .replace(/[，。！？”“"、,.!?*]*$/, '')
   );
 }
 
@@ -28,13 +28,13 @@ export async function copyToClipboard(text: string) {
 
     showToast(Locale.Copy.Success);
   } catch (error) {
-    const textArea = document.createElement("textarea");
+    const textArea = document.createElement('textarea');
     textArea.value = text;
     document.body.appendChild(textArea);
     textArea.focus();
     textArea.select();
     try {
-      document.execCommand("copy");
+      document.execCommand('copy');
       showToast(Locale.Copy.Success);
     } catch (error) {
       showToast(Locale.Copy.Failed);
@@ -49,12 +49,12 @@ export async function downloadAs(text: string, filename: string) {
       defaultPath: `${filename}`,
       filters: [
         {
-          name: `${filename.split(".").pop()} files`,
-          extensions: [`${filename.split(".").pop()}`],
+          name: `${filename.split('.').pop()} files`,
+          extensions: [`${filename.split('.').pop()}`],
         },
         {
-          name: "All Files",
-          extensions: ["*"],
+          name: 'All Files',
+          extensions: ['*'],
         },
       ],
     });
@@ -70,14 +70,14 @@ export async function downloadAs(text: string, filename: string) {
       showToast(Locale.Download.Failed);
     }
   } else {
-    const element = document.createElement("a");
+    const element = document.createElement('a');
     element.setAttribute(
-      "href",
-      "data:text/plain;charset=utf-8," + encodeURIComponent(text),
+      'href',
+      `data:text/plain;charset=utf-8,${encodeURIComponent(text)}`,
     );
-    element.setAttribute("download", filename);
+    element.setAttribute('download', filename);
 
-    element.style.display = "none";
+    element.style.display = 'none';
     document.body.appendChild(element);
 
     element.click();
@@ -88,9 +88,9 @@ export async function downloadAs(text: string, filename: string) {
 
 export function readFromFile() {
   return new Promise<string>((res, rej) => {
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = "application/json";
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'application/json';
 
     fileInput.onchange = (event: any) => {
       const file = event.target.files[0];
@@ -98,7 +98,7 @@ export function readFromFile() {
       fileReader.onload = (e: any) => {
         res(e.target.result);
       };
-      fileReader.onerror = (e) => rej(e);
+      fileReader.onerror = e => rej(e);
       fileReader.readAsText(file);
     };
 
@@ -125,10 +125,10 @@ export function useWindowSize() {
       });
     };
 
-    window.addEventListener("resize", onResize);
+    window.addEventListener('resize', onResize);
 
     return () => {
-      window.removeEventListener("resize", onResize);
+      window.removeEventListener('resize', onResize);
     };
   }, []);
 
@@ -144,14 +144,14 @@ export function useMobileScreen() {
 
 export function isFirefox() {
   return (
-    typeof navigator !== "undefined" && /firefox/i.test(navigator.userAgent)
+    typeof navigator !== 'undefined' && /firefox/i.test(navigator.userAgent)
   );
 }
 
 export function selectOrCopy(el: HTMLElement, content: string) {
   const currentSelection = window.getSelection();
 
-  if (currentSelection?.type === "Range") {
+  if (currentSelection?.type === 'Range') {
     return false;
   }
 
@@ -162,8 +162,8 @@ export function selectOrCopy(el: HTMLElement, content: string) {
 
 function getDomContentWidth(dom: HTMLElement) {
   const style = window.getComputedStyle(dom);
-  const paddingWidth =
-    parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+  const paddingWidth
+    = Number.parseFloat(style.paddingLeft) + Number.parseFloat(style.paddingRight);
   const width = dom.clientWidth - paddingWidth;
   return width;
 }
@@ -172,13 +172,13 @@ function getOrCreateMeasureDom(id: string, init?: (dom: HTMLElement) => void) {
   let dom = document.getElementById(id);
 
   if (!dom) {
-    dom = document.createElement("span");
-    dom.style.position = "absolute";
-    dom.style.wordBreak = "break-word";
-    dom.style.fontSize = "14px";
-    dom.style.transform = "translateY(-200vh)";
-    dom.style.pointerEvents = "none";
-    dom.style.opacity = "0";
+    dom = document.createElement('span');
+    dom.style.position = 'absolute';
+    dom.style.wordBreak = 'break-word';
+    dom.style.fontSize = '14px';
+    dom.style.transform = 'translateY(-200vh)';
+    dom.style.pointerEvents = 'none';
+    dom.style.opacity = '0';
     dom.id = id;
     document.body.appendChild(dom);
     init?.(dom);
@@ -188,24 +188,24 @@ function getOrCreateMeasureDom(id: string, init?: (dom: HTMLElement) => void) {
 }
 
 export function autoGrowTextArea(dom: HTMLTextAreaElement) {
-  const measureDom = getOrCreateMeasureDom("__measure");
-  const singleLineDom = getOrCreateMeasureDom("__single_measure", (dom) => {
-    dom.innerText = "TEXT_FOR_MEASURE";
+  const measureDom = getOrCreateMeasureDom('__measure');
+  const singleLineDom = getOrCreateMeasureDom('__single_measure', (dom) => {
+    dom.innerText = 'TEXT_FOR_MEASURE';
   });
 
   const width = getDomContentWidth(dom);
-  measureDom.style.width = width + "px";
-  measureDom.innerText = dom.value !== "" ? dom.value : "1";
+  measureDom.style.width = `${width}px`;
+  measureDom.innerText = dom.value !== '' ? dom.value : '1';
   measureDom.style.fontSize = dom.style.fontSize;
   measureDom.style.fontFamily = dom.style.fontFamily;
-  const endWithEmptyLine = dom.value.endsWith("\n");
-  const height = parseFloat(window.getComputedStyle(measureDom).height);
-  const singleLineHeight = parseFloat(
+  const endWithEmptyLine = dom.value.endsWith('\n');
+  const height = Number.parseFloat(window.getComputedStyle(measureDom).height);
+  const singleLineHeight = Number.parseFloat(
     window.getComputedStyle(singleLineDom).height,
   );
 
-  const rows =
-    Math.round(height / singleLineHeight) + (endWithEmptyLine ? 1 : 0);
+  const rows
+    = Math.round(height / singleLineHeight) + (endWithEmptyLine ? 1 : 0);
 
   return rows;
 }
@@ -218,8 +218,8 @@ export function getCSSVar(varName: string) {
  * Detects Macintosh
  */
 export function isMacOS(): boolean {
-  if (typeof window !== "undefined") {
-    let userAgent = window.navigator.userAgent.toLocaleLowerCase();
+  if (typeof window !== 'undefined') {
+    const userAgent = window.navigator.userAgent.toLocaleLowerCase();
     const macintosh = /iphone|ipad|ipod|macintosh/.test(userAgent);
     return !!macintosh;
   }
@@ -227,25 +227,25 @@ export function isMacOS(): boolean {
 }
 
 export function getMessageTextContent(message: RequestMessage) {
-  if (typeof message.content === "string") {
+  if (typeof message.content === 'string') {
     return message.content;
   }
   for (const c of message.content) {
-    if (c.type === "text") {
-      return c.text ?? "";
+    if (c.type === 'text') {
+      return c.text ?? '';
     }
   }
-  return "";
+  return '';
 }
 
 export function getMessageImages(message: RequestMessage): string[] {
-  if (typeof message.content === "string") {
+  if (typeof message.content === 'string') {
     return [];
   }
   const urls: string[] = [];
   for (const c of message.content) {
-    if (c.type === "image_url") {
-      urls.push(c.image_url?.url ?? "");
+    if (c.type === 'image_url') {
+      urls.push(c.image_url?.url ?? '');
     }
   }
   return urls;
@@ -254,45 +254,45 @@ export function getMessageImages(message: RequestMessage): string[] {
 export function isVisionModel(model: string) {
   // Note: This is a better way using the TypeScript feature instead of `&&` or `||` (ts v5.5.0-dev.20240314 I've been using)
 
-  const excludeKeywords = ["claude-3-5-haiku-20241022"];
+  const excludeKeywords = ['claude-3-5-haiku-20241022'];
   const visionKeywords = [
-    "vision",
-    "gpt-4o",
-    "claude-3",
-    "gemini-1.5",
-    "gemini-exp",
-    "learnlm",
-    "qwen-vl",
-    "qwen2-vl",
+    'vision',
+    'gpt-4o',
+    'claude-3',
+    'gemini-1.5',
+    'gemini-exp',
+    'learnlm',
+    'qwen-vl',
+    'qwen2-vl',
   ];
-  const isGpt4Turbo =
-    model.includes("gpt-4-turbo") && !model.includes("preview");
+  const isGpt4Turbo
+    = model.includes('gpt-4-turbo') && !model.includes('preview');
 
   return (
-    !excludeKeywords.some((keyword) => model.includes(keyword)) &&
-    (visionKeywords.some((keyword) => model.includes(keyword)) ||
-      isGpt4Turbo ||
-      isDalle3(model))
+    !excludeKeywords.some(keyword => model.includes(keyword))
+    && (visionKeywords.some(keyword => model.includes(keyword))
+      || isGpt4Turbo
+      || isDalle3(model))
   );
 }
 
 export function isDalle3(model: string) {
-  return "dall-e-3" === model;
+  return model === 'dall-e-3';
 }
 
 export function showPlugins(provider: ServiceProvider, model: string) {
   if (
-    provider == ServiceProvider.OpenAI ||
-    provider == ServiceProvider.Azure ||
-    provider == ServiceProvider.Moonshot ||
-    provider == ServiceProvider.ChatGLM
+    provider === ServiceProvider.OpenAI
+    || provider === ServiceProvider.Azure
+    || provider === ServiceProvider.Moonshot
+    || provider === ServiceProvider.ChatGLM
   ) {
     return true;
   }
-  if (provider == ServiceProvider.Anthropic && !model.includes("claude-2")) {
+  if (provider === ServiceProvider.Anthropic && !model.includes('claude-2')) {
     return true;
   }
-  if (provider == ServiceProvider.Google && !model.includes("vision")) {
+  if (provider === ServiceProvider.Google && !model.includes('vision')) {
     return true;
   }
   return false;
@@ -331,13 +331,13 @@ export function safeLocalStorage(): {
   let storage: Storage | null;
 
   try {
-    if (typeof window !== "undefined" && window.localStorage) {
+    if (typeof window !== 'undefined' && window.localStorage) {
       storage = window.localStorage;
     } else {
       storage = null;
     }
   } catch (e) {
-    console.error("localStorage is not available:", e);
+    console.error('localStorage is not available:', e);
     storage = null;
   }
 
@@ -375,7 +375,7 @@ export function safeLocalStorage(): {
         storage.clear();
       } else {
         console.warn(
-          "Attempted to clear localStorage, but localStorage is not available.",
+          'Attempted to clear localStorage, but localStorage is not available.',
         );
       }
     },
@@ -389,8 +389,8 @@ export function getOperationId(operation: {
 }) {
   // pattern '^[a-zA-Z0-9_-]+$'
   return (
-    operation?.operationId ||
-    `${operation.method.toUpperCase()}${operation.path.replaceAll("/", "_")}`
+    operation?.operationId
+    || `${operation.method.toUpperCase()}${operation.path.replaceAll('/', '_')}`
   );
 }
 
@@ -398,32 +398,35 @@ export function clientUpdate() {
   // this a wild for updating client app
   return window.__TAURI__?.updater
     .checkUpdate()
-    .then((updateResult) => {
+    .then((updateResult: any) => {
       if (updateResult.shouldUpdate) {
         window.__TAURI__?.updater
           .installUpdate()
-          .then((result) => {
+          .then((result: any) => {
+            console.error('[Install Update result]', result);
             showToast(Locale.Settings.Update.Success);
           })
-          .catch((e) => {
-            console.error("[Install Update Error]", e);
+          .catch((e: any) => {
+            console.error('[Install Update Error]', e);
             showToast(Locale.Settings.Update.Failed);
           });
       }
     })
-    .catch((e) => {
-      console.error("[Check Update Error]", e);
+    .catch((e: any) => {
+      console.error('[Check Update Error]', e);
       showToast(Locale.Settings.Update.Failed);
     });
 }
 
 // https://gist.github.com/iwill/a83038623ba4fef6abb9efca87ae9ccb
 export function semverCompare(a: string, b: string) {
-  if (a.startsWith(b + "-")) return -1;
-  if (b.startsWith(a + "-")) return 1;
+  if (a.startsWith(`${b}-`))
+  { return -1; }
+  if (b.startsWith(`${a}-`))
+  { return 1; }
   return a.localeCompare(b, undefined, {
     numeric: true,
-    sensitivity: "case",
-    caseFirst: "upper",
+    sensitivity: 'case',
+    caseFirst: 'upper',
   });
 }

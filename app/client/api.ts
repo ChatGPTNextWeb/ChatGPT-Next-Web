@@ -1,37 +1,40 @@
-import { getClientConfig } from "../config/client";
+import type {
+  ChatMessage,
+  ChatMessageTool,
+  ModelType,
+} from '../store';
+import type { DalleRequestPayload } from './platforms/openai';
+import { getClientConfig } from '../config/client';
 import {
   ACCESS_CODE_PREFIX,
   ModelProvider,
   ServiceProvider,
-} from "../constant";
+} from '../constant';
 import {
-  ChatMessageTool,
-  ChatMessage,
-  ModelType,
   useAccessStore,
   useChatStore,
-} from "../store";
-import { ChatGPTApi, DalleRequestPayload } from "./platforms/openai";
-import { GeminiProApi } from "./platforms/google";
-import { ClaudeApi } from "./platforms/anthropic";
-import { ErnieApi } from "./platforms/baidu";
-import { DoubaoApi } from "./platforms/bytedance";
-import { QwenApi } from "./platforms/alibaba";
-import { HunyuanApi } from "./platforms/tencent";
-import { MoonshotApi } from "./platforms/moonshot";
-import { SparkApi } from "./platforms/iflytek";
-import { XAIApi } from "./platforms/xai";
-import { ChatGLMApi } from "./platforms/glm";
+} from '../store';
+import { QwenApi } from './platforms/alibaba';
+import { ClaudeApi } from './platforms/anthropic';
+import { ErnieApi } from './platforms/baidu';
+import { DoubaoApi } from './platforms/bytedance';
+import { ChatGLMApi } from './platforms/glm';
+import { GeminiProApi } from './platforms/google';
+import { SparkApi } from './platforms/iflytek';
+import { MoonshotApi } from './platforms/moonshot';
+import { ChatGPTApi } from './platforms/openai';
+import { HunyuanApi } from './platforms/tencent';
+import { XAIApi } from './platforms/xai';
 
-export const ROLES = ["system", "user", "assistant"] as const;
+export const ROLES = ['system', 'user', 'assistant'] as const;
 export type MessageRole = (typeof ROLES)[number];
 
-export const Models = ["gpt-3.5-turbo", "gpt-4"] as const;
-export const TTSModels = ["tts-1", "tts-1-hd"] as const;
+export const Models = ['gpt-3.5-turbo', 'gpt-4'] as const;
+export const TTSModels = ['tts-1', 'tts-1-hd'] as const;
 export type ChatModel = ModelType;
 
 export interface MultimodalContent {
-  type: "text" | "image_url";
+  type: 'text' | 'image_url';
   text?: string;
   image_url?: {
     url: string;
@@ -51,9 +54,9 @@ export interface LLMConfig {
   stream?: boolean;
   presence_penalty?: number;
   frequency_penalty?: number;
-  size?: DalleRequestPayload["size"];
-  quality?: DalleRequestPayload["quality"];
-  style?: DalleRequestPayload["style"];
+  size?: DalleRequestPayload['size'];
+  quality?: DalleRequestPayload['quality'];
+  style?: DalleRequestPayload['style'];
 }
 
 export interface SpeechOptions {
@@ -104,7 +107,7 @@ export abstract class LLMApi {
   abstract models(): Promise<LLMModel[]>;
 }
 
-type ProviderName = "openai" | "azure" | "claude" | "palm";
+type ProviderName = 'openai' | 'azure' | 'claude' | 'palm';
 
 interface Model {
   name: string;
@@ -173,24 +176,24 @@ export class ClientApi {
 
   async share(messages: ChatMessage[], avatarUrl: string | null = null) {
     const msgs = messages
-      .map((m) => ({
-        from: m.role === "user" ? "human" : "gpt",
+      .map(m => ({
+        from: m.role === 'user' ? 'human' : 'gpt',
         value: m.content,
       }))
       .concat([
         {
-          from: "human",
+          from: 'human',
           value:
-            "Share from [NextChat]: https://github.com/Yidadaa/ChatGPT-Next-Web",
+            'Share from [NextChat]: https://github.com/Yidadaa/ChatGPT-Next-Web',
         },
       ]);
     // 敬告二开开发者们，为了开源大模型的发展，请不要修改上述消息，此消息用于后续数据清洗使用
     // Please do not modify this message
 
-    console.log("[Share]", messages, msgs);
+    console.log('[Share]', messages, msgs);
     const clientConfig = getClientConfig();
-    const proxyUrl = "/sharegpt";
-    const rawUrl = "https://sharegpt.com/api/conversations";
+    const proxyUrl = '/sharegpt';
+    const rawUrl = 'https://sharegpt.com/api/conversations';
     const shareUrl = clientConfig?.isApp ? rawUrl : proxyUrl;
     const res = await fetch(shareUrl, {
       body: JSON.stringify({
@@ -198,13 +201,13 @@ export class ClientApi {
         items: msgs,
       }),
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-      method: "POST",
+      method: 'POST',
     });
 
     const resJson = await res.json();
-    console.log("[Share]", resJson);
+    console.log('[Share]', resJson);
     if (resJson.id) {
       return `https://shareg.pt/${resJson.id}`;
     }
@@ -216,8 +219,8 @@ export function getBearerToken(
   noBearer: boolean = false,
 ): string {
   return validString(apiKey)
-    ? `${noBearer ? "" : "Bearer "}${apiKey.trim()}`
-    : "";
+    ? `${noBearer ? '' : 'Bearer '}${apiKey.trim()}`
+    : '';
 }
 
 export function validString(x: string): boolean {
@@ -230,8 +233,8 @@ export function getHeaders(ignoreHeaders: boolean = false) {
   let headers: Record<string, string> = {};
   if (!ignoreHeaders) {
     headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
     };
   }
 
@@ -253,24 +256,24 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     const apiKey = isGoogle
       ? accessStore.googleApiKey
       : isAzure
-      ? accessStore.azureApiKey
-      : isAnthropic
-      ? accessStore.anthropicApiKey
-      : isByteDance
-      ? accessStore.bytedanceApiKey
-      : isAlibaba
-      ? accessStore.alibabaApiKey
-      : isMoonshot
-      ? accessStore.moonshotApiKey
-      : isXAI
-      ? accessStore.xaiApiKey
-      : isChatGLM
-      ? accessStore.chatglmApiKey
-      : isIflytek
-      ? accessStore.iflytekApiKey && accessStore.iflytekApiSecret
-        ? accessStore.iflytekApiKey + ":" + accessStore.iflytekApiSecret
-        : ""
-      : accessStore.openaiApiKey;
+        ? accessStore.azureApiKey
+        : isAnthropic
+          ? accessStore.anthropicApiKey
+          : isByteDance
+            ? accessStore.bytedanceApiKey
+            : isAlibaba
+              ? accessStore.alibabaApiKey
+              : isMoonshot
+                ? accessStore.moonshotApiKey
+                : isXAI
+                  ? accessStore.xaiApiKey
+                  : isChatGLM
+                    ? accessStore.chatglmApiKey
+                    : isIflytek
+                      ? accessStore.iflytekApiKey && accessStore.iflytekApiSecret
+                        ? `${accessStore.iflytekApiKey}:${accessStore.iflytekApiSecret}`
+                        : ''
+                      : accessStore.openaiApiKey;
     return {
       isGoogle,
       isAzure,
@@ -289,12 +292,12 @@ export function getHeaders(ignoreHeaders: boolean = false) {
 
   function getAuthHeader(): string {
     return isAzure
-      ? "api-key"
+      ? 'api-key'
       : isAnthropic
-      ? "x-api-key"
-      : isGoogle
-      ? "x-goog-api-key"
-      : "Authorization";
+        ? 'x-api-key'
+        : isGoogle
+          ? 'x-goog-api-key'
+          : 'Authorization';
   }
 
   const {
@@ -306,7 +309,8 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     isEnabledAccessControl,
   } = getConfig();
   // when using baidu api in app, not set auth header
-  if (isBaidu && clientConfig?.isApp) return headers;
+  if (isBaidu && clientConfig?.isApp)
+  { return headers; }
 
   const authHeader = getAuthHeader();
 
@@ -318,7 +322,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
   if (bearerToken) {
     headers[authHeader] = bearerToken;
   } else if (isEnabledAccessControl && validString(accessStore.accessCode)) {
-    headers["Authorization"] = getBearerToken(
+    headers.Authorization = getBearerToken(
       ACCESS_CODE_PREFIX + accessStore.accessCode,
     );
   }

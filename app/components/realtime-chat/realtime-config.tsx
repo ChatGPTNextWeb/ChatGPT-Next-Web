@@ -1,24 +1,24 @@
-import { RealtimeConfig } from "@/app/store";
+import type { RealtimeConfig } from '@/app/store';
 
-import Locale from "@/app/locales";
-import { ListItem, Select, PasswordInput } from "@/app/components/ui-lib";
+import type { Voice } from 'rt-client';
+import { InputRange } from '@/app/components/input-range';
 
-import { InputRange } from "@/app/components/input-range";
-import { Voice } from "rt-client";
-import { ServiceProvider } from "@/app/constant";
+import { ListItem, PasswordInput, Select } from '@/app/components/ui-lib';
+import { ServiceProvider } from '@/app/constant';
+import Locale from '@/app/locales';
 
 const providers = [ServiceProvider.OpenAI, ServiceProvider.Azure];
 
-const models = ["gpt-4o-realtime-preview-2024-10-01"];
+const models = ['gpt-4o-realtime-preview-2024-10-01'];
 
-const voice = ["alloy", "shimmer", "echo"];
+const voice = ['alloy', 'shimmer', 'echo'];
 
 export function RealtimeConfigList(props: {
   realtimeConfig: RealtimeConfig;
   updateConfig: (updater: (config: RealtimeConfig) => void) => void;
 }) {
-  const azureConfigComponent = props.realtimeConfig.provider ===
-    ServiceProvider.Azure && (
+  const azureConfigComponent = props.realtimeConfig.provider
+    === ServiceProvider.Azure && (
     <>
       <ListItem
         title={Locale.Settings.Realtime.Azure.Endpoint.Title}
@@ -30,7 +30,7 @@ export function RealtimeConfigList(props: {
           placeholder={Locale.Settings.Realtime.Azure.Endpoint.Title}
           onChange={(e) => {
             props.updateConfig(
-              (config) => (config.azure.endpoint = e.currentTarget.value),
+              config => (config.azure.endpoint = e.currentTarget.value),
             );
           }}
         />
@@ -45,7 +45,7 @@ export function RealtimeConfigList(props: {
           placeholder={Locale.Settings.Realtime.Azure.Deployment.Title}
           onChange={(e) => {
             props.updateConfig(
-              (config) => (config.azure.deployment = e.currentTarget.value),
+              config => (config.azure.deployment = e.currentTarget.value),
             );
           }}
         />
@@ -62,12 +62,12 @@ export function RealtimeConfigList(props: {
         <input
           type="checkbox"
           checked={props.realtimeConfig.enable}
-          onChange={(e) =>
+          onChange={e =>
             props.updateConfig(
-              (config) => (config.enable = e.currentTarget.checked),
-            )
-          }
-        ></input>
+              config => (config.enable = e.currentTarget.checked),
+            )}
+        >
+        </input>
       </ListItem>
 
       {props.realtimeConfig.enable && (
@@ -81,7 +81,7 @@ export function RealtimeConfigList(props: {
               value={props.realtimeConfig.provider}
               onChange={(e) => {
                 props.updateConfig(
-                  (config) =>
+                  config =>
                     (config.provider = e.target.value as ServiceProvider),
                 );
               }}
@@ -101,7 +101,7 @@ export function RealtimeConfigList(props: {
               aria-label={Locale.Settings.Realtime.Model.Title}
               value={props.realtimeConfig.model}
               onChange={(e) => {
-                props.updateConfig((config) => (config.model = e.target.value));
+                props.updateConfig(config => (config.model = e.target.value));
               }}
             >
               {models.map((v, i) => (
@@ -123,7 +123,7 @@ export function RealtimeConfigList(props: {
               placeholder={Locale.Settings.Realtime.ApiKey.Placeholder}
               onChange={(e) => {
                 props.updateConfig(
-                  (config) => (config.apiKey = e.currentTarget.value),
+                  config => (config.apiKey = e.currentTarget.value),
                 );
               }}
             />
@@ -137,7 +137,7 @@ export function RealtimeConfigList(props: {
               value={props.realtimeConfig.voice}
               onChange={(e) => {
                 props.updateConfig(
-                  (config) => (config.voice = e.currentTarget.value as Voice),
+                  config => (config.voice = e.currentTarget.value as Voice),
                 );
               }}
             >
@@ -160,11 +160,12 @@ export function RealtimeConfigList(props: {
               step="0.1"
               onChange={(e) => {
                 props.updateConfig(
-                  (config) =>
+                  config =>
                     (config.temperature = e.currentTarget.valueAsNumber),
                 );
               }}
-            ></InputRange>
+            >
+            </InputRange>
           </ListItem>
         </>
       )}

@@ -1,5 +1,5 @@
-import { useEffect, useRef, useCallback } from "react";
-import styles from "./voice-print.module.scss";
+import { useCallback, useEffect, useRef } from 'react';
+import styles from './voice-print.module.scss';
 
 interface VoicePrintProps {
   frequencies?: Uint8Array;
@@ -29,10 +29,12 @@ export function VoicePrint({ frequencies, isActive }: VoicePrintProps) {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas)
+    { return; }
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx)
+    { return; }
 
     /**
      * 处理高DPI屏幕显示
@@ -92,10 +94,10 @@ export function VoicePrint({ frequencies, isActive }: VoicePrintProps) {
          * 3. 根据平均值计算实际显示高度
          */
         if (historyRef.current.length > 0) {
-          const historicalValues = historyRef.current.map((h) => h[i] || 0);
-          avgFrequency =
-            (avgFrequency + historicalValues.reduce((a, b) => a + b, 0)) /
-            (historyRef.current.length + 1);
+          const historicalValues = historyRef.current.map(h => h[i] || 0);
+          avgFrequency
+            = (avgFrequency + historicalValues.reduce((a, b) => a + b, 0))
+            / (historyRef.current.length + 1);
         }
 
         /**
@@ -151,9 +153,9 @@ export function VoicePrint({ frequencies, isActive }: VoicePrintProps) {
        * 使用蓝色系配色提升视觉效果
        */
       const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
-      gradient.addColorStop(0, "rgba(100, 180, 255, 0.95)");
-      gradient.addColorStop(0.5, "rgba(140, 200, 255, 0.9)");
-      gradient.addColorStop(1, "rgba(180, 220, 255, 0.95)");
+      gradient.addColorStop(0, 'rgba(100, 180, 255, 0.95)');
+      gradient.addColorStop(0.5, 'rgba(140, 200, 255, 0.9)');
+      gradient.addColorStop(1, 'rgba(180, 220, 255, 0.95)');
 
       ctx.fillStyle = gradient;
       ctx.fill();
@@ -173,7 +175,7 @@ export function VoicePrint({ frequencies, isActive }: VoicePrintProps) {
   }, [frequencies, isActive, updateHistory]);
 
   return (
-    <div className={styles["voice-print"]}>
+    <div className={styles['voice-print']}>
       <canvas ref={canvasRef} />
     </div>
   );

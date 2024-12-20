@@ -1,20 +1,20 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { ErrorBoundary } from "./error";
-import styles from "./mask.module.scss";
-import { useNavigate } from "react-router-dom";
-import { IconButton } from "./button";
-import CloseIcon from "../icons/close.svg";
-import EyeIcon from "../icons/eye.svg";
-import Locale from "../locales";
-import { Path } from "../constant";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Path } from '../constant';
+import CloseIcon from '../icons/close.svg';
+import EyeIcon from '../icons/eye.svg';
+import Locale from '../locales';
+import { useChatStore } from '../store';
+import { IconButton } from './button';
+import { ErrorBoundary } from './error';
 
-import { useChatStore } from "../store";
+import styles from './mask.module.scss';
 
-type Item = {
+interface Item {
   id: number;
   name: string;
   content: string;
-};
+}
 export function SearchChatPage() {
   const navigate = useNavigate();
 
@@ -25,7 +25,7 @@ export function SearchChatPage() {
 
   const [searchResults, setSearchResults] = useState<Item[]>([]);
 
-  const previousValueRef = useRef<string>("");
+  const previousValueRef = useRef<string>('');
   const searchInputRef = useRef<HTMLInputElement>(null);
   const doSearch = useCallback((text: string) => {
     const lowerCaseText = text.toLowerCase();
@@ -36,7 +36,8 @@ export function SearchChatPage() {
 
       session.messages.forEach((message) => {
         const content = message.content as string;
-        if (!content.toLowerCase || content === "") return;
+        if (!content.toLowerCase || content === '')
+        { return; }
         const lowerCaseContent = content.toLowerCase();
 
         // full text search
@@ -56,7 +57,7 @@ export function SearchChatPage() {
         results.push({
           id: index,
           name: session.topic,
-          content: fullTextContents.join("... "), // concat content with...
+          content: fullTextContents.join('... '), // concat content with...
         });
       }
     });
@@ -87,7 +88,7 @@ export function SearchChatPage() {
 
   return (
     <ErrorBoundary>
-      <div className={styles["mask-page"]}>
+      <div className={styles['mask-page']}>
         {/* header */}
         <div className="window-header">
           <div className="window-header-title">
@@ -110,17 +111,17 @@ export function SearchChatPage() {
           </div>
         </div>
 
-        <div className={styles["mask-page-body"]}>
-          <div className={styles["mask-filter"]}>
-            {/**搜索输入框 */}
+        <div className={styles['mask-page-body']}>
+          <div className={styles['mask-filter']}>
+            {/** 搜索输入框 */}
             <input
               type="text"
-              className={styles["search-bar"]}
+              className={styles['search-bar']}
               placeholder={Locale.SearchChat.Page.Search}
               autoFocus
               ref={searchInputRef}
               onKeyDown={(e) => {
-                if (e.key === "Enter") {
+                if (e.key === 'Enter') {
                   e.preventDefault();
                   const searchText = e.currentTarget.value;
                   if (searchText.length > 0) {
@@ -133,25 +134,25 @@ export function SearchChatPage() {
           </div>
 
           <div>
-            {searchResults.map((item) => (
+            {searchResults.map(item => (
               <div
-                className={styles["mask-item"]}
+                className={styles['mask-item']}
                 key={item.id}
                 onClick={() => {
                   navigate(Path.Chat);
                   selectSession(item.id);
                 }}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: 'pointer' }}
               >
                 {/** 搜索匹配的文本 */}
-                <div className={styles["mask-header"]}>
-                  <div className={styles["mask-title"]}>
-                    <div className={styles["mask-name"]}>{item.name}</div>
+                <div className={styles['mask-header']}>
+                  <div className={styles['mask-title']}>
+                    <div className={styles['mask-name']}>{item.name}</div>
                     {item.content.slice(0, 70)}
                   </div>
                 </div>
                 {/** 操作按钮 */}
-                <div className={styles["mask-actions"]}>
+                <div className={styles['mask-actions']}>
                   <IconButton
                     icon={<EyeIcon />}
                     text={Locale.SearchChat.Item.View}

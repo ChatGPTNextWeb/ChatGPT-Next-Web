@@ -1,13 +1,15 @@
-import {
+import type {
   ChatSession,
+} from '../store';
+import { StoreKey } from '../constant';
+import {
   useAccessStore,
   useAppConfig,
   useChatStore,
-} from "../store";
-import { useMaskStore } from "../store/mask";
-import { usePromptStore } from "../store/prompt";
-import { StoreKey } from "../constant";
-import { merge } from "./merge";
+} from '../store';
+import { useMaskStore } from '../store/mask';
+import { usePromptStore } from '../store/prompt';
+import { merge } from './merge';
 
 type NonFunctionKeys<T> = {
   [K in keyof T]: T[K] extends (...args: any[]) => any ? never : K;
@@ -18,7 +20,7 @@ export function getNonFunctionFileds<T extends object>(obj: T) {
   const ret: any = {};
 
   Object.entries(obj).map(([k, v]) => {
-    if (typeof v !== "function") {
+    if (typeof v !== 'function') {
       ret[k] = v;
     }
   });
@@ -66,11 +68,12 @@ const MergeStates: StateMerger = {
   [StoreKey.Chat]: (localState, remoteState) => {
     // merge sessions
     const localSessions: Record<string, ChatSession> = {};
-    localState.sessions.forEach((s) => (localSessions[s.id] = s));
+    localState.sessions.forEach(s => (localSessions[s.id] = s));
 
     remoteState.sessions.forEach((remoteSession) => {
       // skip empty chats
-      if (remoteSession.messages.length === 0) return;
+      if (remoteSession.messages.length === 0)
+      { return; }
 
       const localSession = localSessions[remoteSession.id];
       if (!localSession) {
@@ -78,7 +81,7 @@ const MergeStates: StateMerger = {
         localState.sessions.push(remoteSession);
       } else {
         // if both have the same session id, merge the messages
-        const localMessageIds = new Set(localSession.messages.map((v) => v.id));
+        const localMessageIds = new Set(localSession.messages.map(v => v.id));
         remoteSession.messages.forEach((m) => {
           if (!localMessageIds.has(m.id)) {
             localSession.messages.push(m);

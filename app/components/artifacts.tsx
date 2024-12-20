@@ -1,44 +1,44 @@
+import { ApiPath, Path, REPO_URL } from '@/app/constant';
+import { nanoid } from 'nanoid';
 import {
-  useEffect,
-  useState,
-  useRef,
-  useMemo,
   forwardRef,
+  useEffect,
   useImperativeHandle,
-} from "react";
-import { useParams } from "react-router";
-import { IconButton } from "./button";
-import { nanoid } from "nanoid";
-import ExportIcon from "../icons/share.svg";
-import CopyIcon from "../icons/copy.svg";
-import DownloadIcon from "../icons/download.svg";
-import GithubIcon from "../icons/github.svg";
-import LoadingButtonIcon from "../icons/loading.svg";
-import ReloadButtonIcon from "../icons/reload.svg";
-import Locale from "../locales";
-import { Modal, showToast } from "./ui-lib";
-import { copyToClipboard, downloadAs } from "../utils";
-import { Path, ApiPath, REPO_URL } from "@/app/constant";
-import { Loading } from "./home";
-import styles from "./artifacts.module.scss";
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { useParams } from 'react-router';
+import CopyIcon from '../icons/copy.svg';
+import DownloadIcon from '../icons/download.svg';
+import GithubIcon from '../icons/github.svg';
+import LoadingButtonIcon from '../icons/loading.svg';
+import ReloadButtonIcon from '../icons/reload.svg';
+import ExportIcon from '../icons/share.svg';
+import Locale from '../locales';
+import { copyToClipboard, downloadAs } from '../utils';
+import styles from './artifacts.module.scss';
+import { IconButton } from './button';
+import { Loading } from './home';
+import { Modal, showToast } from './ui-lib';
 
-type HTMLPreviewProps = {
+interface HTMLPreviewProps {
   code: string;
   autoHeight?: boolean;
   height?: number | string;
   onLoad?: (title?: string) => void;
-};
+}
 
-export type HTMLPreviewHander = {
+export interface HTMLPreviewHander {
   reload: () => void;
-};
+}
 
 export const HTMLPreview = forwardRef<HTMLPreviewHander, HTMLPreviewProps>(
-  function HTMLPreview(props, ref) {
+  (props, ref) => {
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const [frameId, setFrameId] = useState<string>(nanoid());
     const [iframeHeight, setIframeHeight] = useState(600);
-    const [title, setTitle] = useState("");
+    const [title, setTitle] = useState('');
     /*
      * https://stackoverflow.com/questions/19739001/what-is-the-difference-between-srcdoc-and-src-datatext-html-in-an
      * 1. using srcdoc
@@ -55,9 +55,9 @@ export const HTMLPreview = forwardRef<HTMLPreviewHander, HTMLPreviewProps>(
           setIframeHeight(height);
         }
       };
-      window.addEventListener("message", handleMessage);
+      window.addEventListener('message', handleMessage);
       return () => {
-        window.removeEventListener("message", handleMessage);
+        window.removeEventListener('message', handleMessage);
       };
     }, [frameId]);
 
@@ -68,8 +68,9 @@ export const HTMLPreview = forwardRef<HTMLPreviewHander, HTMLPreviewProps>(
     }));
 
     const height = useMemo(() => {
-      if (!props.autoHeight) return props.height || 600;
-      if (typeof props.height === "string") {
+      if (!props.autoHeight)
+      { return props.height || 600; }
+      if (typeof props.height === 'string') {
         return props.height;
       }
       const parentHeight = props.height || 600;
@@ -80,8 +81,8 @@ export const HTMLPreview = forwardRef<HTMLPreviewHander, HTMLPreviewProps>(
 
     const srcDoc = useMemo(() => {
       const script = `<script>window.addEventListener("DOMContentLoaded", () => new ResizeObserver((entries) => parent.postMessage({id: '${frameId}', height: entries[0].target.clientHeight}, '*')).observe(document.body))</script>`;
-      if (props.code.includes("<!DOCTYPE html>")) {
-        props.code.replace("<!DOCTYPE html>", "<!DOCTYPE html>" + script);
+      if (props.code.includes('<!DOCTYPE html>')) {
+        props.code.replace('<!DOCTYPE html>', `<!DOCTYPE html>${script}`);
       }
       return script + props.code;
     }, [props.code, frameId]);
@@ -94,7 +95,7 @@ export const HTMLPreview = forwardRef<HTMLPreviewHander, HTMLPreviewProps>(
 
     return (
       <iframe
-        className={styles["artifacts-iframe"]}
+        className={styles['artifacts-iframe']}
         key={frameId}
         ref={iframeRef}
         sandbox="allow-forms allow-modals allow-scripts"
@@ -121,22 +122,22 @@ export function ArtifactsShareButton({
   const [name, setName] = useState(id);
   const [show, setShow] = useState(false);
   const shareUrl = useMemo(
-    () => [location.origin, "#", Path.Artifacts, "/", name].join(""),
+    () => [location.origin, '#', Path.Artifacts, '/', name].join(''),
     [name],
   );
   const upload = (code: string) =>
     id
       ? Promise.resolve({ id })
       : fetch(ApiPath.Artifacts, {
-          method: "POST",
+          method: 'POST',
           body: code,
         })
-          .then((res) => res.json())
+          .then(res => res.json())
           .then(({ id }) => {
             if (id) {
               return { id };
             }
-            throw Error();
+            throw new Error();
           })
           .catch((e) => {
             showToast(Locale.Export.Artifacts.Error);
@@ -149,7 +150,8 @@ export function ArtifactsShareButton({
           bordered
           title={Locale.Export.Artifacts.Title}
           onClick={() => {
-            if (loading) return;
+            if (loading)
+            { return; }
             setLoading(true);
             upload(getCode())
               .then((res) => {
@@ -204,9 +206,9 @@ export function ArtifactsShareButton({
 
 export function Artifacts() {
   const { id } = useParams();
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState('');
   const [loading, setLoading] = useState(true);
-  const [fileName, setFileName] = useState("");
+  const [fileName, setFileName] = useState('');
   const previewRef = useRef<HTMLPreviewHander>(null);
 
   useEffect(() => {
@@ -214,11 +216,11 @@ export function Artifacts() {
       fetch(`${ApiPath.Artifacts}?id=${id}`)
         .then((res) => {
           if (res.status > 300) {
-            throw Error("can not get content");
+            throw new Error('can not get content');
           }
           return res;
         })
-        .then((res) => res.text())
+        .then(res => res.text())
         .then(setCode)
         .catch((e) => {
           showToast(Locale.Export.Artifacts.Error);
@@ -227,8 +229,8 @@ export function Artifacts() {
   }, [id]);
 
   return (
-    <div className={styles["artifacts"]}>
-      <div className={styles["artifacts-header"]}>
+    <div className={styles.artifacts}>
+      <div className={styles['artifacts-header']}>
         <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
           <IconButton bordered icon={<GithubIcon />} shadow />
         </a>
@@ -239,21 +241,21 @@ export function Artifacts() {
           shadow
           onClick={() => previewRef.current?.reload()}
         />
-        <div className={styles["artifacts-title"]}>NextChat Artifacts</div>
+        <div className={styles['artifacts-title']}>NextChat Artifacts</div>
         <ArtifactsShareButton
           id={id}
           getCode={() => code}
           fileName={fileName}
         />
       </div>
-      <div className={styles["artifacts-content"]}>
+      <div className={styles['artifacts-content']}>
         {loading && <Loading />}
         {code && (
           <HTMLPreview
             code={code}
             ref={previewRef}
             autoHeight={false}
-            height={"100%"}
+            height="100%"
             onLoad={(title) => {
               setFileName(title as string);
               setLoading(false);

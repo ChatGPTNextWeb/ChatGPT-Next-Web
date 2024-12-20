@@ -19,7 +19,7 @@ export const ChatControllerPool = {
   },
 
   stopAll() {
-    Object.values(this.controllers).forEach((v) => v.abort());
+    Object.values(this.controllers).forEach(v => v.abort());
   },
 
   hasPending() {

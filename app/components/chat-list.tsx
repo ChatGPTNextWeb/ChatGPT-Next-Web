@@ -1,24 +1,26 @@
-import DeleteIcon from "../icons/delete.svg";
+import type {
+  OnDragEndResponder,
+} from '@hello-pangea/dnd';
+import type { Mask } from '../store/mask';
 
-import styles from "./home.module.scss";
 import {
   DragDropContext,
-  Droppable,
   Draggable,
-  OnDragEndResponder,
-} from "@hello-pangea/dnd";
+  Droppable,
+} from '@hello-pangea/dnd';
+import clsx from 'clsx';
 
-import { useChatStore } from "../store";
+import { useEffect, useRef } from 'react';
 
-import Locale from "../locales";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Path } from "../constant";
-import { MaskAvatar } from "./mask";
-import { Mask } from "../store/mask";
-import { useRef, useEffect } from "react";
-import { showConfirm } from "./ui-lib";
-import { useMobileScreen } from "../utils";
-import clsx from "clsx";
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Path } from '../constant';
+import DeleteIcon from '../icons/delete.svg';
+import Locale from '../locales';
+import { useChatStore } from '../store';
+import { useMobileScreen } from '../utils';
+import styles from './home.module.scss';
+import { MaskAvatar } from './mask';
+import { showConfirm } from './ui-lib';
 
 export function ChatItem(props: {
   onClick?: () => void;
@@ -36,7 +38,7 @@ export function ChatItem(props: {
   useEffect(() => {
     if (props.selected && draggableRef.current) {
       draggableRef.current?.scrollIntoView({
-        block: "center",
+        block: 'center',
       });
     }
   }, [props.selected]);
@@ -44,12 +46,12 @@ export function ChatItem(props: {
   const { pathname: currentPath } = useLocation();
   return (
     <Draggable draggableId={`${props.id}`} index={props.index}>
-      {(provided) => (
+      {provided => (
         <div
-          className={clsx(styles["chat-item"], {
-            [styles["chat-item-selected"]]:
-              props.selected &&
-              (currentPath === Path.Chat || currentPath === Path.Home),
+          className={clsx(styles['chat-item'], {
+            [styles['chat-item-selected']]:
+              props.selected
+              && (currentPath === Path.Chat || currentPath === Path.Home),
           })}
           onClick={props.onClick}
           ref={(ele) => {
@@ -62,32 +64,34 @@ export function ChatItem(props: {
             props.count,
           )}`}
         >
-          {props.narrow ? (
-            <div className={styles["chat-item-narrow"]}>
-              <div className={clsx(styles["chat-item-avatar"], "no-dark")}>
-                <MaskAvatar
-                  avatar={props.mask.avatar}
-                  model={props.mask.modelConfig.model}
-                />
-              </div>
-              <div className={styles["chat-item-narrow-count"]}>
-                {props.count}
-              </div>
-            </div>
-          ) : (
-            <>
-              <div className={styles["chat-item-title"]}>{props.title}</div>
-              <div className={styles["chat-item-info"]}>
-                <div className={styles["chat-item-count"]}>
-                  {Locale.ChatItem.ChatItemCount(props.count)}
+          {props.narrow
+            ? (
+                <div className={styles['chat-item-narrow']}>
+                  <div className={clsx(styles['chat-item-avatar'], 'no-dark')}>
+                    <MaskAvatar
+                      avatar={props.mask.avatar}
+                      model={props.mask.modelConfig.model}
+                    />
+                  </div>
+                  <div className={styles['chat-item-narrow-count']}>
+                    {props.count}
+                  </div>
                 </div>
-                <div className={styles["chat-item-date"]}>{props.time}</div>
-              </div>
-            </>
-          )}
+              )
+            : (
+                <>
+                  <div className={styles['chat-item-title']}>{props.title}</div>
+                  <div className={styles['chat-item-info']}>
+                    <div className={styles['chat-item-count']}>
+                      {Locale.ChatItem.ChatItemCount(props.count)}
+                    </div>
+                    <div className={styles['chat-item-date']}>{props.time}</div>
+                  </div>
+                </>
+              )}
 
           <div
-            className={styles["chat-item-delete"]}
+            className={styles['chat-item-delete']}
             onClickCapture={(e) => {
               props.onDelete?.();
               e.preventDefault();
@@ -104,7 +108,7 @@ export function ChatItem(props: {
 
 export function ChatList(props: { narrow?: boolean }) {
   const [sessions, selectedIndex, selectSession, moveSession] = useChatStore(
-    (state) => [
+    state => [
       state.sessions,
       state.currentSessionIndex,
       state.selectSession,
@@ -122,8 +126,8 @@ export function ChatList(props: { narrow?: boolean }) {
     }
 
     if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
+      destination.droppableId === source.droppableId
+      && destination.index === source.index
     ) {
       return;
     }
@@ -134,9 +138,9 @@ export function ChatList(props: { narrow?: boolean }) {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId="chat-list">
-        {(provided) => (
+        {provided => (
           <div
-            className={styles["chat-list"]}
+            className={styles['chat-list']}
             ref={provided.innerRef}
             {...provided.droppableProps}
           >
@@ -155,8 +159,8 @@ export function ChatList(props: { narrow?: boolean }) {
                 }}
                 onDelete={async () => {
                   if (
-                    (!props.narrow && !isMobileScreen) ||
-                    (await showConfirm(Locale.Home.DeleteChat))
+                    (!props.narrow && !isMobileScreen)
+                    || (await showConfirm(Locale.Home.DeleteChat))
                   ) {
                     chatStore.deleteSession(i);
                   }

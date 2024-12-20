@@ -1,14 +1,15 @@
-import { getServerSideConfig } from "@/app/config/server";
+import type { NextRequest } from 'next/server';
+import { auth } from '@/app/api/auth';
+import { getServerSideConfig } from '@/app/config/server';
 import {
-  CHATGLM_BASE_URL,
   ApiPath,
+  CHATGLM_BASE_URL,
   ModelProvider,
   ServiceProvider,
-} from "@/app/constant";
-import { prettyObject } from "@/app/utils/format";
-import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/app/api/auth";
-import { isModelAvailableInServer } from "@/app/utils/model";
+} from '@/app/constant';
+import { prettyObject } from '@/app/utils/format';
+import { isModelAvailableInServer } from '@/app/utils/model';
+import { NextResponse } from 'next/server';
 
 const serverConfig = getServerSideConfig();
 
@@ -16,10 +17,10 @@ export async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
-  console.log("[GLM Route] params ", params);
+  console.log('[GLM Route] params ', params);
 
-  if (req.method === "OPTIONS") {
-    return NextResponse.json({ body: "OK" }, { status: 200 });
+  if (req.method === 'OPTIONS') {
+    return NextResponse.json({ body: 'OK' }, { status: 200 });
   }
 
   const authResult = auth(req, ModelProvider.ChatGLM);
@@ -33,7 +34,7 @@ export async function handle(
     const response = await request(req);
     return response;
   } catch (e) {
-    console.error("[GLM] ", e);
+    console.error('[GLM] ', e);
     return NextResponse.json(prettyObject(e));
   }
 }
@@ -42,20 +43,20 @@ async function request(req: NextRequest) {
   const controller = new AbortController();
 
   // alibaba use base url or just remove the path
-  let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.ChatGLM, "");
+  const path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.ChatGLM, '');
 
   let baseUrl = serverConfig.chatglmUrl || CHATGLM_BASE_URL;
 
-  if (!baseUrl.startsWith("http")) {
+  if (!baseUrl.startsWith('http')) {
     baseUrl = `https://${baseUrl}`;
   }
 
-  if (baseUrl.endsWith("/")) {
+  if (baseUrl.endsWith('/')) {
     baseUrl = baseUrl.slice(0, -1);
   }
 
-  console.log("[Proxy] ", path);
-  console.log("[Base Url]", baseUrl);
+  console.log('[Proxy] ', path);
+  console.log('[Base Url]', baseUrl);
 
   const timeoutId = setTimeout(
     () => {
@@ -65,17 +66,17 @@ async function request(req: NextRequest) {
   );
 
   const fetchUrl = `${baseUrl}${path}`;
-  console.log("[Fetch Url] ", fetchUrl);
+  console.log('[Fetch Url] ', fetchUrl);
   const fetchOptions: RequestInit = {
     headers: {
-      "Content-Type": "application/json",
-      Authorization: req.headers.get("Authorization") ?? "",
+      'Content-Type': 'application/json',
+      'Authorization': req.headers.get('Authorization') ?? '',
     },
     method: req.method,
     body: req.body,
-    redirect: "manual",
+    redirect: 'manual',
     // @ts-ignore
-    duplex: "half",
+    duplex: 'half',
     signal: controller.signal,
   };
 
@@ -114,9 +115,9 @@ async function request(req: NextRequest) {
 
     // to prevent browser prompt for credentials
     const newHeaders = new Headers(res.headers);
-    newHeaders.delete("www-authenticate");
+    newHeaders.delete('www-authenticate');
     // to disable nginx buffering
-    newHeaders.set("X-Accel-Buffering", "no");
+    newHeaders.set('X-Accel-Buffering', 'no');
 
     return new Response(res.body, {
       status: res.status,

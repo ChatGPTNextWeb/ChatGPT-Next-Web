@@ -1,12 +1,15 @@
-import { BUILTIN_MASKS } from "../masks";
-import { getLang, Lang } from "../locales";
-import { DEFAULT_TOPIC, ChatMessage } from "./chat";
-import { ModelConfig, useAppConfig } from "./config";
-import { StoreKey } from "../constant";
-import { nanoid } from "nanoid";
-import { createPersistStore } from "../utils/store";
+import type { Lang } from '../locales';
+import type { ChatMessage } from './chat';
+import type { ModelConfig } from './config';
+import { nanoid } from 'nanoid';
+import { StoreKey } from '../constant';
+import { getLang } from '../locales';
+import { BUILTIN_MASKS } from '../masks';
+import { createPersistStore } from '../utils/store';
+import { DEFAULT_TOPIC } from './chat';
+import { useAppConfig } from './config';
 
-export type Mask = {
+export interface Mask {
   id: string;
   createdAt: number;
   avatar: string;
@@ -20,7 +23,7 @@ export type Mask = {
   plugin?: string[];
   enableArtifacts?: boolean;
   enableCodeFold?: boolean;
-};
+}
 
 export const DEFAULT_MASK_STATE = {
   masks: {} as Record<string, Mask>,
@@ -31,9 +34,9 @@ export type MaskState = typeof DEFAULT_MASK_STATE & {
   language?: Lang | undefined;
 };
 
-export const DEFAULT_MASK_AVATAR = "gpt-bot";
-export const createEmptyMask = () =>
-  ({
+export const DEFAULT_MASK_AVATAR = 'gpt-bot';
+export function createEmptyMask() {
+  return ({
     id: nanoid(),
     avatar: DEFAULT_MASK_AVATAR,
     name: DEFAULT_TOPIC,
@@ -45,6 +48,7 @@ export const createEmptyMask = () =>
     createdAt: Date.now(),
     plugin: [],
   }) as Mask;
+}
 
 export const useMaskStore = createPersistStore(
   { ...DEFAULT_MASK_STATE },
@@ -68,7 +72,8 @@ export const useMaskStore = createPersistStore(
     updateMask(id: string, updater: (mask: Mask) => void) {
       const masks = get().masks;
       const mask = masks[id];
-      if (!mask) return;
+      if (!mask)
+      { return; }
       const updateMask = { ...mask };
       updater(updateMask);
       masks[id] = updateMask;
@@ -90,9 +95,10 @@ export const useMaskStore = createPersistStore(
         (a, b) => b.createdAt - a.createdAt,
       );
       const config = useAppConfig.getState();
-      if (config.hideBuiltinMasks) return userMasks;
+      if (config.hideBuiltinMasks)
+      { return userMasks; }
       const buildinMasks = BUILTIN_MASKS.map(
-        (m) =>
+        m =>
           ({
             ...m,
             modelConfig: {
@@ -121,7 +127,7 @@ export const useMaskStore = createPersistStore(
 
       // migrate mask id to nanoid
       if (version < 3) {
-        Object.values(newState.masks).forEach((m) => (m.id = nanoid()));
+        Object.values(newState.masks).forEach(m => (m.id = nanoid()));
       }
 
       if (version < 3.1) {

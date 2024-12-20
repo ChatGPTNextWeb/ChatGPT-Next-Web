@@ -1,6 +1,6 @@
-import * as React from "react";
-import styles from "./input-range.module.scss";
-import clsx from "clsx";
+import clsx from 'clsx';
+import * as React from 'react';
+import styles from './input-range.module.scss';
 
 interface InputRangeProps {
   onChange: React.ChangeEventHandler<HTMLInputElement>;
@@ -24,7 +24,7 @@ export function InputRange({
   aria,
 }: InputRangeProps) {
   return (
-    <div className={clsx(styles["input-range"], className)}>
+    <div className={clsx(styles['input-range'], className)}>
       {title || value}
       <input
         aria-label={aria}
@@ -35,7 +35,8 @@ export function InputRange({
         max={max}
         step={step}
         onChange={onChange}
-      ></input>
+      >
+      </input>
     </div>
   );
 }

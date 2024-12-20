@@ -1,15 +1,16 @@
-import { getServerSideConfig } from "@/app/config/server";
+import type { NextRequest } from 'next/server';
+import { auth } from '@/app/api/auth';
+import { getServerSideConfig } from '@/app/config/server';
 import {
-  BAIDU_BASE_URL,
   ApiPath,
+  BAIDU_BASE_URL,
   ModelProvider,
   ServiceProvider,
-} from "@/app/constant";
-import { prettyObject } from "@/app/utils/format";
-import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/app/api/auth";
-import { isModelAvailableInServer } from "@/app/utils/model";
-import { getAccessToken } from "@/app/utils/baidu";
+} from '@/app/constant';
+import { getAccessToken } from '@/app/utils/baidu';
+import { prettyObject } from '@/app/utils/format';
+import { isModelAvailableInServer } from '@/app/utils/model';
+import { NextResponse } from 'next/server';
 
 const serverConfig = getServerSideConfig();
 
@@ -17,10 +18,10 @@ export async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
-  console.log("[Baidu Route] params ", params);
+  console.log('[Baidu Route] params ', params);
 
-  if (req.method === "OPTIONS") {
-    return NextResponse.json({ body: "OK" }, { status: 200 });
+  if (req.method === 'OPTIONS') {
+    return NextResponse.json({ body: 'OK' }, { status: 200 });
   }
 
   const authResult = auth(req, ModelProvider.Ernie);
@@ -46,7 +47,7 @@ export async function handle(
     const response = await request(req);
     return response;
   } catch (e) {
-    console.error("[Baidu] ", e);
+    console.error('[Baidu] ', e);
     return NextResponse.json(prettyObject(e));
   }
 }
@@ -54,20 +55,20 @@ export async function handle(
 async function request(req: NextRequest) {
   const controller = new AbortController();
 
-  let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Baidu, "");
+  const path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Baidu, '');
 
   let baseUrl = serverConfig.baiduUrl || BAIDU_BASE_URL;
 
-  if (!baseUrl.startsWith("http")) {
+  if (!baseUrl.startsWith('http')) {
     baseUrl = `https://${baseUrl}`;
   }
 
-  if (baseUrl.endsWith("/")) {
+  if (baseUrl.endsWith('/')) {
     baseUrl = baseUrl.slice(0, -1);
   }
 
-  console.log("[Proxy] ", path);
-  console.log("[Base Url]", baseUrl);
+  console.log('[Proxy] ', path);
+  console.log('[Base Url]', baseUrl);
 
   const timeoutId = setTimeout(
     () => {
@@ -84,13 +85,13 @@ async function request(req: NextRequest) {
 
   const fetchOptions: RequestInit = {
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     method: req.method,
     body: req.body,
-    redirect: "manual",
+    redirect: 'manual',
     // @ts-ignore
-    duplex: "half",
+    duplex: 'half',
     signal: controller.signal,
   };
 
@@ -129,9 +130,9 @@ async function request(req: NextRequest) {
 
     // to prevent browser prompt for credentials
     const newHeaders = new Headers(res.headers);
-    newHeaders.delete("www-authenticate");
+    newHeaders.delete('www-authenticate');
     // to disable nginx buffering
-    newHeaders.set("X-Accel-Buffering", "no");
+    newHeaders.set('X-Accel-Buffering', 'no');
 
     return new Response(res.body, {
       status: res.status,

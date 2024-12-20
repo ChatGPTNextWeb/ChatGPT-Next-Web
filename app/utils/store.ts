@@ -1,8 +1,8 @@
-import { create } from "zustand";
-import { combine, persist, createJSONStorage } from "zustand/middleware";
-import { Updater } from "../typing";
-import { deepClone } from "./clone";
-import { indexedDBStorage } from "@/app/utils/indexedDB-storage";
+import type { Updater } from '../typing';
+import { indexedDBStorage } from '@/app/utils/indexedDB-storage';
+import { create } from 'zustand';
+import { combine, createJSONStorage, persist } from 'zustand/middleware';
+import { deepClone } from './clone';
 
 type SecondParam<T> = T extends (
   _f: infer _F,
@@ -12,14 +12,14 @@ type SecondParam<T> = T extends (
   ? S
   : never;
 
-type MakeUpdater<T> = {
+interface MakeUpdater<T> {
   lastUpdateTime: number;
   _hasHydrated: boolean;
 
   markUpdate: () => void;
   update: Updater<T>;
   setHasHydrated: (state: boolean) => void;
-};
+}
 
 type SetStoreState<T> = (
   partial: T | Partial<T> | ((state: T) => T | Partial<T>),

@@ -1,14 +1,15 @@
-import { TTSConfig, TTSConfigValidator } from "../store";
-
-import Locale from "../locales";
-import { ListItem, Select } from "./ui-lib";
+import type { TTSConfig } from '../store';
 import {
   DEFAULT_TTS_ENGINE,
   DEFAULT_TTS_ENGINES,
   DEFAULT_TTS_MODELS,
   DEFAULT_TTS_VOICES,
-} from "../constant";
-import { InputRange } from "./input-range";
+} from '../constant';
+
+import Locale from '../locales';
+import { TTSConfigValidator } from '../store';
+import { InputRange } from './input-range';
+import { ListItem, Select } from './ui-lib';
 
 export function TTSConfigList(props: {
   ttsConfig: TTSConfig;
@@ -23,12 +24,12 @@ export function TTSConfigList(props: {
         <input
           type="checkbox"
           checked={props.ttsConfig.enable}
-          onChange={(e) =>
+          onChange={e =>
             props.updateConfig(
-              (config) => (config.enable = e.currentTarget.checked),
-            )
-          }
-        ></input>
+              config => (config.enable = e.currentTarget.checked),
+            )}
+        >
+        </input>
       </ListItem>
       {/* <ListItem
         title={Locale.Settings.TTS.Autoplay.Title}
@@ -49,7 +50,7 @@ export function TTSConfigList(props: {
           value={props.ttsConfig.engine}
           onChange={(e) => {
             props.updateConfig(
-              (config) =>
+              config =>
                 (config.engine = TTSConfigValidator.engine(
                   e.currentTarget.value,
                 )),
@@ -70,7 +71,7 @@ export function TTSConfigList(props: {
               value={props.ttsConfig.model}
               onChange={(e) => {
                 props.updateConfig(
-                  (config) =>
+                  config =>
                     (config.model = TTSConfigValidator.model(
                       e.currentTarget.value,
                     )),
@@ -92,7 +93,7 @@ export function TTSConfigList(props: {
               value={props.ttsConfig.voice}
               onChange={(e) => {
                 props.updateConfig(
-                  (config) =>
+                  config =>
                     (config.voice = TTSConfigValidator.voice(
                       e.currentTarget.value,
                     )),
@@ -118,13 +119,14 @@ export function TTSConfigList(props: {
               step="0.1"
               onChange={(e) => {
                 props.updateConfig(
-                  (config) =>
+                  config =>
                     (config.speed = TTSConfigValidator.speed(
                       e.currentTarget.valueAsNumber,
                     )),
                 );
               }}
-            ></InputRange>
+            >
+            </InputRange>
           </ListItem>
         </>
       )}

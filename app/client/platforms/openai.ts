@@ -1,48 +1,52 @@
-"use client";
-// azure and openai, using same models. so using same LLMApi.
-import {
-  ApiPath,
-  OPENAI_BASE_URL,
-  DEFAULT_MODELS,
-  OpenaiPath,
-  Azure,
-  REQUEST_TIMEOUT_MS,
-  ServiceProvider,
-} from "@/app/constant";
-import {
+'use client';
+import type {
   ChatMessageTool,
-  useAccessStore,
-  useAppConfig,
-  useChatStore,
-  usePluginStore,
-} from "@/app/store";
-import { collectModelsWithDefaultModel } from "@/app/utils/model";
-import {
-  preProcessImageContent,
-  uploadImage,
-  base64Image2Blob,
-  stream,
-} from "@/app/utils/chat";
-import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
-import { DalleSize, DalleQuality, DalleStyle } from "@/app/typing";
-
-import {
+} from '@/app/store';
+import type { DalleQuality, DalleSize, DalleStyle } from '@/app/typing';
+import type {
   ChatOptions,
-  getHeaders,
   LLMApi,
   LLMModel,
   LLMUsage,
   MultimodalContent,
   SpeechOptions,
-} from "../api";
-import Locale from "../../locales";
-import { getClientConfig } from "@/app/config/client";
+} from '../api';
+import { getClientConfig } from '@/app/config/client';
+// azure and openai, using same models. so using same LLMApi.
 import {
+  ApiPath,
+  Azure,
+  DEFAULT_MODELS,
+  OPENAI_BASE_URL,
+  OpenaiPath,
+  REQUEST_TIMEOUT_MS,
+  ServiceProvider,
+} from '@/app/constant';
+import {
+  useAccessStore,
+  useAppConfig,
+  useChatStore,
+  usePluginStore,
+} from '@/app/store';
+import {
+  isDalle3 as _isDalle3,
   getMessageTextContent,
   isVisionModel,
-  isDalle3 as _isDalle3,
-} from "@/app/utils";
-import { fetch } from "@/app/utils/stream";
+} from '@/app/utils';
+
+import {
+  base64Image2Blob,
+  preProcessImageContent,
+  stream,
+  uploadImage,
+} from '@/app/utils/chat';
+import { cloudflareAIGatewayUrl } from '@/app/utils/cloudflare';
+import { collectModelsWithDefaultModel } from '@/app/utils/model';
+import { fetch } from '@/app/utils/stream';
+import Locale from '../../locales';
+import {
+  getHeaders,
+} from '../api';
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -55,7 +59,7 @@ export interface OpenAIListModelResponse {
 
 export interface RequestPayload {
   messages: {
-    role: "system" | "user" | "assistant";
+    role: 'system' | 'user' | 'assistant';
     content: string | MultimodalContent[];
   }[];
   stream?: boolean;
@@ -71,7 +75,7 @@ export interface RequestPayload {
 export interface DalleRequestPayload {
   model: string;
   prompt: string;
-  response_format: "url" | "b64_json";
+  response_format: 'url' | 'b64_json';
   n: number;
   size: DalleSize;
   quality: DalleQuality;
@@ -84,13 +88,13 @@ export class ChatGPTApi implements LLMApi {
   path(path: string): string {
     const accessStore = useAccessStore.getState();
 
-    let baseUrl = "";
+    let baseUrl = '';
 
-    const isAzure = path.includes("deployments");
+    const isAzure = path.includes('deployments');
     if (accessStore.useCustomConfig) {
       if (isAzure && !accessStore.isValidAzure()) {
-        throw Error(
-          "incomplete azure config, please check it in your settings page",
+        throw new Error(
+          'incomplete azure config, please check it in your settings page',
         );
       }
 
@@ -103,38 +107,38 @@ export class ChatGPTApi implements LLMApi {
       baseUrl = isApp ? OPENAI_BASE_URL : apiPath;
     }
 
-    if (baseUrl.endsWith("/")) {
+    if (baseUrl.endsWith('/')) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
     }
     if (
-      !baseUrl.startsWith("http") &&
-      !isAzure &&
-      !baseUrl.startsWith(ApiPath.OpenAI)
+      !baseUrl.startsWith('http')
+      && !isAzure
+      && !baseUrl.startsWith(ApiPath.OpenAI)
     ) {
-      baseUrl = "https://" + baseUrl;
+      baseUrl = `https://${baseUrl}`;
     }
 
-    console.log("[Proxy Endpoint] ", baseUrl, path);
+    console.log('[Proxy Endpoint] ', baseUrl, path);
 
     // try rebuild url, when using cloudflare ai gateway in client
-    return cloudflareAIGatewayUrl([baseUrl, path].join("/"));
+    return cloudflareAIGatewayUrl([baseUrl, path].join('/'));
   }
 
   async extractMessage(res: any) {
     if (res.error) {
-      return "```\n" + JSON.stringify(res, null, 4) + "\n```";
+      return `\`\`\`\n${JSON.stringify(res, null, 4)}\n\`\`\``;
     }
     // dalle3 model return url, using url create image message
     if (res.data) {
-      let url = res.data?.at(0)?.url ?? "";
-      const b64_json = res.data?.at(0)?.b64_json ?? "";
+      let url = res.data?.at(0)?.url ?? '';
+      const b64_json = res.data?.at(0)?.b64_json ?? '';
       if (!url && b64_json) {
         // uploadImage
-        url = await uploadImage(base64Image2Blob(b64_json, "image/png"));
+        url = await uploadImage(base64Image2Blob(b64_json, 'image/png'));
       }
       return [
         {
-          type: "image_url",
+          type: 'image_url',
           image_url: {
             url,
           },
@@ -153,7 +157,7 @@ export class ChatGPTApi implements LLMApi {
       speed: options.speed,
     };
 
-    console.log("[Request] openai speech payload: ", requestPayload);
+    console.log('[Request] openai speech payload: ', requestPayload);
 
     const controller = new AbortController();
     options.onController?.(controller);
@@ -161,7 +165,7 @@ export class ChatGPTApi implements LLMApi {
     try {
       const speechPath = this.path(OpenaiPath.SpeechPath);
       const speechPayload = {
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
         headers: getHeaders(),
@@ -177,7 +181,7 @@ export class ChatGPTApi implements LLMApi {
       clearTimeout(requestTimeoutId);
       return await res.arrayBuffer();
     } catch (e) {
-      console.log("[Request] failed to make a speech request", e);
+      console.log('[Request] failed to make a speech request', e);
       throw e;
     }
   }
@@ -195,7 +199,7 @@ export class ChatGPTApi implements LLMApi {
     let requestPayload: RequestPayload | DalleRequestPayload;
 
     const isDalle3 = _isDalle3(options.config.model);
-    const isO1 = options.config.model.startsWith("o1");
+    const isO1 = options.config.model.startsWith('o1');
     if (isDalle3) {
       const prompt = getMessageTextContent(
         options.messages.slice(-1)?.pop() as any,
@@ -204,21 +208,21 @@ export class ChatGPTApi implements LLMApi {
         model: options.config.model,
         prompt,
         // URLs are only valid for 60 minutes after the image has been generated.
-        response_format: "b64_json", // using b64_json, and save image in CacheStorage
+        response_format: 'b64_json', // using b64_json, and save image in CacheStorage
         n: 1,
-        size: options.config?.size ?? "1024x1024",
-        quality: options.config?.quality ?? "standard",
-        style: options.config?.style ?? "vivid",
+        size: options.config?.size ?? '1024x1024',
+        quality: options.config?.quality ?? 'standard',
+        style: options.config?.style ?? 'vivid',
       };
     } else {
       const visionModel = isVisionModel(options.config.model);
-      const messages: ChatOptions["messages"] = [];
+      const messages: ChatOptions['messages'] = [];
       for (const v of options.messages) {
         const content = visionModel
           ? await preProcessImageContent(v.content)
           : getMessageTextContent(v);
-        if (!(isO1 && v.role === "system"))
-          messages.push({ role: v.role, content });
+        if (!(isO1 && v.role === 'system'))
+        { messages.push({ role: v.role, content }); }
       }
 
       // O1 not support image, tools (plugin in ChatGPTNextWeb) and system, stream, logprobs, temperature, top_p, n, presence_penalty, frequency_penalty yet.
@@ -236,27 +240,27 @@ export class ChatGPTApi implements LLMApi {
 
       // O1 使用 max_completion_tokens 控制token数 (https://platform.openai.com/docs/guides/reasoning#controlling-costs)
       if (isO1) {
-        requestPayload["max_completion_tokens"] = modelConfig.max_tokens;
+        requestPayload.max_completion_tokens = modelConfig.max_tokens;
       }
 
       // add max_tokens to vision model
       if (visionModel) {
-        requestPayload["max_tokens"] = Math.max(modelConfig.max_tokens, 4000);
+        requestPayload.max_tokens = Math.max(modelConfig.max_tokens, 4000);
       }
     }
 
-    console.log("[Request] openai payload: ", requestPayload);
+    console.log('[Request] openai payload: ', requestPayload);
 
     const shouldStream = !isDalle3 && !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
 
     try {
-      let chatPath = "";
+      let chatPath = '';
       if (modelConfig.providerName === ServiceProvider.Azure) {
         // find model, and get displayName as deployName
-        const { models: configModels, customModels: configCustomModels } =
-          useAppConfig.getState();
+        const { models: configModels, customModels: configCustomModels }
+          = useAppConfig.getState();
         const {
           defaultModel,
           customModels: accessCustomModels,
@@ -264,18 +268,18 @@ export class ChatGPTApi implements LLMApi {
         } = useAccessStore.getState();
         const models = collectModelsWithDefaultModel(
           configModels,
-          [configCustomModels, accessCustomModels].join(","),
+          [configCustomModels, accessCustomModels].join(','),
           defaultModel,
         );
         const model = models.find(
-          (model) =>
-            model.name === modelConfig.model &&
-            model?.provider?.providerName === ServiceProvider.Azure,
+          model =>
+            model.name === modelConfig.model
+            && model?.provider?.providerName === ServiceProvider.Azure,
         );
         chatPath = this.path(
           (isDalle3 ? Azure.ImagePath : Azure.ChatPath)(
             (model?.displayName ?? model?.name) as string,
-            useCustomConfig ? useAccessStore.getState().azureApiVersion : "",
+            useCustomConfig ? useAccessStore.getState().azureApiVersion : '',
           ),
         );
       } else {
@@ -324,7 +328,7 @@ export class ChatGPTApi implements LLMApi {
                 });
               } else {
                 // @ts-ignore
-                runTools[index]["function"]["arguments"] += args;
+                runTools[index].function.arguments += args;
               }
             }
             return choices[0]?.delta?.content;
@@ -350,7 +354,7 @@ export class ChatGPTApi implements LLMApi {
         );
       } else {
         const chatPayload = {
-          method: "POST",
+          method: 'POST',
           body: JSON.stringify(requestPayload),
           signal: controller.signal,
           headers: getHeaders(),
@@ -370,16 +374,17 @@ export class ChatGPTApi implements LLMApi {
         options.onFinish(message, res);
       }
     } catch (e) {
-      console.log("[Request] failed to make a chat request", e);
+      console.log('[Request] failed to make a chat request', e);
       options.onError?.(e as Error);
     }
   }
+
   async usage() {
     const formatDate = (d: Date) =>
-      `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d
+      `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, '0')}-${d
         .getDate()
         .toString()
-        .padStart(2, "0")}`;
+        .padStart(2, '0')}`;
     const ONE_DAY = 1 * 24 * 60 * 60 * 1000;
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -392,12 +397,12 @@ export class ChatGPTApi implements LLMApi {
           `${OpenaiPath.UsagePath}?start_date=${startDate}&end_date=${endDate}`,
         ),
         {
-          method: "GET",
+          method: 'GET',
           headers: getHeaders(),
         },
       ),
       fetch(this.path(OpenaiPath.SubsPath), {
-        method: "GET",
+        method: 'GET',
         headers: getHeaders(),
       }),
     ]);
@@ -407,7 +412,7 @@ export class ChatGPTApi implements LLMApi {
     }
 
     if (!used.ok || !subs.ok) {
-      throw new Error("Failed to query usage from openai");
+      throw new Error('Failed to query usage from openai');
     }
 
     const response = (await used.json()) as {
@@ -423,7 +428,7 @@ export class ChatGPTApi implements LLMApi {
     };
 
     if (response.error && response.error.type) {
-      throw Error(response.error.message);
+      throw new Error(response.error.message);
     }
 
     if (response.total_usage) {
@@ -446,7 +451,7 @@ export class ChatGPTApi implements LLMApi {
     }
 
     const res = await fetch(this.path(OpenaiPath.ListModelPath), {
-      method: "GET",
+      method: 'GET',
       headers: {
         ...getHeaders(),
       },
@@ -454,24 +459,24 @@ export class ChatGPTApi implements LLMApi {
 
     const resJson = (await res.json()) as OpenAIListModelResponse;
     const chatModels = resJson.data?.filter(
-      (m) => m.id.startsWith("gpt-") || m.id.startsWith("chatgpt-"),
+      m => m.id.startsWith('gpt-') || m.id.startsWith('chatgpt-'),
     );
-    console.log("[Models]", chatModels);
+    console.log('[Models]', chatModels);
 
     if (!chatModels) {
       return [];
     }
 
-    //由于目前 OpenAI 的 disableListModels 默认为 true，所以当前实际不会运行到这场
-    let seq = 1000; //同 Constant.ts 中的排序保持一致
-    return chatModels.map((m) => ({
+    // 由于目前 OpenAI 的 disableListModels 默认为 true，所以当前实际不会运行到这场
+    let seq = 1000; // 同 Constant.ts 中的排序保持一致
+    return chatModels.map(m => ({
       name: m.id,
       available: true,
       sorted: seq++,
       provider: {
-        id: "openai",
-        providerName: "OpenAI",
-        providerType: "openai",
+        id: 'openai',
+        providerName: 'OpenAI',
+        providerType: 'openai',
         sorted: 1,
       },
     }));

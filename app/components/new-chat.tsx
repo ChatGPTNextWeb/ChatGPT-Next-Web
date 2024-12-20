@@ -1,31 +1,32 @@
-import { useEffect, useRef, useState } from "react";
-import { Path, SlotID } from "../constant";
-import { IconButton } from "./button";
-import { EmojiAvatar } from "./emoji";
-import styles from "./new-chat.module.scss";
+import type { Mask } from '../store/mask';
+import clsx from 'clsx';
+import { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useCommand } from '../command';
 
-import LeftIcon from "../icons/left.svg";
-import LightningIcon from "../icons/lightning.svg";
-import EyeIcon from "../icons/eye.svg";
+import { Path, SlotID } from '../constant';
+import EyeIcon from '../icons/eye.svg';
+import LeftIcon from '../icons/left.svg';
 
-import { useLocation, useNavigate } from "react-router-dom";
-import { Mask, useMaskStore } from "../store/mask";
-import Locale from "../locales";
-import { useAppConfig, useChatStore } from "../store";
-import { MaskAvatar } from "./mask";
-import { useCommand } from "../command";
-import { showConfirm } from "./ui-lib";
-import { BUILTIN_MASK_STORE } from "../masks";
-import clsx from "clsx";
+import LightningIcon from '../icons/lightning.svg';
+import Locale from '../locales';
+import { BUILTIN_MASK_STORE } from '../masks';
+import { useAppConfig, useChatStore } from '../store';
+import { useMaskStore } from '../store/mask';
+import { IconButton } from './button';
+import { EmojiAvatar } from './emoji';
+import { MaskAvatar } from './mask';
+import styles from './new-chat.module.scss';
+import { showConfirm } from './ui-lib';
 
 function MaskItem(props: { mask: Mask; onClick?: () => void }) {
   return (
-    <div className={styles["mask"]} onClick={props.onClick}>
+    <div className={styles.mask} onClick={props.onClick}>
       <MaskAvatar
         avatar={props.mask.avatar}
         model={props.mask.modelConfig.model}
       />
-      <div className={clsx(styles["mask-name"], "one-line")}>
+      <div className={clsx(styles['mask-name'], 'one-line')}>
         {props.mask.name}
       </div>
     </div>
@@ -38,7 +39,8 @@ function useMaskGroup(masks: Mask[]) {
   useEffect(() => {
     const computeGroup = () => {
       const appBody = document.getElementById(SlotID.AppBody);
-      if (!appBody || masks.length === 0) return;
+      if (!appBody || masks.length === 0)
+      { return; }
 
       const rect = appBody.getBoundingClientRect();
       const maxWidth = rect.width;
@@ -66,8 +68,8 @@ function useMaskGroup(masks: Mask[]) {
 
     computeGroup();
 
-    window.addEventListener("resize", computeGroup);
-    return () => window.removeEventListener("resize", computeGroup);
+    window.addEventListener('resize', computeGroup);
+    return () => window.removeEventListener('resize', computeGroup);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -101,26 +103,27 @@ export function NewChat() {
         const mask = maskStore.get(id) ?? BUILTIN_MASK_STORE.get(id);
         startChat(mask ?? undefined);
       } catch {
-        console.error("[New Chat] failed to create chat from mask id=", id);
+        console.error('[New Chat] failed to create chat from mask id=', id);
       }
     },
   });
 
   useEffect(() => {
     if (maskRef.current) {
-      maskRef.current.scrollLeft =
-        (maskRef.current.scrollWidth - maskRef.current.clientWidth) / 2;
+      maskRef.current.scrollLeft
+        = (maskRef.current.scrollWidth - maskRef.current.clientWidth) / 2;
     }
   }, [groups]);
 
   return (
-    <div className={styles["new-chat"]}>
-      <div className={styles["mask-header"]}>
+    <div className={styles['new-chat']}>
+      <div className={styles['mask-header']}>
         <IconButton
           icon={<LeftIcon />}
           text={Locale.NewChat.Return}
           onClick={() => navigate(Path.Home)}
-        ></IconButton>
+        >
+        </IconButton>
         {!state?.fromHome && (
           <IconButton
             text={Locale.NewChat.NotShow}
@@ -128,29 +131,30 @@ export function NewChat() {
               if (await showConfirm(Locale.NewChat.ConfirmNoShow)) {
                 startChat();
                 config.update(
-                  (config) => (config.dontShowMaskSplashScreen = true),
+                  config => (config.dontShowMaskSplashScreen = true),
                 );
               }
             }}
-          ></IconButton>
+          >
+          </IconButton>
         )}
       </div>
-      <div className={styles["mask-cards"]}>
-        <div className={styles["mask-card"]}>
+      <div className={styles['mask-cards']}>
+        <div className={styles['mask-card']}>
           <EmojiAvatar avatar="1f606" size={24} />
         </div>
-        <div className={styles["mask-card"]}>
+        <div className={styles['mask-card']}>
           <EmojiAvatar avatar="1f916" size={24} />
         </div>
-        <div className={styles["mask-card"]}>
+        <div className={styles['mask-card']}>
           <EmojiAvatar avatar="1f479" size={24} />
         </div>
       </div>
 
-      <div className={styles["title"]}>{Locale.NewChat.Title}</div>
-      <div className={styles["sub-title"]}>{Locale.NewChat.SubTitle}</div>
+      <div className={styles.title}>{Locale.NewChat.Title}</div>
+      <div className={styles['sub-title']}>{Locale.NewChat.SubTitle}</div>
 
-      <div className={styles["actions"]}>
+      <div className={styles.actions}>
         <IconButton
           text={Locale.NewChat.More}
           onClick={() => navigate(Path.Masks)}
@@ -165,13 +169,13 @@ export function NewChat() {
           icon={<LightningIcon />}
           type="primary"
           shadow
-          className={styles["skip"]}
+          className={styles.skip}
         />
       </div>
 
-      <div className={styles["masks"]} ref={maskRef}>
+      <div className={styles.masks} ref={maskRef}>
         {groups.map((masks, i) => (
-          <div key={i} className={styles["mask-row"]}>
+          <div key={i} className={styles['mask-row']}>
             {masks.map((mask, index) => (
               <MaskItem
                 key={index}

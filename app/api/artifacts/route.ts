@@ -1,6 +1,7 @@
-import md5 from "spark-md5";
-import { NextRequest, NextResponse } from "next/server";
-import { getServerSideConfig } from "@/app/config/server";
+import type { NextRequest } from 'next/server';
+import { getServerSideConfig } from '@/app/config/server';
+import { NextResponse } from 'next/server';
+import md5 from 'spark-md5';
 
 async function handle(req: NextRequest, res: NextResponse) {
   const serverConfig = getServerSideConfig();
@@ -9,7 +10,7 @@ async function handle(req: NextRequest, res: NextResponse) {
   const storeHeaders = () => ({
     Authorization: `Bearer ${serverConfig.cloudflareKVApiKey}`,
   });
-  if (req.method === "POST") {
+  if (req.method === 'POST') {
     const clonedBody = await req.text();
     const hashedCode = md5.hash(clonedBody).trim();
     const body: {
@@ -21,9 +22,9 @@ async function handle(req: NextRequest, res: NextResponse) {
       value: clonedBody,
     };
     try {
-      const ttl = parseInt(serverConfig.cloudflareKVTTL as string);
+      const ttl = Number.parseInt(serverConfig.cloudflareKVTTL as string);
       if (ttl > 60) {
-        body["expiration_ttl"] = ttl;
+        body.expiration_ttl = ttl;
       }
     } catch (e) {
       console.error(e);
@@ -31,13 +32,13 @@ async function handle(req: NextRequest, res: NextResponse) {
     const res = await fetch(`${storeUrl()}/bulk`, {
       headers: {
         ...storeHeaders(),
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-      method: "PUT",
+      method: 'PUT',
       body: JSON.stringify([body]),
     });
     const result = await res.json();
-    console.log("save data", result);
+    console.log('save data', result);
     if (result?.success) {
       return NextResponse.json(
         { code: 0, id: hashedCode, result },
@@ -45,15 +46,15 @@ async function handle(req: NextRequest, res: NextResponse) {
       );
     }
     return NextResponse.json(
-      { error: true, msg: "Save data error" },
+      { error: true, msg: 'Save data error' },
       { status: 400 },
     );
   }
-  if (req.method === "GET") {
-    const id = req?.nextUrl?.searchParams?.get("id");
+  if (req.method === 'GET') {
+    const id = req?.nextUrl?.searchParams?.get('id');
     const res = await fetch(`${storeUrl()}/values/${id}`, {
       headers: storeHeaders(),
-      method: "GET",
+      method: 'GET',
     });
     return new Response(res.body, {
       status: res.status,
@@ -62,7 +63,7 @@ async function handle(req: NextRequest, res: NextResponse) {
     });
   }
   return NextResponse.json(
-    { error: true, msg: "Invalid request" },
+    { error: true, msg: 'Invalid request' },
     { status: 400 },
   );
 }
@@ -70,4 +71,4 @@ async function handle(req: NextRequest, res: NextResponse) {
 export const POST = handle;
 export const GET = handle;
 
-export const runtime = "edge";
+export const runtime = 'edge';

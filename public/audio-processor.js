@@ -7,9 +7,9 @@ class AudioRecorderProcessor extends AudioWorkletProcessor {
     this.currentBuffer = [];
 
     this.port.onmessage = (event) => {
-      if (event.data.command === "START_RECORDING") {
+      if (event.data.command === 'START_RECORDING') {
         this.isRecording = true;
-      } else if (event.data.command === "STOP_RECORDING") {
+      } else if (event.data.command === 'STOP_RECORDING') {
         this.isRecording = false;
 
         if (this.currentBuffer.length > 0) {
@@ -23,8 +23,8 @@ class AudioRecorderProcessor extends AudioWorkletProcessor {
     if (this.currentBuffer.length > 0) {
       const audioData = new Float32Array(this.currentBuffer);
       this.port.postMessage({
-        eventType: "audio",
-        audioData: audioData,
+        eventType: 'audio',
+        audioData,
       });
       this.currentBuffer = [];
     }
@@ -45,4 +45,4 @@ class AudioRecorderProcessor extends AudioWorkletProcessor {
   }
 }
 
-registerProcessor("audio-recorder-processor", AudioRecorderProcessor);
+registerProcessor('audio-recorder-processor', AudioRecorderProcessor);

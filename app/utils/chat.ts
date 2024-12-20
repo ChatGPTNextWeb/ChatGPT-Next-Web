@@ -1,16 +1,16 @@
+import type { RequestMessage } from '@/app/client/api';
 import {
   CACHE_URL_PREFIX,
-  UPLOAD_URL,
   REQUEST_TIMEOUT_MS,
-} from "@/app/constant";
-import { RequestMessage } from "@/app/client/api";
-import Locale from "@/app/locales";
+  UPLOAD_URL,
+} from '@/app/constant';
+import Locale from '@/app/locales';
 import {
   EventStreamContentType,
   fetchEventSource,
-} from "@fortaine/fetch-event-source";
-import { prettyObject } from "./format";
-import { fetch as tauriFetch } from "./stream";
+} from '@fortaine/fetch-event-source';
+import { prettyObject } from './format';
+import { fetch as tauriFetch } from './stream';
 
 export function compressImage(file: Blob, maxSize: number): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -18,8 +18,8 @@ export function compressImage(file: Blob, maxSize: number): Promise<string> {
     reader.onload = (readerEvent: any) => {
       const image = new Image();
       image.onload = () => {
-        let canvas = document.createElement("canvas");
-        let ctx = canvas.getContext("2d");
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
         let width = image.width;
         let height = image.height;
         let quality = 0.9;
@@ -30,9 +30,10 @@ export function compressImage(file: Blob, maxSize: number): Promise<string> {
           canvas.height = height;
           ctx?.clearRect(0, 0, canvas.width, canvas.height);
           ctx?.drawImage(image, 0, 0, width, height);
-          dataUrl = canvas.toDataURL("image/jpeg", quality);
+          dataUrl = canvas.toDataURL('image/jpeg', quality);
 
-          if (dataUrl.length < maxSize) break;
+          if (dataUrl.length < maxSize)
+          { break; }
 
           if (quality > 0.5) {
             // Prioritize quality reduction
@@ -51,10 +52,10 @@ export function compressImage(file: Blob, maxSize: number): Promise<string> {
     };
     reader.onerror = reject;
 
-    if (file.type.includes("heic")) {
+    if (file.type.includes('heic')) {
       try {
-        const heic2any = require("heic2any");
-        heic2any({ blob: file, toType: "image/jpeg" })
+        const heic2any = require('heic2any');
+        heic2any({ blob: file, toType: 'image/jpeg' })
           .then((blob: Blob) => {
             reader.readAsDataURL(blob);
           })
@@ -71,19 +72,19 @@ export function compressImage(file: Blob, maxSize: number): Promise<string> {
 }
 
 export async function preProcessImageContent(
-  content: RequestMessage["content"],
+  content: RequestMessage['content'],
 ) {
-  if (typeof content === "string") {
+  if (typeof content === 'string') {
     return content;
   }
   const result = [];
   for (const part of content) {
-    if (part?.type == "image_url" && part?.image_url?.url) {
+    if (part?.type === 'image_url' && part?.image_url?.url) {
       try {
         const url = await cacheImageToBase64Image(part?.image_url?.url);
         result.push({ type: part.type, image_url: { url } });
       } catch (error) {
-        console.error("Error processing image URL:", error);
+        console.error('Error processing image URL:', error);
       }
     } else {
       result.push({ ...part });
@@ -98,13 +99,13 @@ export function cacheImageToBase64Image(imageUrl: string) {
     if (!imageCaches[imageUrl]) {
       const reader = new FileReader();
       return fetch(imageUrl, {
-        method: "GET",
-        mode: "cors",
-        credentials: "include",
+        method: 'GET',
+        mode: 'cors',
+        credentials: 'include',
       })
-        .then((res) => res.blob())
+        .then(res => res.blob())
         .then(
-          async (blob) =>
+          async blob =>
             (imageCaches[imageUrl] = await compressImage(blob, 256 * 1024)),
         ); // compressImage
     }
@@ -115,10 +116,11 @@ export function cacheImageToBase64Image(imageUrl: string) {
 
 export function base64Image2Blob(base64Data: string, contentType: string) {
   const byteCharacters = atob(base64Data);
-  const byteNumbers = new Array(byteCharacters.length);
+  const byteNumbers = Array.from({ length: byteCharacters.length });
   for (let i = 0; i < byteCharacters.length; i++) {
     byteNumbers[i] = byteCharacters.charCodeAt(i);
   }
+  // @ts-ignore
   const byteArray = new Uint8Array(byteNumbers);
   return new Blob([byteArray], { type: contentType });
 }
@@ -129,28 +131,28 @@ export function uploadImage(file: Blob): Promise<string> {
     return compressImage(file, 256 * 1024);
   }
   const body = new FormData();
-  body.append("file", file);
+  body.append('file', file);
   return fetch(UPLOAD_URL, {
-    method: "post",
+    method: 'post',
     body,
-    mode: "cors",
-    credentials: "include",
+    mode: 'cors',
+    credentials: 'include',
   })
-    .then((res) => res.json())
+    .then(res => res.json())
     .then((res) => {
       // console.log("res", res);
-      if (res?.code == 0 && res?.data) {
+      if (res?.code === 0 && res?.data) {
         return res?.data;
       }
-      throw Error(`upload Error: ${res?.msg}`);
+      throw new Error(`upload Error: ${res?.msg}`);
     });
 }
 
 export function removeImage(imageUrl: string) {
   return fetch(imageUrl, {
-    method: "DELETE",
-    mode: "cors",
-    credentials: "include",
+    method: 'DELETE',
+    mode: 'cors',
+    credentials: 'include',
   });
 }
 
@@ -169,20 +171,20 @@ export function stream(
   ) => void,
   options: any,
 ) {
-  let responseText = "";
-  let remainText = "";
+  let responseText = '';
+  let remainText = '';
   let finished = false;
   let running = false;
-  let runTools: any[] = [];
+  const runTools: any[] = [];
   let responseRes: Response;
 
   // animate response to make it looks smooth
   function animateResponseText() {
     if (finished || controller.signal.aborted) {
       responseText += remainText;
-      console.log("[Response Animation] finished");
+      console.log('[Response Animation] finished');
       if (responseText?.length === 0) {
-        options.onError?.(new Error("empty response from server"));
+        options.onError?.(new Error('empty response from server'));
       }
       return;
     }
@@ -205,7 +207,7 @@ export function stream(
     if (!finished) {
       if (!running && runTools.length > 0) {
         const toolCallMessage = {
-          role: "assistant",
+          role: 'assistant',
           tool_calls: [...runTools],
         };
         running = true;
@@ -225,8 +227,8 @@ export function stream(
               .then((res) => {
                 let content = res.data || res?.statusText;
                 // hotfix #5614
-                content =
-                  typeof content === "string"
+                content
+                  = typeof content === 'string'
                     ? content
                     : JSON.stringify(content);
                 if (res.status >= 300) {
@@ -250,9 +252,9 @@ export function stream(
                 });
                 return e.toString();
               })
-              .then((content) => ({
+              .then(content => ({
                 name: tool.function.name,
-                role: "tool",
+                role: 'tool',
                 content,
                 tool_call_id: tool.id,
               }));
@@ -261,7 +263,7 @@ export function stream(
           processToolMessage(requestPayload, toolCallMessage, toolCallResult);
           setTimeout(() => {
             // call again
-            console.debug("[ChatAPI] restart");
+            console.debug('[ChatAPI] restart');
             running = false;
             chatApi(chatPath, headers, requestPayload, tools); // call fetchEventSource
           }, 60);
@@ -271,7 +273,7 @@ export function stream(
       if (running) {
         return;
       }
-      console.debug("[ChatAPI] end");
+      console.debug('[ChatAPI] end');
       finished = true;
       options.onFinish(responseText + remainText, responseRes); // 将res传递给onFinish
     }
@@ -286,7 +288,7 @@ export function stream(
     tools: any,
   ) {
     const chatPayload = {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify({
         ...requestPayload,
         tools: tools && tools.length ? tools : undefined,
@@ -303,21 +305,21 @@ export function stream(
       ...chatPayload,
       async onopen(res) {
         clearTimeout(requestTimeoutId);
-        const contentType = res.headers.get("content-type");
-        console.log("[Request] response content type: ", contentType);
+        const contentType = res.headers.get('content-type');
+        console.log('[Request] response content type: ', contentType);
         responseRes = res;
 
-        if (contentType?.startsWith("text/plain")) {
+        if (contentType?.startsWith('text/plain')) {
           responseText = await res.clone().text();
           return finish();
         }
 
         if (
-          !res.ok ||
-          !res.headers
-            .get("content-type")
-            ?.startsWith(EventStreamContentType) ||
-          res.status !== 200
+          !res.ok
+          || !res.headers
+            .get('content-type')
+            ?.startsWith(EventStreamContentType)
+            || res.status !== 200
         ) {
           const responseTexts = [responseText];
           let extraInfo = await res.clone().text();
@@ -334,13 +336,13 @@ export function stream(
             responseTexts.push(extraInfo);
           }
 
-          responseText = responseTexts.join("\n\n");
+          responseText = responseTexts.join('\n\n');
 
           return finish();
         }
       },
       onmessage(msg) {
-        if (msg.data === "[DONE]" || finished) {
+        if (msg.data === '[DONE]' || finished) {
           return finish();
         }
         const text = msg.data;
@@ -350,7 +352,7 @@ export function stream(
             remainText += chunk;
           }
         } catch (e) {
-          console.error("[Request] parse error", text, msg, e);
+          console.error('[Request] parse error', text, msg, e);
         }
       },
       onclose() {
@@ -363,6 +365,6 @@ export function stream(
       openWhenHidden: true,
     });
   }
-  console.debug("[ChatAPI] start");
+  console.debug('[ChatAPI] start');
   chatApi(chatPath, headers, requestPayload, tools); // call fetchEventSource
 }

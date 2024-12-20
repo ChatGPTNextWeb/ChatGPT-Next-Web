@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import React from "react";
-import { IconButton } from "./button";
-import GithubIcon from "../icons/github.svg";
-import ResetIcon from "../icons/reload.svg";
-import { ISSUE_URL } from "../constant";
-import Locale from "../locales";
-import { showConfirm } from "./ui-lib";
-import { useSyncStore } from "../store/sync";
-import { useChatStore } from "../store/chat";
+import React from 'react';
+import { ISSUE_URL } from '../constant';
+import GithubIcon from '../icons/github.svg';
+import ResetIcon from '../icons/reload.svg';
+import Locale from '../locales';
+import { useChatStore } from '../store/chat';
+import { useSyncStore } from '../store/sync';
+import { IconButton } from './button';
+import { showConfirm } from './ui-lib';
 
 interface IErrorBoundaryState {
   hasError: boolean;
@@ -46,7 +46,7 @@ export class ErrorBoundary extends React.Component<any, IErrorBoundaryState> {
             <code>{this.state.info?.componentStack}</code>
           </pre>
 
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <a href={ISSUE_URL} className="report">
               <IconButton
                 text="Report This Error"

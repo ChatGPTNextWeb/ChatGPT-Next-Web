@@ -1,10 +1,10 @@
-import * as React from "react";
+import type { CSSProperties } from 'react';
 
-import styles from "./button.module.scss";
-import { CSSProperties } from "react";
-import clsx from "clsx";
+import clsx from 'clsx';
+import * as React from 'react';
+import styles from './button.module.scss';
 
-export type ButtonType = "primary" | "danger" | null;
+export type ButtonType = 'primary' | 'danger' | null;
 
 export function IconButton(props: {
   onClick?: () => void;
@@ -24,13 +24,13 @@ export function IconButton(props: {
   return (
     <button
       className={clsx(
-        "clickable",
-        styles["icon-button"],
+        'clickable',
+        styles['icon-button'],
         {
           [styles.border]: props.bordered,
           [styles.shadow]: props.shadow,
         },
-        styles[props.type ?? ""],
+        styles[props.type ?? ''],
         props.className,
       )}
       onClick={props.onClick}
@@ -45,8 +45,8 @@ export function IconButton(props: {
       {props.icon && (
         <div
           aria-label={props.text || props.title}
-          className={clsx(styles["icon-button-icon"], {
-            "no-dark": props.type === "primary",
+          className={clsx(styles['icon-button-icon'], {
+            'no-dark': props.type === 'primary',
           })}
         >
           {props.icon}
@@ -56,7 +56,7 @@ export function IconButton(props: {
       {props.text && (
         <div
           aria-label={props.text || props.title}
-          className={styles["icon-button-text"]}
+          className={styles['icon-button-text']}
         >
           {props.text}
         </div>

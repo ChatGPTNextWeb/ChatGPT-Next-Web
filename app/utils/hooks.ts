@@ -1,6 +1,6 @@
-import { useMemo } from "react";
-import { useAccessStore, useAppConfig } from "../store";
-import { collectModelsWithDefaultModel } from "./model";
+import { useMemo } from 'react';
+import { useAccessStore, useAppConfig } from '../store';
+import { collectModelsWithDefaultModel } from './model';
 
 export function useAllModels() {
   const accessStore = useAccessStore();
@@ -8,7 +8,7 @@ export function useAllModels() {
   const models = useMemo(() => {
     return collectModelsWithDefaultModel(
       configStore.models,
-      [configStore.customModels, accessStore.customModels].join(","),
+      [configStore.customModels, accessStore.customModels].join(','),
       accessStore.defaultModel,
     );
   }, [

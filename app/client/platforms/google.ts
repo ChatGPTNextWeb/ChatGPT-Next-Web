@@ -1,38 +1,40 @@
-import { ApiPath, Google, REQUEST_TIMEOUT_MS } from "@/app/constant";
-import {
+import type {
+  ChatMessageTool,
+} from '@/app/store';
+import type {
   ChatOptions,
-  getHeaders,
   LLMApi,
   LLMModel,
   LLMUsage,
   SpeechOptions,
-} from "../api";
+} from '../api';
+import type { RequestPayload } from './openai';
+import { getClientConfig } from '@/app/config/client';
+import { ApiPath, GEMINI_BASE_URL, Google, REQUEST_TIMEOUT_MS } from '@/app/constant';
 import {
   useAccessStore,
   useAppConfig,
   useChatStore,
   usePluginStore,
-  ChatMessageTool,
-} from "@/app/store";
-import { stream } from "@/app/utils/chat";
-import { getClientConfig } from "@/app/config/client";
-import { GEMINI_BASE_URL } from "@/app/constant";
+} from '@/app/store';
 
 import {
-  getMessageTextContent,
   getMessageImages,
+  getMessageTextContent,
   isVisionModel,
-} from "@/app/utils";
-import { preProcessImageContent } from "@/app/utils/chat";
-import { nanoid } from "nanoid";
-import { RequestPayload } from "./openai";
-import { fetch } from "@/app/utils/stream";
+} from '@/app/utils';
+import { preProcessImageContent, stream } from '@/app/utils/chat';
+import { fetch } from '@/app/utils/stream';
+import { nanoid } from 'nanoid';
+import {
+  getHeaders,
+} from '../api';
 
 export class GeminiProApi implements LLMApi {
   path(path: string, shouldStream = false): string {
     const accessStore = useAccessStore.getState();
 
-    let baseUrl = "";
+    let baseUrl = '';
     if (accessStore.useCustomConfig) {
       baseUrl = accessStore.googleUrl;
     }
@@ -41,34 +43,36 @@ export class GeminiProApi implements LLMApi {
     if (baseUrl.length === 0) {
       baseUrl = isApp ? GEMINI_BASE_URL : ApiPath.Google;
     }
-    if (baseUrl.endsWith("/")) {
+    if (baseUrl.endsWith('/')) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
     }
-    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.Google)) {
-      baseUrl = "https://" + baseUrl;
+    if (!baseUrl.startsWith('http') && !baseUrl.startsWith(ApiPath.Google)) {
+      baseUrl = `https://${baseUrl}`;
     }
 
-    console.log("[Proxy Endpoint] ", baseUrl, path);
+    console.log('[Proxy Endpoint] ', baseUrl, path);
 
-    let chatPath = [baseUrl, path].join("/");
+    let chatPath = [baseUrl, path].join('/');
     if (shouldStream) {
-      chatPath += chatPath.includes("?") ? "&alt=sse" : "?alt=sse";
+      chatPath += chatPath.includes('?') ? '&alt=sse' : '?alt=sse';
     }
 
     return chatPath;
   }
+
   extractMessage(res: any) {
-    console.log("[Response] gemini-pro response: ", res);
+    console.log('[Response] gemini-pro response: ', res);
 
     return (
-      res?.candidates?.at(0)?.content?.parts.at(0)?.text ||
-      res?.at(0)?.candidates?.at(0)?.content?.parts.at(0)?.text ||
-      res?.error?.message ||
-      ""
+      res?.candidates?.at(0)?.content?.parts.at(0)?.text
+      || res?.at(0)?.candidates?.at(0)?.content?.parts.at(0)?.text
+      || res?.error?.message
+      || ''
     );
   }
+
   speech(options: SpeechOptions): Promise<ArrayBuffer> {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
 
   async chat(options: ChatOptions): Promise<void> {
@@ -76,7 +80,7 @@ export class GeminiProApi implements LLMApi {
     let multimodal = false;
 
     // try get base64image from local cache image_url
-    const _messages: ChatOptions["messages"] = [];
+    const _messages: ChatOptions['messages'] = [];
     for (const v of options.messages) {
       const content = await preProcessImageContent(v.content);
       _messages.push({ role: v.role, content });
@@ -89,8 +93,8 @@ export class GeminiProApi implements LLMApi {
           multimodal = true;
           parts = parts.concat(
             images.map((image) => {
-              const imageType = image.split(";")[0].split(":")[1];
-              const imageData = image.split(",")[1];
+              const imageType = image.split(';')[0].split(':')[1];
+              const imageData = image.split(',')[1];
               return {
                 inline_data: {
                   mime_type: imageType,
@@ -102,13 +106,13 @@ export class GeminiProApi implements LLMApi {
         }
       }
       return {
-        role: v.role.replace("assistant", "model").replace("system", "user"),
-        parts: parts,
+        role: v.role.replace('assistant', 'model').replace('system', 'user'),
+        parts,
       };
     });
 
     // google requires that role in neighboring messages must not be the same
-    for (let i = 0; i < messages.length - 1; ) {
+    for (let i = 0; i < messages.length - 1;) {
       // Check if current and next item both have the role "model"
       if (messages[i].role === messages[i + 1].role) {
         // Concatenate the 'parts' of the current and next item
@@ -146,25 +150,25 @@ export class GeminiProApi implements LLMApi {
       },
       safetySettings: [
         {
-          category: "HARM_CATEGORY_HARASSMENT",
+          category: 'HARM_CATEGORY_HARASSMENT',
           threshold: accessStore.googleSafetySettings,
         },
         {
-          category: "HARM_CATEGORY_HATE_SPEECH",
+          category: 'HARM_CATEGORY_HATE_SPEECH',
           threshold: accessStore.googleSafetySettings,
         },
         {
-          category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+          category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
           threshold: accessStore.googleSafetySettings,
         },
         {
-          category: "HARM_CATEGORY_DANGEROUS_CONTENT",
+          category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
           threshold: accessStore.googleSafetySettings,
         },
       ],
     };
 
-    let shouldStream = !!options.config.stream;
+    const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
     try {
@@ -175,7 +179,7 @@ export class GeminiProApi implements LLMApi {
       );
 
       const chatPayload = {
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify(requestPayload),
         signal: controller.signal,
         headers: getHeaders(),
@@ -200,7 +204,7 @@ export class GeminiProApi implements LLMApi {
           // @ts-ignore
           tools.length > 0
             ? // @ts-ignore
-              [{ functionDeclarations: tools.map((tool) => tool.function) }]
+              [{ functionDeclarations: tools.map(tool => tool.function) }]
             : [],
           funcs,
           controller,
@@ -211,12 +215,15 @@ export class GeminiProApi implements LLMApi {
 
             const functionCall = chunkJson?.candidates
               ?.at(0)
-              ?.content.parts.at(0)?.functionCall;
+              ?.content
+              .parts
+              .at(0)
+              ?.functionCall;
             if (functionCall) {
               const { name, args } = functionCall;
               runTools.push({
                 id: nanoid(),
-                type: "function",
+                type: 'function',
                 function: {
                   name,
                   arguments: JSON.stringify(args), // utils.chat call function, using JSON.parse
@@ -237,7 +244,7 @@ export class GeminiProApi implements LLMApi {
               requestPayload?.contents?.length,
               0,
               {
-                role: "model",
+                role: 'model',
                 parts: toolCallMessage.tool_calls.map(
                   (tool: ChatMessageTool) => ({
                     functionCall: {
@@ -248,8 +255,8 @@ export class GeminiProApi implements LLMApi {
                 ),
               },
               // @ts-ignore
-              ...toolCallResult.map((result) => ({
-                role: "function",
+              ...toolCallResult.map(result => ({
+                role: 'function',
                 parts: [
                   {
                     functionResponse: {
@@ -274,8 +281,8 @@ export class GeminiProApi implements LLMApi {
           // being blocked
           options.onError?.(
             new Error(
-              "Message is being blocked for reason: " +
-                resJson.promptFeedback.blockReason,
+              `Message is being blocked for reason: ${
+                resJson.promptFeedback.blockReason}`,
             ),
           );
         }
@@ -283,13 +290,15 @@ export class GeminiProApi implements LLMApi {
         options.onFinish(message, res);
       }
     } catch (e) {
-      console.log("[Request] failed to make a chat request", e);
+      console.log('[Request] failed to make a chat request', e);
       options.onError?.(e as Error);
     }
   }
+
   usage(): Promise<LLMUsage> {
-    throw new Error("Method not implemented.");
+    throw new Error('Method not implemented.');
   }
+
   async models(): Promise<LLMModel[]> {
     return [];
   }

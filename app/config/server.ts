@@ -1,5 +1,5 @@
-import md5 from "spark-md5";
-import { DEFAULT_MODELS, DEFAULT_GA_ID } from "../constant";
+import md5 from 'spark-md5';
+import { DEFAULT_GA_ID, DEFAULT_MODELS } from '../constant';
 
 declare global {
   namespace NodeJS {
@@ -13,7 +13,7 @@ declare global {
       OPENAI_ORG_ID?: string; // openai only
 
       VERCEL?: string;
-      BUILD_MODE?: "standalone" | "export";
+      BUILD_MODE?: 'standalone' | 'export';
       BUILD_APP?: string; // is building desktop app
 
       HIDE_USER_API_KEY?: string; // disable user's api key input
@@ -89,9 +89,9 @@ const ACCESS_CODES = (function getAccessCodes(): Set<string> {
   const code = process.env.CODE;
 
   try {
-    const codes = (code?.split(",") ?? [])
-      .filter((v) => !!v)
-      .map((v) => md5.hash(v.trim()));
+    const codes = (code?.split(',') ?? [])
+      .filter(v => !!v)
+      .map(v => md5.hash(v.trim()));
     return new Set(codes);
   } catch (e) {
     return new Set();
@@ -99,8 +99,8 @@ const ACCESS_CODES = (function getAccessCodes(): Set<string> {
 })();
 
 function getApiKey(keys?: string) {
-  const apiKeyEnvVar = keys ?? "";
-  const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
+  const apiKeyEnvVar = keys ?? '';
+  const apiKeys = apiKeyEnvVar.split(',').map(v => v.trim());
   const randomIndex = Math.floor(Math.random() * apiKeys.length);
   const apiKey = apiKeys[randomIndex];
   if (apiKey) {
@@ -114,33 +114,35 @@ function getApiKey(keys?: string) {
   return apiKey;
 }
 
-export const getServerSideConfig = () => {
-  if (typeof process === "undefined") {
-    throw Error(
-      "[Server Config] you are importing a nodejs-only module outside of nodejs",
+export function getServerSideConfig() {
+  if (typeof process === 'undefined') {
+    throw new TypeError(
+      '[Server Config] you are importing a nodejs-only module outside of nodejs',
     );
   }
 
   const disableGPT4 = !!process.env.DISABLE_GPT4;
-  let customModels = process.env.CUSTOM_MODELS ?? "";
-  let defaultModel = process.env.DEFAULT_MODEL ?? "";
+  let customModels = process.env.CUSTOM_MODELS ?? '';
+  let defaultModel = process.env.DEFAULT_MODEL ?? '';
 
   if (disableGPT4) {
-    if (customModels) customModels += ",";
+    if (customModels)
+    { customModels += ','; }
     customModels += DEFAULT_MODELS.filter(
-      (m) =>
-        (m.name.startsWith("gpt-4") || m.name.startsWith("chatgpt-4o") || m.name.startsWith("o1")) &&
-        !m.name.startsWith("gpt-4o-mini"),
+      m =>
+        (m.name.startsWith('gpt-4') || m.name.startsWith('chatgpt-4o') || m.name.startsWith('o1'))
+        && !m.name.startsWith('gpt-4o-mini'),
     )
-      .map((m) => "-" + m.name)
-      .join(",");
+      .map(m => `-${m.name}`)
+      .join(',');
     if (
-      (defaultModel.startsWith("gpt-4") ||
-        defaultModel.startsWith("chatgpt-4o") ||
-        defaultModel.startsWith("o1")) &&
-      !defaultModel.startsWith("gpt-4o-mini")
-    )
-      defaultModel = "";
+      (defaultModel.startsWith('gpt-4')
+        || defaultModel.startsWith('chatgpt-4o')
+        || defaultModel.startsWith('o1'))
+      && !defaultModel.startsWith('gpt-4o-mini')
+    ) {
+      defaultModel = '';
+    }
   }
 
   const isStability = !!process.env.STABILITY_API_KEY;
@@ -166,8 +168,8 @@ export const getServerSideConfig = () => {
   // );
 
   const allowedWebDavEndpoints = (
-    process.env.WHITE_WEBDAV_ENDPOINTS ?? ""
-  ).split(",");
+    process.env.WHITE_WEBDAV_ENDPOINTS ?? ''
+  ).split(',');
 
   return {
     baseUrl: process.env.BASE_URL,
@@ -250,4 +252,4 @@ export const getServerSideConfig = () => {
     defaultModel,
     allowedWebDavEndpoints,
   };
-};
+}

@@ -106,6 +106,7 @@ API KEY 有问题。余额不足。
 注意，关闭此特性后，用户会在第一次访问网站时加载所有资源，如果用户网络状况较差，可能会引起较长时间的白屏，从而影响用户使用体验，所以自行考虑。
 
 ## 使用时遇到 "NotFoundError: Failed to execute 'removeChild' on 'Node': The node...."
+
 请关闭浏览器自身的自动翻译功能，并关闭所有自动翻译插件。
 
 # 网络服务相关问题
@@ -194,8 +195,8 @@ OpenAI 只接受指定地区的信用卡（中国信用卡无法使用）。一�
 
 ## API 是怎么计费的？
 
-OpenAI 网站计费说明：https://openai.com/pricing#language-models  
-OpenAI 根据 token 数收费，1000 个 token 通常可代表 750 个英文单词，或 500 个汉字。输入（Prompt）和输出（Completion）分别统计费用。  
+OpenAI 网站计费说明：https://openai.com/pricing#language-models
+OpenAI 根据 token 数收费，1000 个 token 通常可代表 750 个英文单词，或 500 个汉字。输入（Prompt）和输出（Completion）分别统计费用。
 |模型|用户输入（Prompt）计费|模型输出（Completion）计费|每次交互最大 token 数|
 |----|----|----|----|
 |gpt-3.5-turbo|$0.0015 / 1 千 tokens|$0.002 / 1 千 tokens|4096|
