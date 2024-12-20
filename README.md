@@ -477,7 +477,7 @@ If you want to add a new translation, read this [document](./docs/translation.md
 
 ## Donation
 
-[Buy Me a Coffee](https://www.buymeacoffee.com/yidadaa)
+[Buy Me a Coffee](https://1kafei.com/dogtiti)
 
 ## Special Thanks
 
