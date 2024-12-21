@@ -62,6 +62,7 @@ const cn = {
     Commands: {
       new: "新建聊天",
       newm: "从面具新建聊天",
+      copy: "复制当前聊天",
       next: "下一个聊天",
       prev: "上一个聊天",
       clear: "清除上下文",
@@ -233,6 +234,10 @@ const cn = {
         SyncType: {
           Title: "同步类型",
           SubTitle: "选择喜爱的同步服务器",
+        },
+        EnableAutoSync: {
+          Title: "自动同步设置",
+          SubTitle: "在回复完成或删除消息后自动同步数据",
         },
         Proxy: {
           Title: "启用代理",

@@ -63,6 +63,7 @@ const en: LocaleType = {
     Commands: {
       new: "Start a new chat",
       newm: "Start a new chat with mask",
+      copy: "Copy the current Chat",
       next: "Next Chat",
       prev: "Previous Chat",
       clear: "Clear Context",
@@ -235,6 +236,11 @@ const en: LocaleType = {
         SyncType: {
           Title: "Sync Type",
           SubTitle: "Choose your favorite sync service",
+        },
+        EnableAutoSync: {
+          Title: "Auto Sync Settings",
+          SubTitle:
+            "Automatically synchronize data after replying or deleting messages",
         },
         Proxy: {
           Title: "Enable CORS Proxy",

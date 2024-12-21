@@ -236,7 +236,7 @@ export const useAccessStore = createPersistStore(
         })
         .then((res: DangerConfig) => {
           console.log("[Config] got config from server", res);
-          set(() => ({ ...res }));
+          set(() => ({ lastUpdateTime: Date.now(), ...res }));
         })
         .catch(() => {
           console.error("[Config] failed to fetch config");
