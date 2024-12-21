@@ -355,6 +355,13 @@ For ByteDance: use `modelName@bytedance=deploymentName` to customize model name 
 
 Change default model
 
+### `VISION_MODELS` (optional)
+
+> Default: Empty
+> Example: `gpt-4-vision,claude-3-opus,my-custom-model` means add vision capabilities to these models in addition to the default pattern matches (which detect models containing keywords like "vision", "claude-3", "gemini-1.5", etc).
+
+Add additional models to have vision capabilities, beyond the default pattern matching. Multiple models should be separated by commas.
+
 ### `WHITE_WEBDAV_ENDPOINTS` (optional)
 
 You can use this option if you want to increase the number of webdav service addresses you are allowed to access, as required by the format：

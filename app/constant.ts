@@ -291,6 +291,22 @@ export const DEFAULT_TTS_VOICES = [
   "shimmer",
 ];
 
+export const VISION_MODEL_REGEXES = [
+  /vision/,
+  /gpt-4o/,
+  /claude-3/,
+  /gemini-1\.5/,
+  /gemini-exp/,
+  /gemini-2\.0/,
+  /learnlm/,
+  /qwen-vl/,
+  /qwen2-vl/,
+  /gpt-4-turbo(?!.*preview)/, // Matches "gpt-4-turbo" but not "gpt-4-turbo-preview"
+  /^dall-e-3$/, // Matches exactly "dall-e-3"
+];
+
+export const EXCLUDE_VISION_MODEL_REGEXES = [/claude-3-5-haiku-20241022/];
+
 const openaiModels = [
   "gpt-3.5-turbo",
   "gpt-3.5-turbo-1106",
