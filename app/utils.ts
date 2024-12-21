@@ -255,7 +255,7 @@ export function getMessageImages(message: RequestMessage): string[] {
 
 export function isVisionModel(model: string) {
   const clientConfig = getClientConfig();
-  const envVisionModels = clientConfig.visionModels
+  const envVisionModels = clientConfig?.visionModels
     ?.split(",")
     .map((m) => m.trim());
   if (envVisionModels?.includes(model)) {
