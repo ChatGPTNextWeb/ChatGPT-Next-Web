@@ -11,6 +11,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "./auth";
 import { isModelAvailableInServer } from "@/app/utils/model";
 import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
+import { getGCloudToken } from "./common";
 
 const ALLOWD_PATH = new Set([Anthropic.ChatPath, Anthropic.ChatPath1]);
 
@@ -67,10 +68,20 @@ async function request(req: NextRequest) {
     serverConfig.anthropicApiKey ||
     "";
 
-  let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Anthropic, "");
+  // adjust header and url when using vertex ai
+  if (serverConfig.isVertexAI) {
+    authHeaderName = "Authorization";
+    const gCloudToken = await getGCloudToken();
+    authValue = `Bearer ${gCloudToken}`;
+  }
 
-  let baseUrl =
-    serverConfig.anthropicUrl || serverConfig.baseUrl || ANTHROPIC_BASE_URL;
+  let path = serverConfig.vertexAIUrl
+    ? ""
+    : `${req.nextUrl.pathname}`.replaceAll(ApiPath.Anthropic, "");
+
+  let baseUrl = serverConfig.vertexAIUrl
+    ? serverConfig.vertexAIUrl
+    : serverConfig.anthropicUrl || serverConfig.baseUrl || ANTHROPIC_BASE_URL;
 
   if (!baseUrl.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;
@@ -112,13 +123,16 @@ async function request(req: NextRequest) {
     signal: controller.signal,
   };
 
-  // #1815 try to refuse some request to some models
+  // #1815 try to refuse some request to some models or tick json body for vertex ai
   if (serverConfig.customModels && req.body) {
     try {
       const clonedBody = await req.text();
       fetchOptions.body = clonedBody;
 
-      const jsonBody = JSON.parse(clonedBody) as { model?: string };
+      const jsonBody = JSON.parse(clonedBody) as {
+        model?: string;
+        anthropic_version?: string;
+      };
 
       // not undefined and is false
       if (
@@ -137,6 +151,14 @@ async function request(req: NextRequest) {
             status: 403,
           },
         );
+      }
+
+      // tick json body for vertex ai and update fetch options
+      if (serverConfig.isVertexAI) {
+        delete jsonBody.model;
+        jsonBody.anthropic_version =
+          serverConfig.anthropicApiVersion || "vertex-2023-10-16";
+        fetchOptions.body = JSON.stringify(jsonBody);
       }
     } catch (e) {
       console.error(`[Anthropic] filter`, e);

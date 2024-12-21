@@ -3,7 +3,7 @@ import {
   UPLOAD_URL,
   REQUEST_TIMEOUT_MS,
 } from "@/app/constant";
-import { RequestMessage } from "@/app/client/api";
+import { ChatOptions, RequestMessage } from "@/app/client/api";
 import Locale from "@/app/locales";
 import {
   EventStreamContentType,
@@ -167,7 +167,7 @@ export function stream(
     toolCallMessage: any,
     toolCallResult: any[],
   ) => void,
-  options: any,
+  options: ChatOptions,
 ) {
   let responseText = "";
   let remainText = "";

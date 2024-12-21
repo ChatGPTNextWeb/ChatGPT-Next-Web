@@ -3,6 +3,7 @@ import { auth } from "./auth";
 import { getServerSideConfig } from "@/app/config/server";
 import { ApiPath, GEMINI_BASE_URL, ModelProvider } from "@/app/constant";
 import { prettyObject } from "@/app/utils/format";
+import { getGCloudToken } from "./common";
 
 const serverConfig = getServerSideConfig();
 
@@ -29,7 +30,9 @@ export async function handle(
 
   const apiKey = token ? token : serverConfig.googleApiKey;
 
-  if (!apiKey) {
+  // When using Vertex AI, the API key is not required.
+  // Instead, a GCloud token will be used later in the request.
+  if (!apiKey && !serverConfig.isVertexAI) {
     return NextResponse.json(
       {
         error: true,
@@ -73,7 +76,9 @@ async function request(req: NextRequest, apiKey: string) {
 
   let baseUrl = serverConfig.googleUrl || GEMINI_BASE_URL;
 
-  let path = `${req.nextUrl.pathname}`.replaceAll(ApiPath.Google, "");
+  let path = serverConfig.vertexAIUrl
+    ? ""
+    : `${req.nextUrl.pathname}`.replaceAll(ApiPath.Google, "");
 
   if (!baseUrl.startsWith("http")) {
     baseUrl = `https://${baseUrl}`;
@@ -92,18 +97,30 @@ async function request(req: NextRequest, apiKey: string) {
     },
     10 * 60 * 1000,
   );
-  const fetchUrl = `${baseUrl}${path}${
-    req?.nextUrl?.searchParams?.get("alt") === "sse" ? "?alt=sse" : ""
-  }`;
+
+  let authHeaderName = "x-goog-api-key";
+  let authValue =
+    req.headers.get(authHeaderName) ||
+    (req.headers.get("Authorization") ?? "").replace("Bearer ", "");
+
+  // adjust header and url when use with vertex ai
+  if (serverConfig.vertexAIUrl) {
+    authHeaderName = "Authorization";
+    const gCloudToken = await getGCloudToken();
+    authValue = `Bearer ${gCloudToken}`;
+  }
+  const fetchUrl = serverConfig.vertexAIUrl
+    ? serverConfig.vertexAIUrl
+    : `${baseUrl}${path}${
+        req?.nextUrl?.searchParams?.get("alt") === "sse" ? "?alt=sse" : ""
+      }`;
 
   console.log("[Fetch Url] ", fetchUrl);
   const fetchOptions: RequestInit = {
     headers: {
       "Content-Type": "application/json",
       "Cache-Control": "no-store",
-      "x-goog-api-key":
-        req.headers.get("x-goog-api-key") ||
-        (req.headers.get("Authorization") ?? "").replace("Bearer ", ""),
+      [authHeaderName]: authValue,
     },
     method: req.method,
     body: req.body,
