@@ -6,6 +6,7 @@ import { ServiceProvider } from "./constant";
 // import { fetch as tauriFetch, ResponseType } from "@tauri-apps/api/http";
 import { fetch as tauriStreamFetch } from "./utils/stream";
 import { VISION_MODEL_REGEXES, EXCLUDE_VISION_MODEL_REGEXES } from "./constant";
+import { getClientConfig } from "./config/client";
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
@@ -253,9 +254,10 @@ export function getMessageImages(message: RequestMessage): string[] {
 }
 
 export function isVisionModel(model: string) {
-  const envVisionModels = process.env.NEXT_PUBLIC_VISION_MODELS?.split(",").map(
-    (m) => m.trim(),
-  );
+  const clientConfig = getClientConfig();
+  const envVisionModels = clientConfig.visionModels
+    ?.split(",")
+    .map((m) => m.trim());
   if (envVisionModels?.includes(model)) {
     return true;
   }
