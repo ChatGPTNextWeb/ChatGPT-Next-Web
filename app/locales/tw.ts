@@ -485,7 +485,7 @@ const tw = {
     },
   },
   SearchChat: {
-    Name: "搜尋",
+    Name: "搜尋聊天記錄",
     Page: {
       Title: "搜尋聊天記錄",
       Search: "輸入搜尋關鍵詞",

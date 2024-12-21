@@ -176,7 +176,7 @@ const cn = {
       },
     },
     Lang: {
-      Name: "Language", // ATTENTION: if you wanna add a new translation, please do not translate this value, leave it as `Language`
+      Name: "Language", // 注意：如果要添加新的翻译，请不要翻译此值，将它保留为 `Language`
       All: "所有语言",
     },
     Avatar: "头像",
@@ -630,7 +630,7 @@ const cn = {
     Sysmessage: "你是一个助手",
   },
   SearchChat: {
-    Name: "搜索",
+    Name: "搜索聊天记录",
     Page: {
       Title: "搜索聊天记录",
       Search: "输入搜索关键词",
