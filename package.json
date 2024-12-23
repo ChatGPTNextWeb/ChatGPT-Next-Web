@@ -79,7 +79,7 @@
     "husky": "^8.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
-    "lint-staged": "^13.2.2",
+    "lint-staged": "^15.2.11",
     "prettier": "^3.0.2",
     "ts-node": "^10.9.2",
     "tsx": "^4.16.0",
