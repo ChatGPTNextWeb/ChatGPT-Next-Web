@@ -17,6 +17,14 @@ export type Plugin = {
   builtin: boolean;
   enable: boolean;
   onlyNodeRuntime: boolean;
+
+  title: string;
+  version: string;
+  content: string;
+  authType?: string;
+  authLocation?: string;
+  authHeader?: string;
+  authToken?: string;
 };
 
 export const DEFAULT_PLUGIN_STATE = {

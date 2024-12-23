@@ -42,6 +42,9 @@ const cn = {
       PinToastAction: "查看",
       Delete: "删除",
       Edit: "编辑",
+      FullScreen: "全屏",
+      RefreshTitle: "刷新标题",
+      RefreshToast: "已发送刷新标题请求",
       Speech: "朗读",
       StopSpeech: "停止",
     },
@@ -51,6 +54,7 @@ const cn = {
       next: "下一个聊天",
       prev: "上一个聊天",
       clear: "清除上下文",
+      fork: "复制聊天",
       del: "删除聊天",
     },
     InputActions: {
@@ -87,6 +91,14 @@ const cn = {
       SaveAs: "存为面具",
     },
     IsContext: "预设提示词",
+    ShortcutKey: {
+      Title: "键盘快捷方式",
+      newChat: "打开新聊天",
+      focusInput: "聚焦输入框",
+      copyLastMessage: "复制最后一个回复",
+      copyLastCode: "复制最后一个代码块",
+      showShortcutKey: "显示快捷方式",
+    },
   },
   Export: {
     Title: "分享聊天记录",
@@ -558,6 +570,39 @@ const cn = {
       Engine: {
         Title: "转换引擎",
         SubTitle: "音频转换引擎",
+      },
+    },
+    Realtime: {
+      Enable: {
+        Title: "实时聊天",
+        SubTitle: "开启实时聊天功能",
+      },
+      Provider: {
+        Title: "模型服务商",
+        SubTitle: "切换不同的服务商",
+      },
+      Model: {
+        Title: "模型",
+        SubTitle: "选择一个模型",
+      },
+      ApiKey: {
+        Title: "API Key",
+        SubTitle: "API Key",
+        Placeholder: "API Key",
+      },
+      Azure: {
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "接口地址",
+        },
+        Deployment: {
+          Title: "部署名称",
+          SubTitle: "部署名称",
+        },
+      },
+      Temperature: {
+        Title: "随机性 (temperature)",
+        SubTitle: "值越大，回复越随机",
       },
     },
   },

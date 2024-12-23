@@ -44,6 +44,9 @@ const en: LocaleType = {
       PinToastAction: "View",
       Delete: "Delete",
       Edit: "Edit",
+      FullScreen: "FullScreen",
+      RefreshTitle: "Refresh Title",
+      RefreshToast: "Title refresh request sent",
       Speech: "Play",
       StopSpeech: "Stop",
     },
@@ -53,6 +56,7 @@ const en: LocaleType = {
       next: "Next Chat",
       prev: "Previous Chat",
       clear: "Clear Context",
+      fork: "Copy Chat",
       del: "Delete Chat",
     },
     InputActions: {
@@ -89,6 +93,14 @@ const en: LocaleType = {
       SaveAs: "Save as Mask",
     },
     IsContext: "Contextual Prompt",
+    ShortcutKey: {
+      Title: "Keyboard Shortcuts",
+      newChat: "Open New Chat",
+      focusInput: "Focus Input Field",
+      copyLastMessage: "Copy Last Reply",
+      copyLastCode: "Copy Last Code Block",
+      showShortcutKey: "Show Shortcuts",
+    },
   },
   Export: {
     Title: "Export Messages",
@@ -566,6 +578,39 @@ const en: LocaleType = {
       Engine: {
         Title: "STT Engine",
         SubTitle: "Text-to-Speech Engine",
+      },
+    },
+    Realtime: {
+      Enable: {
+        Title: "Realtime Chat",
+        SubTitle: "Enable realtime chat feature",
+      },
+      Provider: {
+        Title: "Model Provider",
+        SubTitle: "Switch between different providers",
+      },
+      Model: {
+        Title: "Model",
+        SubTitle: "Select a model",
+      },
+      ApiKey: {
+        Title: "API Key",
+        SubTitle: "API Key",
+        Placeholder: "API Key",
+      },
+      Azure: {
+        Endpoint: {
+          Title: "Endpoint",
+          SubTitle: "Endpoint",
+        },
+        Deployment: {
+          Title: "Deployment Name",
+          SubTitle: "Deployment Name",
+        },
+      },
+      Temperature: {
+        Title: "Randomness (temperature)",
+        SubTitle: "Higher values result in more random responses",
       },
     },
   },

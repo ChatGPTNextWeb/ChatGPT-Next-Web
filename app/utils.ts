@@ -278,6 +278,24 @@ export function isDalle3(model: string) {
   return "dall-e-3" === model;
 }
 
+export function showPlugins(provider: ServiceProvider, model: string) {
+  if (
+    provider == ServiceProvider.OpenAI ||
+    provider == ServiceProvider.Azure ||
+    provider == ServiceProvider.Moonshot ||
+    provider == ServiceProvider.ChatGLM
+  ) {
+    return true;
+  }
+  if (provider == ServiceProvider.Anthropic && !model.includes("claude-2")) {
+    return true;
+  }
+  if (provider == ServiceProvider.Google && !model.includes("vision")) {
+    return true;
+  }
+  return false;
+}
+
 export function isSupportRAGModel(modelName: string) {
   const specialModels = [
     "gpt-4-turbo",
@@ -326,24 +344,6 @@ export function isFunctionCallModel(modelName: string) {
   return DEFAULT_MODELS.filter(
     (model) => model.provider.id === "openai" && !model.name.includes("o1"),
   ).some((model) => model.name === modelName);
-}
-
-export function showPlugins(provider: ServiceProvider, model: string) {
-  if (
-    provider == ServiceProvider.OpenAI ||
-    provider == ServiceProvider.Azure ||
-    provider == ServiceProvider.Moonshot ||
-    provider == ServiceProvider.ChatGLM
-  ) {
-    return true;
-  }
-  if (provider == ServiceProvider.Anthropic && !model.includes("claude-2")) {
-    return true;
-  }
-  if (provider == ServiceProvider.Google && !model.includes("vision")) {
-    return true;
-  }
-  return false;
 }
 
 export function fetch(

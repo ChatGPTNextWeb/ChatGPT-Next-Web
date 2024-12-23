@@ -9,6 +9,7 @@ import CopyIcon from "../icons/copy.svg";
 import ClearIcon from "../icons/clear.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import EditIcon from "../icons/edit.svg";
+import FireIcon from "../icons/fire.svg";
 import EyeIcon from "../icons/eye.svg";
 import DownloadIcon from "../icons/download.svg";
 import UploadIcon from "../icons/upload.svg";
@@ -18,7 +19,7 @@ import ConfirmIcon from "../icons/confirm.svg";
 import ConnectionIcon from "../icons/connection.svg";
 import CloudSuccessIcon from "../icons/cloud-success.svg";
 import CloudFailIcon from "../icons/cloud-fail.svg";
-
+import { trackSettingsPageGuideToCPaymentClick } from "../utils/auth-settings-events";
 import {
   Input,
   List,
@@ -84,6 +85,7 @@ import { PluginConfigList } from "./plugin-config";
 import { useMaskStore } from "../store/mask";
 import { ProviderType } from "../utils/cloud";
 import { TTSConfigList } from "./tts-config";
+import { RealtimeConfigList } from "./realtime-chat/realtime-config";
 import { STTConfigList } from "./stt-config";
 
 function EditPromptModal(props: { id: string; onClose: () => void }) {
@@ -1748,9 +1750,11 @@ export function Settings() {
           <ListItem
             title={Locale.Settings.Access.CustomModel.Title}
             subTitle={Locale.Settings.Access.CustomModel.SubTitle}
+            vertical={true}
           >
             <input
               aria-label={Locale.Settings.Access.CustomModel.Title}
+              style={{ width: "100%", maxWidth: "unset", textAlign: "left" }}
               type="text"
               value={config.customModels}
               placeholder="model1,model2,model3"
@@ -1777,7 +1781,18 @@ export function Settings() {
         {shouldShowPromptModal && (
           <UserPromptModal onClose={() => setShowPromptModal(false)} />
         )}
-
+        <List>
+          <RealtimeConfigList
+            realtimeConfig={config.realtimeConfig}
+            updateConfig={(updater) => {
+              const realtimeConfig = { ...config.realtimeConfig };
+              updater(realtimeConfig);
+              config.update(
+                (config) => (config.realtimeConfig = realtimeConfig),
+              );
+            }}
+          />
+        </List>
         <List>
           <PluginConfigList
             pluginConfig={config.pluginConfig}
@@ -1788,7 +1803,6 @@ export function Settings() {
             }}
           />
         </List>
-
         <List>
           <TTSConfigList
             ttsConfig={config.ttsConfig}
