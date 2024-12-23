@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ChatMessage, useAppConfig, useChatStore } from "../store";
 import { Updater } from "../typing";
 import { IconButton } from "./button";
@@ -7,6 +7,8 @@ import { MaskAvatar } from "./mask";
 import Locale from "../locales";
 
 import styles from "./message-selector.module.scss";
+import { getMessageTextContent } from "../utils";
+import clsx from "clsx";
 
 function useShiftRange() {
   const [startIndex, setStartIndex] = useState<number>();
@@ -70,14 +72,27 @@ export function MessageSelector(props: {
   defaultSelectAll?: boolean;
   onSelected?: (messages: ChatMessage[]) => void;
 }) {
+  const LATEST_COUNT = 4;
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
   const isValid = (m: ChatMessage) => m.content && !m.isError && !m.streaming;
-  const messages = session.messages.filter(
-    (m, i) =>
-      m.id && // message must have id
-      isValid(m) &&
-      (i >= session.messages.length - 1 || isValid(session.messages[i + 1])),
+  const allMessages = useMemo(() => {
+    let startIndex = Math.max(0, session.clearContextIndex ?? 0);
+    if (startIndex === session.messages.length - 1) {
+      startIndex = 0;
+    }
+    return session.messages.slice(startIndex);
+  }, [session.messages, session.clearContextIndex]);
+
+  const messages = useMemo(
+    () =>
+      allMessages.filter(
+        (m, i) =>
+          m.id && // message must have id
+          isValid(m) &&
+          (i >= allMessages.length - 1 || isValid(allMessages[i + 1])),
+      ),
+    [allMessages],
   );
   const messageCount = messages.length;
   const config = useAppConfig();
@@ -91,7 +106,9 @@ export function MessageSelector(props: {
     const searchResults = new Set<string>();
     if (text.length > 0) {
       messages.forEach((m) =>
-        m.content.includes(text) ? searchResults.add(m.id!) : null,
+        getMessageTextContent(m).includes(text)
+          ? searchResults.add(m.id!)
+          : null,
       );
     }
     setSearchIds(searchResults);
@@ -126,15 +143,13 @@ export function MessageSelector(props: {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startIndex, endIndex]);
 
-  const LATEST_COUNT = 4;
-
   return (
     <div className={styles["message-selector"]}>
       <div className={styles["message-filter"]}>
         <input
           type="text"
           placeholder={Locale.Select.Search}
-          className={styles["filter-item"] + " " + styles["search-bar"]}
+          className={clsx(styles["filter-item"], styles["search-bar"])}
           value={searchInput}
           onInput={(e) => {
             setSearchInput(e.currentTarget.value);
@@ -176,16 +191,17 @@ export function MessageSelector(props: {
       <div className={styles["messages"]}>
         {messages.map((m, i) => {
           if (!isInSearchResult(m.id!)) return null;
+          const id = m.id ?? i;
+          const isSelected = props.selection.has(id);
 
           return (
             <div
-              className={`${styles["message"]} ${
-                props.selection.has(m.id!) && styles["message-selected"]
-              }`}
+              className={clsx(styles["message"], {
+                [styles["message-selected"]]: props.selection.has(m.id!),
+              })}
               key={i}
               onClick={() => {
                 props.updateSelection((selection) => {
-                  const id = m.id ?? i;
                   selection.has(id) ? selection.delete(id) : selection.add(id);
                 });
                 onClickIndex(i);
@@ -195,16 +211,23 @@ export function MessageSelector(props: {
                 {m.role === "user" ? (
                   <Avatar avatar={config.avatar}></Avatar>
                 ) : (
-                  <MaskAvatar mask={session.mask} />
+                  <MaskAvatar
+                    avatar={session.mask.avatar}
+                    model={m.model || session.mask.modelConfig.model}
+                  />
                 )}
               </div>
               <div className={styles["body"]}>
                 <div className={styles["date"]}>
                   {new Date(m.date).toLocaleString()}
                 </div>
-                <div className={`${styles["content"]} one-line`}>
-                  {m.content}
+                <div className={clsx(styles["content"], "one-line")}>
+                  {getMessageTextContent(m)}
                 </div>
+              </div>
+
+              <div className={styles["checkbox"]}>
+                <input type="checkbox" checked={isSelected} readOnly></input>
               </div>
             </div>
           );

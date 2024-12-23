@@ -12,7 +12,12 @@ import {
   showToast,
 } from "./ui-lib";
 import { IconButton } from "./button";
-import { copyToClipboard, downloadAs, useMobileScreen } from "../utils";
+import {
+  copyToClipboard,
+  downloadAs,
+  getMessageImages,
+  useMobileScreen,
+} from "../utils";
 
 import CopyIcon from "../icons/copy.svg";
 import LoadingIcon from "../icons/three-dots.svg";
@@ -27,12 +32,15 @@ import { Avatar } from "./emoji";
 import dynamic from "next/dynamic";
 import NextImage from "next/image";
 
-import { toBlob, toJpeg, toPng } from "html-to-image";
+import { toBlob, toPng } from "html-to-image";
 import { DEFAULT_MASK_AVATAR } from "../store/mask";
-import { api } from "../client/api";
+
 import { prettyObject } from "../utils/format";
 import { EXPORT_MESSAGE_CLASS_NAME } from "../constant";
 import { getClientConfig } from "../config/client";
+import { type ClientApi, getClientApi } from "../client/api";
+import { getMessageTextContent } from "../utils";
+import clsx from "clsx";
 
 const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
   loading: () => <LoadingIcon />,
@@ -41,7 +49,22 @@ const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
 export function ExportMessageModal(props: { onClose: () => void }) {
   return (
     <div className="modal-mask">
-      <Modal title={Locale.Export.Title} onClose={props.onClose}>
+      <Modal
+        title={Locale.Export.Title}
+        onClose={props.onClose}
+        footer={
+          <div
+            style={{
+              width: "100%",
+              textAlign: "center",
+              fontSize: 14,
+              opacity: 0.5,
+            }}
+          >
+            {Locale.Exporter.Description.Title}
+          </div>
+        }
+      >
         <div style={{ minHeight: "40vh" }}>
           <MessageExporter />
         </div>
@@ -96,9 +119,10 @@ function Steps<
           return (
             <div
               key={i}
-              className={`${styles["step"]} ${
-                styles[i <= props.index ? "step-finished" : ""]
-              } ${i === props.index && styles["step-current"]} clickable`}
+              className={clsx("clickable", styles["step"], {
+                [styles["step-finished"]]: i <= props.index,
+                [styles["step-current"]]: i === props.index,
+              })}
               onClick={() => {
                 props.onStepChange?.(i);
               }}
@@ -149,7 +173,7 @@ export function MessageExporter() {
     if (exportConfig.includeContext) {
       ret.push(...session.mask.context);
     }
-    ret.push(...session.messages.filter((m, i) => selection.has(m.id)));
+    ret.push(...session.messages.filter((m) => selection.has(m.id)));
     return ret;
   }, [
     exportConfig.includeContext,
@@ -260,7 +284,8 @@ export function RenderExport(props: {
     });
 
     props.onRender(renderMsgs);
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div ref={domRef}>
@@ -270,7 +295,7 @@ export function RenderExport(props: {
           id={`${m.role}:${i}`}
           className={EXPORT_MESSAGE_CLASS_NAME}
         >
-          <Markdown content={m.content} defaultShow />
+          <Markdown content={getMessageTextContent(m)} defaultShow />
         </div>
       ))}
     </div>
@@ -285,9 +310,11 @@ export function PreviewActions(props: {
 }) {
   const [loading, setLoading] = useState(false);
   const [shouldExport, setShouldExport] = useState(false);
-
+  const config = useAppConfig();
   const onRenderMsgs = (msgs: ChatMessage[]) => {
     setShouldExport(false);
+
+    const api: ClientApi = getClientApi(config.modelConfig.providerName);
 
     api
       .share(msgs)
@@ -437,13 +464,13 @@ export function ImagePreviewer(props: {
     showToast(Locale.Export.Image.Toast);
     const dom = previewRef.current;
     if (!dom) return;
-  
+
     const isApp = getClientConfig()?.isApp;
-  
+
     try {
       const blob = await toPng(dom);
       if (!blob) return;
-  
+
       if (isMobile || (isApp && window.__TAURI__)) {
         if (isApp && window.__TAURI__) {
           const result = await window.__TAURI__.dialog.save({
@@ -459,7 +486,7 @@ export function ImagePreviewer(props: {
               },
             ],
           });
-  
+
           if (result !== null) {
             const response = await fetch(blob);
             const buffer = await response.arrayBuffer();
@@ -500,11 +527,11 @@ export function ImagePreviewer(props: {
         messages={props.messages}
       />
       <div
-        className={`${styles["preview-body"]} ${styles["default-theme"]}`}
+        className={clsx(styles["preview-body"], styles["default-theme"])}
         ref={previewRef}
       >
         <div className={styles["chat-info"]}>
-          <div className={styles["logo"] + " no-dark"}>
+          <div className={clsx(styles["logo"], "no-dark")}>
             <NextImage
               src={ChatGptIcon.src}
               alt="logo"
@@ -514,9 +541,9 @@ export function ImagePreviewer(props: {
           </div>
 
           <div>
-            <div className={styles["main-title"]}>ChatGPT Next Web</div>
+            <div className={styles["main-title"]}>NextChat</div>
             <div className={styles["sub-title"]}>
-              github.com/Yidadaa/ChatGPT-Next-Web
+              github.com/ChatGPTNextWeb/ChatGPT-Next-Web
             </div>
             <div className={styles["icons"]}>
               <ExportAvatar avatar={config.avatar} />
@@ -545,7 +572,7 @@ export function ImagePreviewer(props: {
         {props.messages.map((m, i) => {
           return (
             <div
-              className={styles["message"] + " " + styles["message-" + m.role]}
+              className={clsx(styles["message"], styles["message-" + m.role])}
               key={i}
             >
               <div className={styles["avatar"]}>
@@ -556,10 +583,38 @@ export function ImagePreviewer(props: {
 
               <div className={styles["body"]}>
                 <Markdown
-                  content={m.content}
+                  content={getMessageTextContent(m)}
                   fontSize={config.fontSize}
+                  fontFamily={config.fontFamily}
                   defaultShow
                 />
+                {getMessageImages(m).length == 1 && (
+                  <img
+                    key={i}
+                    src={getMessageImages(m)[0]}
+                    alt="message"
+                    className={styles["message-image"]}
+                  />
+                )}
+                {getMessageImages(m).length > 1 && (
+                  <div
+                    className={styles["message-images"]}
+                    style={
+                      {
+                        "--image-count": getMessageImages(m).length,
+                      } as React.CSSProperties
+                    }
+                  >
+                    {getMessageImages(m).map((src, i) => (
+                      <img
+                        key={i}
+                        src={src}
+                        alt="message"
+                        className={styles["message-image-multi"]}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           );
@@ -578,8 +633,10 @@ export function MarkdownPreviewer(props: {
     props.messages
       .map((m) => {
         return m.role === "user"
-          ? `## ${Locale.Export.MessageFromYou}:\n${m.content}`
-          : `## ${Locale.Export.MessageFromChatGPT}:\n${m.content.trim()}`;
+          ? `## ${Locale.Export.MessageFromYou}:\n${getMessageTextContent(m)}`
+          : `## ${Locale.Export.MessageFromChatGPT}:\n${getMessageTextContent(
+              m,
+            ).trim()}`;
       })
       .join("\n\n");
 
@@ -603,8 +660,6 @@ export function MarkdownPreviewer(props: {
     </>
   );
 }
-
-// modified by BackTrackZ now it's looks better
 
 export function JsonPreviewer(props: {
   messages: ChatMessage[];
