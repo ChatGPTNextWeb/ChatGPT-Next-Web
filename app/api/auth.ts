@@ -52,7 +52,6 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
       msg: "you are not allowed to access with your own api key",
     };
   }
-
   // if user does not provide an api key, inject system api key
   if (!apiKey) {
     const serverConfig = getServerSideConfig();
@@ -97,6 +96,14 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
         break;
       case ModelProvider.ChatGLM:
         systemApiKey = serverConfig.chatglmApiKey;
+        break;
+      case ModelProvider.Bedrock:
+        systemApiKey =
+          serverConfig.awsRegion +
+          ":" +
+          serverConfig.awsAccessKey +
+          ":" +
+          serverConfig.awsSecretKey;
         break;
       case ModelProvider.GPT:
       default:
