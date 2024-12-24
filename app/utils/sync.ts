@@ -8,6 +8,7 @@ import { useMaskStore } from "../store/mask";
 import { usePromptStore } from "../store/prompt";
 import { StoreKey } from "../constant";
 import { merge } from "./merge";
+import { removeOutdatedEntries } from "@/app/utils";
 
 type NonFunctionKeys<T> = {
   [K in keyof T]: T[K] extends (...args: any[]) => any ? never : K;
@@ -65,7 +66,10 @@ type StateMerger = {
 const MergeStates: StateMerger = {
   [StoreKey.Chat]: (localState, remoteState) => {
     // merge sessions
+    const currentSession = useChatStore.getState().currentSession();
+
     const localSessions: Record<string, ChatSession> = {};
+    const localDeletedSessionIds = localState.deletedSessionIds || {};
     localState.sessions.forEach((s) => (localSessions[s.id] = s));
 
     remoteState.sessions.forEach((remoteSession) => {
@@ -75,27 +79,96 @@ const MergeStates: StateMerger = {
       const localSession = localSessions[remoteSession.id];
       if (!localSession) {
         // if remote session is new, just merge it
-        localState.sessions.push(remoteSession);
+        if (
+          (localDeletedSessionIds[remoteSession.id] || -1) <
+          remoteSession.lastUpdate
+        ) {
+          localState.sessions.push(remoteSession);
+        }
       } else {
         // if both have the same session id, merge the messages
         const localMessageIds = new Set(localSession.messages.map((v) => v.id));
+        const localDeletedMessageIds = localSession.deletedMessageIds || {};
         remoteSession.messages.forEach((m) => {
           if (!localMessageIds.has(m.id)) {
-            localSession.messages.push(m);
+            if (
+              !localDeletedMessageIds[m.id] ||
+              new Date(localDeletedMessageIds[m.id]).toLocaleString() < m.date
+            ) {
+              localSession.messages.push(m);
+            }
           }
+        });
+
+        const remoteDeletedMessageIds = remoteSession.deletedMessageIds || {};
+        localSession.messages = localSession.messages.filter((localMessage) => {
+          return (
+            !remoteDeletedMessageIds[localMessage.id] ||
+            new Date(localDeletedMessageIds[localMessage.id]).toLocaleString() <
+              localMessage.date
+          );
         });
 
         // sort local messages with date field in asc order
         localSession.messages.sort(
           (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
         );
+        localSession.lastUpdate = Math.max(
+          remoteSession.lastUpdate,
+          localSession.lastUpdate,
+        );
+
+        const deletedMessageIds = {
+          ...remoteDeletedMessageIds,
+          ...localDeletedMessageIds,
+        };
+        removeOutdatedEntries(deletedMessageIds);
+        localSession.deletedMessageIds = deletedMessageIds;
       }
+    });
+
+    const remoteDeletedSessionIds = remoteState.deletedSessionIds || {};
+
+    const finalIds: Record<string, any> = {};
+    localState.sessions = localState.sessions.filter((localSession) => {
+      // 去除掉重复的会话
+      if (finalIds[localSession.id]) {
+        return false;
+      }
+      finalIds[localSession.id] = true;
+
+      // 去除掉非首个空会话，避免多个空会话在中间，不方便管理
+      if (
+        localSession.messages.length === 0 &&
+        localSession != localState.sessions[0]
+      ) {
+        return false;
+      }
+
+      // 去除云端删除并且删除时间小于本地修改时间的会话
+      return (
+        (remoteDeletedSessionIds[localSession.id] || -1) <=
+        localSession.lastUpdate
+      );
     });
 
     // sort local sessions with date field in desc order
     localState.sessions.sort(
       (a, b) =>
         new Date(b.lastUpdate).getTime() - new Date(a.lastUpdate).getTime(),
+    );
+
+    const deletedSessionIds = {
+      ...remoteDeletedSessionIds,
+      ...localDeletedSessionIds,
+    };
+    removeOutdatedEntries(deletedSessionIds);
+    localState.deletedSessionIds = deletedSessionIds;
+
+    localState.currentSessionIndex = localState.sessions.findIndex(
+      (session) => {
+        return session && currentSession && session.id === currentSession.id;
+      },
     );
 
     return localState;
@@ -153,9 +226,9 @@ export function mergeWithUpdate<T extends { lastUpdateTime?: number }>(
   remoteState: T,
 ) {
   const localUpdateTime = localState.lastUpdateTime ?? 0;
-  const remoteUpdateTime = localState.lastUpdateTime ?? 1;
+  const remoteUpdateTime = remoteState.lastUpdateTime ?? 1;
 
-  if (localUpdateTime < remoteUpdateTime) {
+  if (localUpdateTime >= remoteUpdateTime) {
     merge(remoteState, localState);
     return { ...remoteState };
   } else {
