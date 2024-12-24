@@ -317,7 +317,14 @@ export function getHeaders(ignoreHeaders: boolean = false) {
 
   if (bearerToken) {
     headers[authHeader] = bearerToken;
-  } else if (isEnabledAccessControl && validString(accessStore.accessCode)) {
+  }
+  // ensure access code is being sent when access control is enabled,
+  // this will fix an issue where the access code is not being sent when provider is google, azure or anthropic
+  if (
+    isEnabledAccessControl &&
+    validString(accessStore.accessCode) &&
+    authHeader !== "Authorization"
+  ) {
     headers["Authorization"] = getBearerToken(
       ACCESS_CODE_PREFIX + accessStore.accessCode,
     );

@@ -1,4 +1,4 @@
-import { getModelProvider } from "../app/utils/model";
+import { getModelProvider, isModelAvailableInServer } from "../app/utils/model";
 
 describe("getModelProvider", () => {
   test("should return model and provider when input contains '@'", () => {
@@ -27,5 +27,17 @@ describe("getModelProvider", () => {
     const [model, provider] = getModelProvider(input);
     expect(model).toBe("");
     expect(provider).toBeUndefined();
+  });
+});
+
+describe("isModelAvailableInServer", () => {
+  test("works when model null", () => {
+    const jsonBody = JSON.parse("{}") as { model?: string };
+    const result = isModelAvailableInServer(
+      "gpt-3.5-turbo@OpenAI",
+      jsonBody.model as string,
+      "OpenAI",
+    );
+    expect(result).toBe(false);
   });
 });
