@@ -241,7 +241,7 @@ export function SideBar(props: { className?: string }) {
       setTitle(subTitleRef.current);
       setSubTitle(titleRef.current);
       console.log("Swap", subTitleRef.current, titleRef.current);
-    }, 1000);
+    }, 5000);
     return () => clearInterval(timer);
   }, []);
   return (
