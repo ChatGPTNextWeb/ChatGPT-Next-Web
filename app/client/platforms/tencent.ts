@@ -94,7 +94,11 @@ export class HunyuanApi implements LLMApi {
   }
 
   async chat(options: ChatOptions) {
-    const visionModel = isVisionModel(options.config.model);
+    const accessStore = useAccessStore.getState();
+    const visionModel = isVisionModel(
+      options.config.model,
+      accessStore.visionModels,
+    );
     const messages = options.messages.map((v, index) => ({
       // "Messages 中 system 角色必须位于列表的最开始"
       role: index !== 0 && v.role === "system" ? "user" : v.role,

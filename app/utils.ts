@@ -7,6 +7,7 @@ import { ServiceProvider } from "./constant";
 import { fetch as tauriStreamFetch } from "./utils/stream";
 import { VISION_MODEL_REGEXES, EXCLUDE_VISION_MODEL_REGEXES } from "./constant";
 import { getClientConfig } from "./config/client";
+import { getModelProvider } from "./utils/model";
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
@@ -253,12 +254,15 @@ export function getMessageImages(message: RequestMessage): string[] {
   return urls;
 }
 
-export function isVisionModel(model: string) {
+export function isVisionModel(model: string, customVisionModels: string) {
   const clientConfig = getClientConfig();
-  const envVisionModels = clientConfig?.visionModels
-    ?.split(",")
-    .map((m) => m.trim());
-  if (envVisionModels?.includes(model)) {
+  const allVisionModelsList = [customVisionModels, clientConfig?.visionModels]
+    ?.join(",")
+    .split(",")
+    .map((m) => m.trim())
+    .filter(Boolean)
+    .map((m) => getModelProvider(m)[0]);
+  if (allVisionModelsList?.includes(model)) {
     return true;
   }
   return (
