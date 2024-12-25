@@ -1,3 +1,4 @@
+"use client";
 import React, { useEffect, useRef, useMemo, useState, Fragment } from "react";
 
 import styles from "./home.module.scss";
@@ -225,7 +226,15 @@ export function SideBar(props: { className?: string }) {
   const navigate = useNavigate();
   const config = useAppConfig();
   const chatStore = useChatStore();
-
+  let [title, setTitle] = useState("刘子阳最爱江晨成");
+  let [subTitle, setSubTitle] = useState("江晨成最爱刘子阳");
+  useEffect(() => {
+    if (Math.random() > 0.5) {
+      const temp = title;
+      setTitle(subTitle);
+      setSubTitle(temp);
+    }
+  }, [title, subTitle]);
   return (
     <SideBarContainer
       onDragStart={onDragStart}
