@@ -8,7 +8,7 @@ import React, {
   Fragment,
   RefObject,
 } from "react";
-
+import { toast } from "react-toastify";
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
 import RenameIcon from "../icons/rename.svg";
@@ -2041,7 +2041,10 @@ function _Chat() {
                   text={Locale.Chat.Send}
                   className={styles["chat-input-send"]}
                   type="primary"
-                  onClick={() => doSubmit(userInput)}
+                  onClick={() => {
+                    toast("刘子阳真是爱江晨成！！！");
+                    doSubmit(userInput);
+                  }}
                 />
               </label>
             </div>
