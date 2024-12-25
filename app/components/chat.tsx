@@ -8,7 +8,7 @@ import React, {
   Fragment,
   RefObject,
 } from "react";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
 import RenameIcon from "../icons/rename.svg";
@@ -2036,6 +2036,7 @@ function _Chat() {
                     })}
                   </div>
                 )}
+                <ToastContainer></ToastContainer>
                 <IconButton
                   icon={<SendWhiteIcon />}
                   text={Locale.Chat.Send}
