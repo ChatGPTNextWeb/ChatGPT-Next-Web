@@ -362,6 +362,7 @@ const bedrockModels = [
   "us.meta.llama3-1-70b-instruct-v1:0",
   "us.meta.llama3-2-11b-instruct-v1:0",
   "us.meta.llama3-2-90b-instruct-v1:0",
+  "us.meta.llama3-3-70b-instruct-v1:0",
   // Mistral Models
   "mistral.mistral-large-2402-v1:0",
   "mistral.mistral-large-2407-v1:0",
