@@ -177,13 +177,15 @@ export function SideBarHeader(props: {
         })}
         data-tauri-drag-region
       >
-        <div className={styles["sidebar-title-container"]}>
-          <div className={styles["sidebar-title"]} data-tauri-drag-region>
-            {title}
+        <a href="https://lzy4j.cc">
+          <div className={styles["sidebar-title-container"]}>
+            <div className={styles["sidebar-title"]} data-tauri-drag-region>
+              {title}
+            </div>
+            <div className={styles["sidebar-sub-title"]}>{subTitle}</div>
           </div>
-          <div className={styles["sidebar-sub-title"]}>{subTitle}</div>
-        </div>
-        <div className={clsx(styles["sidebar-logo"], "no-dark")}>{logo}</div>
+          <div className={clsx(styles["sidebar-logo"], "no-dark")}>{logo}</div>
+        </a>
       </div>
       {children}
     </Fragment>
