@@ -254,11 +254,16 @@ export function getMessageImages(message: RequestMessage): string[] {
 }
 
 export function isVisionModel(model: string) {
-  const clientConfig = getClientConfig();
-  const envVisionModels = clientConfig?.visionModels
-    ?.split(",")
-    .map((m) => m.trim());
-  if (envVisionModels?.includes(model)) {
+  const clientVisionModels = getClientConfig()?.visionModels || "";
+  const envVisionModels = process.env.VISION_MODELS || "";
+  const allVisionModels = `${clientVisionModels},${envVisionModels}`;
+
+  const visionModelsList = allVisionModels
+    .split(",")
+    .filter(Boolean)
+    .map((m: string) => m.trim());
+
+  if (visionModelsList.includes(model)) {
     return true;
   }
   return (

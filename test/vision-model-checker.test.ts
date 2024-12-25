@@ -49,10 +49,11 @@ describe("isVisionModel", () => {
   });
 
   test("should identify models from VISION_MODELS env var", () => {
-    process.env.VISION_MODELS = "custom-vision-model,another-vision-model";
+    process.env.VISION_MODELS = "custom-vision-model,another-vision-model,OpenGVLab/InternVL2-26B";
     
     expect(isVisionModel("custom-vision-model")).toBe(true);
     expect(isVisionModel("another-vision-model")).toBe(true);
+    expect(isVisionModel("OpenGVLab/InternVL2-26B")).toBe(true);
     expect(isVisionModel("unrelated-model")).toBe(false);
   });
 
