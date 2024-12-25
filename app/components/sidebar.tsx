@@ -242,8 +242,8 @@ export function SideBar(props: { className?: string }) {
       {...props}
     >
       <SideBarHeader
-        title="刘子阳最爱江晨成"
-        subTitle="江晨成也最爱刘子阳"
+        title={title}
+        subTitle={subTitle}
         logo={<ChatGptIcon />}
         shouldNarrow={shouldNarrow}
       >
