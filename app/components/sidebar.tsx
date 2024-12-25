@@ -226,15 +226,24 @@ export function SideBar(props: { className?: string }) {
   const navigate = useNavigate();
   const config = useAppConfig();
   const chatStore = useChatStore();
-  let [title, setTitle] = useState("刘子阳最爱江晨成");
-  let [subTitle, setSubTitle] = useState("江晨成最爱刘子阳");
+  const [title, setTitle] = useState("刘子阳最爱江晨成");
+  const [subTitle, setSubTitle] = useState("江晨成最爱刘子阳");
+  const titleRef = useRef(title);
+  const subTitleRef = useRef(subTitle);
+
   useEffect(() => {
-    if (Math.random() > 0.5) {
-      const temp = title;
-      setTitle(subTitle);
-      setSubTitle(temp);
-    }
+    titleRef.current = title;
+    subTitleRef.current = subTitle;
   }, [title, subTitle]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTitle(subTitleRef.current);
+      setSubTitle(titleRef.current);
+      console.log("Swap", subTitleRef.current, titleRef.current);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
   return (
     <SideBarContainer
       onDragStart={onDragStart}
