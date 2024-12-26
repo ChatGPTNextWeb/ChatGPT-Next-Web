@@ -322,6 +322,7 @@ const openaiModels = [
   "gpt-4o-mini",
   "o1",
   "o1-mini",
+  "o1-preview",
   // "gpt-4o-2024-05-13",
   // "gpt-4o-2024-08-06",
   // "gpt-4o-2024-11-20",
