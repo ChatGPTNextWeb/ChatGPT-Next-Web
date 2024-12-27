@@ -30,7 +30,7 @@
 
 1. [OpenAI API Key](https://platform.openai.com/account/api-keys)を準備する;
 2. 右側のボタンをクリックしてデプロイを開始：
-   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FYidadaa%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&env=GOOGLE_API_KEY&project-name=chatgpt-next-web&repository-name=ChatGPT-Next-Web) 、GitHubアカウントで直接ログインし、環境変数ページにAPI Keyと[ページアクセスパスワード](#設定ページアクセスパスワード) CODEを入力してください;
+   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Dogtiti/ChatGPT-Next-Web-EarlyBird&env=OPENAI_API_KEY&env=CODE&project-name=nextchat-earlyBird&repository-name=NextChat-EarlyBird) 、GitHubアカウントで直接ログインし、環境変数ページにAPI Keyと[ページアクセスパスワード](#設定ページアクセスパスワード) CODEを入力してください;
 3. デプロイが完了したら、すぐに使用を開始できます;
 4. （オプション）[カスタムドメインをバインド](https://vercel.com/docs/concepts/projects/domains/add-a-domain)：Vercelが割り当てたドメインDNSは一部の地域で汚染されているため、カスタムドメインをバインドすると直接接続できます。
 
