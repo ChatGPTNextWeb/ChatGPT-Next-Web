@@ -90,7 +90,7 @@ export class ChatGLMApi implements LLMApi {
         return {
           model: modelConfig.model,
           prompt,
-          size: "1024x1024",
+          size: options.config.size,
         } as ImageGenerationPayload;
       default:
         return {
