@@ -291,6 +291,22 @@ export const DEFAULT_TTS_VOICES = [
   "shimmer",
 ];
 
+export const VISION_MODEL_REGEXES = [
+  /vision/,
+  /gpt-4o/,
+  /claude-3/,
+  /gemini-1\.5/,
+  /gemini-exp/,
+  /gemini-2\.0/,
+  /learnlm/,
+  /qwen-vl/,
+  /qwen2-vl/,
+  /gpt-4-turbo(?!.*preview)/, // Matches "gpt-4-turbo" but not "gpt-4-turbo-preview"
+  /^dall-e-3$/, // Matches exactly "dall-e-3"
+];
+
+export const EXCLUDE_VISION_MODEL_REGEXES = [/claude-3-5-haiku-20241022/];
+
 const openaiModels = [
   "gpt-3.5-turbo",
   "gpt-3.5-turbo-1106",
@@ -317,13 +333,23 @@ const openaiModels = [
 ];
 
 const googleModels = [
-  "gemini-1.0-pro",
+  "gemini-1.0-pro", // Deprecated on 2/15/2025
   "gemini-1.5-pro-latest",
+  "gemini-1.5-pro",
+  "gemini-1.5-pro-002",
+  "gemini-1.5-pro-exp-0827",
   "gemini-1.5-flash-latest",
+  "gemini-1.5-flash-8b-latest",
+  "gemini-1.5-flash",
+  "gemini-1.5-flash-8b",
+  "gemini-1.5-flash-002",
+  "gemini-1.5-flash-exp-0827",
+  "learnlm-1.5-pro-experimental",
   "gemini-exp-1114",
   "gemini-exp-1121",
-  "learnlm-1.5-pro-experimental",
-  "gemini-pro-vision",
+  "gemini-exp-1206",
+  "gemini-2.0-flash-exp",
+  "gemini-2.0-flash-thinking-exp-1219",
 ];
 
 const anthropicModels = [
