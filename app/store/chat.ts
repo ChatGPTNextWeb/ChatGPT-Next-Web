@@ -29,6 +29,7 @@ import { ModelConfig, ModelType, useAppConfig } from "./config";
 import { useAccessStore } from "./access";
 import { collectModelsWithDefaultModel } from "../utils/model";
 import { createEmptyMask, Mask } from "./mask";
+import { executeMcpAction } from "../mcp/actions";
 
 const localStorage = safeLocalStorage();
 
@@ -425,9 +426,25 @@ export const useChatStore = createPersistStore(
               session.messages = session.messages.concat();
             });
           },
-          onFinish(message) {
+          async onFinish(message) {
             botMessage.streaming = false;
             if (message) {
+              // console.log("[Bot Response] ", message);
+              const mcpMatch = message.match(/```json:mcp([\s\S]*?)```/);
+              if (mcpMatch) {
+                try {
+                  const mcp = JSON.parse(mcpMatch[1]);
+                  console.log("[MCP Request]", mcp);
+
+                  // 直接调用服务器端 action
+                  const result = await executeMcpAction(mcp);
+                  console.log("[MCP Response]", result);
+                } catch (error) {
+                  console.error("[MCP Error]", error);
+                }
+              } else {
+                console.log("[MCP] No MCP found in response");
+              }
               botMessage.content = message;
               botMessage.date = new Date().toLocaleString();
               get().onNewMessage(botMessage, session);
