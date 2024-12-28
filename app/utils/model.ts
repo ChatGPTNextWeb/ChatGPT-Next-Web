@@ -202,3 +202,52 @@ export function isModelAvailableInServer(
   const modelTable = collectModelTable(DEFAULT_MODELS, customModels);
   return modelTable[fullName]?.available === false;
 }
+
+/**
+ * Check if the model name is a GPT-4 related model
+ *
+ * @param modelName The name of the model to check
+ * @returns True if the model is a GPT-4 related model (excluding gpt-4o-mini)
+ */
+export function isGPT4Model(modelName: string): boolean {
+  return (
+    (modelName.startsWith("gpt-4") ||
+      modelName.startsWith("chatgpt-4o") ||
+      modelName.startsWith("o1")) &&
+    !modelName.startsWith("gpt-4o-mini")
+  );
+}
+
+/**
+ * Checks if a model is not available on any of the specified providers in the server.
+ *
+ * @param {string} customModels - A string of custom models, comma-separated.
+ * @param {string} modelName - The name of the model to check.
+ * @param {string|string[]} providerNames - A string or array of provider names to check against.
+ *
+ * @returns {boolean} True if the model is not available on any of the specified providers, false otherwise.
+ */
+export function isModelNotavailableInServer(
+  customModels: string,
+  modelName: string,
+  providerNames: string | string[],
+): boolean {
+  // Check DISABLE_GPT4 environment variable
+  if (
+    process.env.DISABLE_GPT4 === "1" &&
+    isGPT4Model(modelName.toLowerCase())
+  ) {
+    return true;
+  }
+
+  const modelTable = collectModelTable(DEFAULT_MODELS, customModels);
+
+  const providerNamesArray = Array.isArray(providerNames)
+    ? providerNames
+    : [providerNames];
+  for (const providerName of providerNamesArray) {
+    const fullName = `${modelName}@${providerName.toLowerCase()}`;
+    if (modelTable?.[fullName]?.available === true) return false;
+  }
+  return true;
+}
