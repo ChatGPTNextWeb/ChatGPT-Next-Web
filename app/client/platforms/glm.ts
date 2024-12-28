@@ -25,12 +25,103 @@ import { getMessageTextContent } from "@/app/utils";
 import { RequestPayload } from "./openai";
 import { fetch } from "@/app/utils/stream";
 
+interface BasePayload {
+  model: string;
+}
+
+interface ChatPayload extends BasePayload {
+  messages: ChatOptions["messages"];
+  stream?: boolean;
+  temperature?: number;
+  presence_penalty?: number;
+  frequency_penalty?: number;
+  top_p?: number;
+}
+
+interface ImageGenerationPayload extends BasePayload {
+  prompt: string;
+  size?: string;
+  user_id?: string;
+}
+
+interface VideoGenerationPayload extends BasePayload {
+  prompt: string;
+  duration?: number;
+  resolution?: string;
+  user_id?: string;
+}
+
+type ModelType = "chat" | "image" | "video";
+
 export class ChatGLMApi implements LLMApi {
   private disableListModels = true;
 
+  private getModelType(model: string): ModelType {
+    if (model.startsWith("cogview-")) return "image";
+    if (model.startsWith("cogvideo-")) return "video";
+    return "chat";
+  }
+
+  private getModelPath(type: ModelType): string {
+    switch (type) {
+      case "image":
+        return ChatGLM.ImagePath;
+      case "video":
+        return ChatGLM.VideoPath;
+      default:
+        return ChatGLM.ChatPath;
+    }
+  }
+
+  private createPayload(
+    messages: ChatOptions["messages"],
+    modelConfig: any,
+    options: ChatOptions,
+  ): BasePayload {
+    const modelType = this.getModelType(modelConfig.model);
+    const lastMessage = messages[messages.length - 1];
+    const prompt =
+      typeof lastMessage.content === "string"
+        ? lastMessage.content
+        : lastMessage.content.map((c) => c.text).join("\n");
+
+    switch (modelType) {
+      case "image":
+        return {
+          model: modelConfig.model,
+          prompt,
+          size: options.config.size,
+        } as ImageGenerationPayload;
+      default:
+        return {
+          messages,
+          stream: options.config.stream,
+          model: modelConfig.model,
+          temperature: modelConfig.temperature,
+          presence_penalty: modelConfig.presence_penalty,
+          frequency_penalty: modelConfig.frequency_penalty,
+          top_p: modelConfig.top_p,
+        } as ChatPayload;
+    }
+  }
+
+  private parseResponse(modelType: ModelType, json: any): string {
+    switch (modelType) {
+      case "image": {
+        const imageUrl = json.data?.[0]?.url;
+        return imageUrl ? `![Generated Image](${imageUrl})` : "";
+      }
+      case "video": {
+        const videoUrl = json.data?.[0]?.url;
+        return videoUrl ? `<video controls src="${videoUrl}"></video>` : "";
+      }
+      default:
+        return this.extractMessage(json);
+    }
+  }
+
   path(path: string): string {
     const accessStore = useAccessStore.getState();
-
     let baseUrl = "";
 
     if (accessStore.useCustomConfig) {
@@ -51,7 +142,6 @@ export class ChatGLMApi implements LLMApi {
     }
 
     console.log("[Proxy Endpoint] ", baseUrl, path);
-
     return [baseUrl, path].join("/");
   }
 
@@ -79,24 +169,16 @@ export class ChatGLMApi implements LLMApi {
       },
     };
 
-    const requestPayload: RequestPayload = {
-      messages,
-      stream: options.config.stream,
-      model: modelConfig.model,
-      temperature: modelConfig.temperature,
-      presence_penalty: modelConfig.presence_penalty,
-      frequency_penalty: modelConfig.frequency_penalty,
-      top_p: modelConfig.top_p,
-    };
+    const modelType = this.getModelType(modelConfig.model);
+    const requestPayload = this.createPayload(messages, modelConfig, options);
+    const path = this.path(this.getModelPath(modelType));
 
-    console.log("[Request] glm payload: ", requestPayload);
+    console.log(`[Request] glm ${modelType} payload: `, requestPayload);
 
-    const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
 
     try {
-      const chatPath = this.path(ChatGLM.ChatPath);
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
@@ -104,12 +186,23 @@ export class ChatGLMApi implements LLMApi {
         headers: getHeaders(),
       };
 
-      // make a fetch request
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
         REQUEST_TIMEOUT_MS,
       );
 
+      if (modelType === "image" || modelType === "video") {
+        const res = await fetch(path, chatPayload);
+        clearTimeout(requestTimeoutId);
+
+        const resJson = await res.json();
+        console.log(`[Response] glm ${modelType}:`, resJson);
+        const message = this.parseResponse(modelType, resJson);
+        options.onFinish(message, res);
+        return;
+      }
+
+      const shouldStream = !!options.config.stream;
       if (shouldStream) {
         const [tools, funcs] = usePluginStore
           .getState()
@@ -117,7 +210,7 @@ export class ChatGLMApi implements LLMApi {
             useChatStore.getState().currentSession().mask?.plugin || [],
           );
         return stream(
-          chatPath,
+          path,
           requestPayload,
           getHeaders(),
           tools as any,
@@ -125,7 +218,6 @@ export class ChatGLMApi implements LLMApi {
           controller,
           // parseSSE
           (text: string, runTools: ChatMessageTool[]) => {
-            // console.log("parseSSE", text, runTools);
             const json = JSON.parse(text);
             const choices = json.choices as Array<{
               delta: {
@@ -154,7 +246,7 @@ export class ChatGLMApi implements LLMApi {
             }
             return choices[0]?.delta?.content;
           },
-          // processToolMessage, include tool_calls message and tool call results
+          // processToolMessage
           (
             requestPayload: RequestPayload,
             toolCallMessage: any,
@@ -172,7 +264,7 @@ export class ChatGLMApi implements LLMApi {
           options,
         );
       } else {
-        const res = await fetch(chatPath, chatPayload);
+        const res = await fetch(path, chatPayload);
         clearTimeout(requestTimeoutId);
 
         const resJson = await res.json();
@@ -184,6 +276,7 @@ export class ChatGLMApi implements LLMApi {
       options.onError?.(e as Error);
     }
   }
+
   async usage() {
     return {
       used: 0,
