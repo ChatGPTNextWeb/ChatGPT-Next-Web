@@ -81,10 +81,10 @@ describe('collectModelTable', () => {
 
     expect(result['gpt-3.5-turbo@openai'].available).toBe(true);
     expect(result['gpt-4@openai'].available).toBe(true);
-    expect(result['gpt-3.5@azure'].available).toBe(true);
+    expect(result['gpt-3.5-turbo@azure'].available).toBe(true);
     expect(result['gpt-4@azure'].available).toBe(true);
     expect(result['gemini-pro@google'].available).toBe(true);
-    expect(result['claude-3-haiku-20240307@claude'].available).toBe(true);
+    expect(result['claude-3-haiku-20240307@anthropic'].available).toBe(true);
     expect(result['grok-beta@xai'].available).toBe(true);
   });
   test('should exclude all models when custom is "-all"', () => {
@@ -93,7 +93,7 @@ describe('collectModelTable', () => {
 
     expect(result['gpt-3.5-turbo@openai'].available).toBe(false);
     expect(result['gpt-4@openai'].available).toBe(false);
-    expect(result['gpt-3.5@azure'].available).toBe(false);
+    expect(result['gpt-3.5-turbo@azure'].available).toBe(false);
     expect(result['gpt-4@azure'].available).toBe(false);
     expect(result['gemini-pro@google'].available).toBe(false);
     expect(result['claude-3-haiku-20240307@anthropic'].available).toBe(false);
@@ -106,7 +106,7 @@ describe('collectModelTable', () => {
 
     expect(result['gpt-3.5-turbo@openai'].available).toBe(true);
     expect(result['gpt-4@openai'].available).toBe(true);
-    expect(result['gpt-3.5@azure'].available).toBe(false);
+    expect(result['gpt-3.5-turbo@azure'].available).toBe(false);
     expect(result['gpt-4@azure'].available).toBe(false);
     expect(result['gemini-pro@google'].available).toBe(true);
     expect(result['claude-3-haiku-20240307@anthropic'].available).toBe(true);
@@ -119,7 +119,7 @@ describe('collectModelTable', () => {
 
     expect(result['gpt-3.5-turbo@openai'].available).toBe(true);
     expect(result['gpt-4@openai'].available).toBe(true);
-    expect(result['gpt-3.5@azure'].available).toBe(true);
+    expect(result['gpt-3.5-turbo@azure'].available).toBe(true);
     expect(result['gpt-4@azure'].available).toBe(true);
     expect(result['gemini-pro@google'].available).toBe(false);
     expect(result['claude-3-haiku-20240307@anthropic'].available).toBe(true);
@@ -132,7 +132,7 @@ describe('collectModelTable', () => {
 
     expect(result['gpt-3.5-turbo@openai'].available).toBe(true);
     expect(result['gpt-4@openai'].available).toBe(true);
-    expect(result['gpt-3.5@azure'].available).toBe(false);
+    expect(result['gpt-3.5-turbo@azure'].available).toBe(false);
     expect(result['gpt-4@azure'].available).toBe(false);
     expect(result['gemini-pro@google'].available).toBe(false);
     expect(result['claude-3-haiku-20240307@anthropic'].available).toBe(false);
