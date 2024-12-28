@@ -126,7 +126,7 @@ describe('collectModelTable', () => {
     expect(result['grok-beta@xai'].available).toBe(false);
   });
 
-  test('should exclude all models except OpenAI when custom is "-all, +*openai"', () => {
+  test('All models except OpenAI should be excluded, and additional models should be added when customized as "-all, +*openai,gpt-4o@azure"', () => {
     const customModels = '-all, +*openai,gpt-4o@azure';
     const result = collectModelTable(mockModels, customModels);
 
