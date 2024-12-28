@@ -194,6 +194,8 @@ export class ChatGPTApi implements LLMApi {
 
     let requestPayload: RequestPayload | DalleRequestPayload;
 
+    const accessStore = useAccessStore.getState();
+
     const isDalle3 = _isDalle3(options.config.model);
     const isO1 = options.config.model.startsWith("o1");
     if (isDalle3) {
@@ -211,7 +213,10 @@ export class ChatGPTApi implements LLMApi {
         style: options.config?.style ?? "vivid",
       };
     } else {
-      const visionModel = isVisionModel(options.config.model);
+      const visionModel = isVisionModel(
+        options.config.model,
+        accessStore.visionModels,
+      );
       const messages: ChatOptions["messages"] = [];
       for (const v of options.messages) {
         const content = visionModel

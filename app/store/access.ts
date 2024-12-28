@@ -123,6 +123,7 @@ const DEFAULT_ACCESS_STATE = {
   disableGPT4: false,
   disableFastLink: false,
   customModels: "",
+  visionModels: "",
   defaultModel: "",
 
   // tts config

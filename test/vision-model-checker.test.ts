@@ -2,6 +2,7 @@ import { isVisionModel } from "../app/utils";
 
 describe("isVisionModel", () => {
   const originalEnv = process.env;
+  const customVisionModels = "custom-vlm,another-vlm";
 
   beforeEach(() => {
     jest.resetModules();
@@ -27,12 +28,12 @@ describe("isVisionModel", () => {
     ];
 
     visionModels.forEach((model) => {
-      expect(isVisionModel(model)).toBe(true);
+      expect(isVisionModel(model, customVisionModels)).toBe(true);
     });
   });
 
   test("should exclude specific models", () => {
-    expect(isVisionModel("claude-3-5-haiku-20241022")).toBe(false);
+    expect(isVisionModel("claude-3-5-haiku-20241022", customVisionModels)).toBe(false);
   });
 
   test("should not identify non-vision models", () => {
@@ -44,24 +45,26 @@ describe("isVisionModel", () => {
     ];
 
     nonVisionModels.forEach((model) => {
-      expect(isVisionModel(model)).toBe(false);
+      expect(isVisionModel(model, customVisionModels)).toBe(false);
     });
   });
 
   test("should identify models from VISION_MODELS env var", () => {
     process.env.VISION_MODELS = "custom-vision-model,another-vision-model";
-    
-    expect(isVisionModel("custom-vision-model")).toBe(true);
-    expect(isVisionModel("another-vision-model")).toBe(true);
-    expect(isVisionModel("unrelated-model")).toBe(false);
+
+    expect(isVisionModel("custom-vision-model", customVisionModels)).toBe(true);
+    expect(isVisionModel("another-vision-model", customVisionModels)).toBe(true);
+    expect(isVisionModel("custom-vlm", customVisionModels)).toBe(true);
+    expect(isVisionModel("another-vlm", customVisionModels)).toBe(true);
+    expect(isVisionModel("unrelated-model", customVisionModels)).toBe(false);
   });
 
   test("should handle empty or missing VISION_MODELS", () => {
     process.env.VISION_MODELS = "";
-    expect(isVisionModel("unrelated-model")).toBe(false);
+    expect(isVisionModel("unrelated-model", customVisionModels)).toBe(false);
 
     delete process.env.VISION_MODELS;
-    expect(isVisionModel("unrelated-model")).toBe(false);
-    expect(isVisionModel("gpt-4-vision")).toBe(true);
+    expect(isVisionModel("unrelated-model", customVisionModels)).toBe(false);
+    expect(isVisionModel("gpt-4-vision", customVisionModels)).toBe(true);
   });
 });

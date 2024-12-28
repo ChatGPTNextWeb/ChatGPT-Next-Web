@@ -490,6 +490,7 @@ export function ChatActions(props: {
   const currentProviderName =
     session.mask.modelConfig?.providerName || ServiceProvider.OpenAI;
   const allModels = useAllModels();
+  const customVisionModels = useAccessStore().visionModels;
   const models = useMemo(() => {
     const filteredModels = allModels.filter((m) => m.available);
     const defaultModel = filteredModels.find((m) => m.isDefault);
@@ -529,7 +530,7 @@ export function ChatActions(props: {
   const isMobileScreen = useMobileScreen();
 
   useEffect(() => {
-    const show = isVisionModel(currentModel);
+    const show = isVisionModel(currentModel, customVisionModels);
     setShowUploadImage(show);
     if (!show) {
       props.setAttachImages([]);
@@ -1457,10 +1458,12 @@ function _Chat() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const customVisionModels = useAccessStore().visionModels;
+
   const handlePaste = useCallback(
     async (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
       const currentModel = chatStore.currentSession().mask.modelConfig.model;
-      if (!isVisionModel(currentModel)) {
+      if (!isVisionModel(currentModel, customVisionModels)) {
         return;
       }
       const items = (event.clipboardData || window.clipboardData).items;
@@ -1497,7 +1500,7 @@ function _Chat() {
         }
       }
     },
-    [attachImages, chatStore],
+    [attachImages, chatStore, customVisionModels],
   );
 
   async function uploadImage() {
@@ -1545,7 +1548,7 @@ function _Chat() {
     setAttachImages(images);
   }
 
-  // 快捷键 shortcut keys
+  // 捷键 shortcut keys
   const [showShortcutKeyModal, setShowShortcutKeyModal] = useState(false);
 
   useEffect(() => {

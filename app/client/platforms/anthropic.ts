@@ -84,9 +84,12 @@ export class ClaudeApi implements LLMApi {
     return res?.content?.[0]?.text;
   }
   async chat(options: ChatOptions): Promise<void> {
-    const visionModel = isVisionModel(options.config.model);
-
     const accessStore = useAccessStore.getState();
+
+    const visionModel = isVisionModel(
+      options.config.model,
+      accessStore.visionModels,
+    );
 
     const shouldStream = !!options.config.stream;
 

@@ -13,6 +13,7 @@ const DANGER_CONFIG = {
   hideBalanceQuery: serverConfig.hideBalanceQuery,
   disableFastLink: serverConfig.disableFastLink,
   customModels: serverConfig.customModels,
+  visionModels: serverConfig.visionModels,
   defaultModel: serverConfig.defaultModel,
 };
 
