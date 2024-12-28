@@ -29,11 +29,9 @@ export async function createClient(
     },
     {
       capabilities: {
-        roots: {
-          // listChanged indicates whether the client will emit notifications when the list of roots changes.
-          // listChanged 指示客户端在根列表更改时是否发出通知。
-          listChanged: true,
-        },
+        // roots: {
+        //   listChanged: true,
+        // },
       },
     },
   );
@@ -80,8 +78,7 @@ export async function listPrimitives(client: Client) {
   return primitives;
 }
 
+/** Execute a request */
 export async function executeRequest(client: Client, request: any) {
-  const r = client.request(request, z.any());
-  console.log(r);
-  return r;
+  return client.request(request, z.any());
 }

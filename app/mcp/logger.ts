@@ -1,3 +1,4 @@
+// ANSI color codes for terminal output
 const colors = {
   reset: "\x1b[0m",
   bright: "\x1b[1m",
@@ -21,40 +22,44 @@ export class MCPClientLogger {
   }
 
   info(message: any) {
-    this.log(colors.blue, message);
+    this.print(colors.blue, message);
   }
 
   success(message: any) {
-    this.log(colors.green, message);
+    this.print(colors.green, message);
   }
 
   error(message: any) {
-    const formattedMessage = this.formatMessage(message);
-    console.error(
-      `${colors.red}${colors.bright}[${this.prefix}]${colors.reset} ${formattedMessage}`,
-    );
+    this.print(colors.red, message);
   }
 
   warn(message: any) {
-    this.log(colors.yellow, message);
+    this.print(colors.yellow, message);
   }
 
   debug(message: any) {
     if (this.debugMode) {
-      this.log(colors.dim, message);
+      this.print(colors.dim, message);
     }
   }
 
+  /**
+   * Format message to string, if message is object, convert to JSON string
+   */
   private formatMessage(message: any): string {
     return typeof message === "object"
       ? JSON.stringify(message, null, 2)
       : message;
   }
 
-  private log(color: string, message: any) {
+  /**
+   * Print formatted message to console
+   */
+  private print(color: string, message: any) {
     const formattedMessage = this.formatMessage(message);
-    console.log(
-      `${color}${colors.bright}[${this.prefix}]${colors.reset} ${formattedMessage}`,
-    );
+    const logMessage = `${color}${colors.bright}[${this.prefix}]${colors.reset} ${formattedMessage}`;
+
+    // 只使用 console.log，这样日志会显示在 Tauri 的终端中
+    console.log(logMessage);
   }
 }

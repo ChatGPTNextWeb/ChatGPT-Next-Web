@@ -356,6 +356,27 @@ export const useChatStore = createPersistStore(
 
       onNewMessage(message: ChatMessage, targetSession: ChatSession) {
         get().updateTargetSession(targetSession, (session) => {
+          // Check and process MCP JSON
+          const content =
+            typeof message.content === "string" ? message.content : "";
+          const mcpMatch = content.match(/```json:mcp:(\w+)([\s\S]*?)```/);
+          if (mcpMatch) {
+            try {
+              const clientId = mcpMatch[1];
+              const mcp = JSON.parse(mcpMatch[2]);
+              console.log("[MCP Request]", clientId, mcp);
+              // Execute MCP action
+              executeMcpAction(clientId, mcp)
+                .then((result) => {
+                  console.log("[MCP Response]", result);
+                })
+                .catch((error) => {
+                  console.error("[MCP Error]", error);
+                });
+            } catch (error) {
+              console.error("[MCP Error]", error);
+            }
+          }
           session.messages = session.messages.concat();
           session.lastUpdate = Date.now();
         });
@@ -429,22 +450,6 @@ export const useChatStore = createPersistStore(
           async onFinish(message) {
             botMessage.streaming = false;
             if (message) {
-              // console.log("[Bot Response] ", message);
-              const mcpMatch = message.match(/```json:mcp([\s\S]*?)```/);
-              if (mcpMatch) {
-                try {
-                  const mcp = JSON.parse(mcpMatch[1]);
-                  console.log("[MCP Request]", mcp);
-
-                  // 直接调用服务器端 action
-                  const result = await executeMcpAction(mcp);
-                  console.log("[MCP Response]", result);
-                } catch (error) {
-                  console.error("[MCP Error]", error);
-                }
-              } else {
-                console.log("[MCP] No MCP found in response");
-              }
               botMessage.content = message;
               botMessage.date = new Date().toLocaleString();
               get().onNewMessage(botMessage, session);

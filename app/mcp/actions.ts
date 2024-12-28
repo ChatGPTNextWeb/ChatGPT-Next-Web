@@ -2,32 +2,76 @@
 
 import { createClient, executeRequest } from "./client";
 import { MCPClientLogger } from "./logger";
-import { MCP_CONF } from "@/app/mcp/mcp_config";
+import conf from "./mcp_config.json";
 
 const logger = new MCPClientLogger("MCP Server");
 
-let fsClient: any = null;
+// Use Map to store all clients
+const clientsMap = new Map<string, any>();
 
-async function initFileSystemClient() {
-  if (!fsClient) {
-    fsClient = await createClient(MCP_CONF.filesystem, "fs");
-    logger.success("FileSystem client initialized");
+// Whether initialized
+let initialized = false;
+
+// Store failed clients
+let errorClients: string[] = [];
+
+// Initialize all configured clients
+export async function initializeMcpClients() {
+  // If already initialized, return
+  if (initialized) {
+    return;
   }
-  return fsClient;
+
+  logger.info("Starting to initialize MCP clients...");
+
+  // Initialize all clients, key is clientId, value is client config
+  for (const [clientId, config] of Object.entries(conf.mcpServers)) {
+    try {
+      logger.info(`Initializing MCP client: ${clientId}`);
+      const client = await createClient(config, clientId);
+      clientsMap.set(clientId, client);
+      logger.success(`Client ${clientId} initialized`);
+    } catch (error) {
+      errorClients.push(clientId);
+      logger.error(`Failed to initialize client ${clientId}: ${error}`);
+    }
+  }
+
+  initialized = true;
+
+  if (errorClients.length > 0) {
+    logger.warn(`Failed to initialize clients: ${errorClients.join(", ")}`);
+  } else {
+    logger.success("All MCP clients initialized");
+  }
+
+  const availableClients = await getAvailableClients();
+
+  logger.info(`Available clients: ${availableClients.join(",")}`);
 }
 
-export async function executeMcpAction(request: any) {
-  "use server";
-
+// Execute MCP request
+export async function executeMcpAction(clientId: string, request: any) {
   try {
-    if (!fsClient) {
-      await initFileSystemClient();
+    // Find the corresponding client
+    const client = clientsMap.get(clientId);
+    if (!client) {
+      logger.error(`Client ${clientId} not found`);
+      return;
     }
 
-    logger.info("Executing MCP request for fs");
-    return await executeRequest(fsClient, request);
+    logger.info(`Executing MCP request for ${clientId}`);
+    // Execute request and return result
+    return await executeRequest(client, request);
   } catch (error) {
     logger.error(`MCP execution error: ${error}`);
     throw error;
   }
+}
+
+// Get all available client IDs
+export async function getAvailableClients() {
+  return Array.from(clientsMap.keys()).filter(
+    (clientId) => !errorClients.includes(clientId),
+  );
 }
