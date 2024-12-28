@@ -79,7 +79,7 @@ describe('collectModelTable', () => {
     const customModels = '';
     const result = collectModelTable(mockModels, customModels);
 
-    expect(result['gpt-3.5@openai'].available).toBe(true);
+    expect(result['gpt-3.5-turbo@openai'].available).toBe(true);
     expect(result['gpt-4@openai'].available).toBe(true);
     expect(result['gpt-3.5@azure'].available).toBe(true);
     expect(result['gpt-4@azure'].available).toBe(true);
@@ -91,7 +91,7 @@ describe('collectModelTable', () => {
     const customModels = '-all';
     const result = collectModelTable(mockModels, customModels);
 
-    expect(result['gpt-3.5@openai'].available).toBe(false);
+    expect(result['gpt-3.5-turbo@openai'].available).toBe(false);
     expect(result['gpt-4@openai'].available).toBe(false);
     expect(result['gpt-3.5@azure'].available).toBe(false);
     expect(result['gpt-4@azure'].available).toBe(false);
@@ -104,7 +104,7 @@ describe('collectModelTable', () => {
     const customModels = '-*azure';
     const result = collectModelTable(mockModels, customModels);
 
-    expect(result['gpt-3.5@openai'].available).toBe(true);
+    expect(result['gpt-3.5-turbo@openai'].available).toBe(true);
     expect(result['gpt-4@openai'].available).toBe(true);
     expect(result['gpt-3.5@azure'].available).toBe(false);
     expect(result['gpt-4@azure'].available).toBe(false);
@@ -117,7 +117,7 @@ describe('collectModelTable', () => {
     const customModels = '-*google,-*xai';
     const result = collectModelTable(mockModels, customModels);
 
-    expect(result['gpt-3.5@openai'].available).toBe(true);
+    expect(result['gpt-3.5-turbo@openai'].available).toBe(true);
     expect(result['gpt-4@openai'].available).toBe(true);
     expect(result['gpt-3.5@azure'].available).toBe(true);
     expect(result['gpt-4@azure'].available).toBe(true);
@@ -130,7 +130,7 @@ describe('collectModelTable', () => {
     const customModels = '-all, +*openai,gpt-4o@azure';
     const result = collectModelTable(mockModels, customModels);
 
-    expect(result['gpt-3.5@openai'].available).toBe(true);
+    expect(result['gpt-3.5-turbo@openai'].available).toBe(true);
     expect(result['gpt-4@openai'].available).toBe(true);
     expect(result['gpt-3.5@azure'].available).toBe(false);
     expect(result['gpt-4@azure'].available).toBe(false);
