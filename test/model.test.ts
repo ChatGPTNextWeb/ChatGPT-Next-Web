@@ -53,7 +53,6 @@ describe('collectModelTable', () => {
       } as LLMModelProvider,
       sorted: 3,
     },
-    ,
     {
       name: 'claude-3-haiku-20240307',
       available: true,
