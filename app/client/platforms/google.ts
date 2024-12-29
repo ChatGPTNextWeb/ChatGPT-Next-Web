@@ -60,9 +60,18 @@ export class GeminiProApi implements LLMApi {
   extractMessage(res: any) {
     console.log("[Response] gemini-pro response: ", res);
 
+    const getTextFromParts = (parts: any[]) => {
+      if (!Array.isArray(parts)) return "";
+
+      return parts
+        .map((part) => part?.text || "")
+        .filter((text) => text.trim() !== "")
+        .join("\n\n");
+    };
+
     return (
-      res?.candidates?.at(0)?.content?.parts.at(0)?.text ||
-      res?.at(0)?.candidates?.at(0)?.content?.parts.at(0)?.text ||
+      getTextFromParts(res?.candidates?.at(0)?.content?.parts) ||
+      getTextFromParts(res?.at(0)?.candidates?.at(0)?.content?.parts) ||
       res?.error?.message ||
       ""
     );
@@ -223,7 +232,10 @@ export class GeminiProApi implements LLMApi {
                 },
               });
             }
-            return chunkJson?.candidates?.at(0)?.content.parts.at(0)?.text;
+            return chunkJson?.candidates
+              ?.at(0)
+              ?.content.parts?.map((part: { text: string }) => part.text)
+              .join("\n\n");
           },
           // processToolMessage, include tool_calls message and tool call results
           (
