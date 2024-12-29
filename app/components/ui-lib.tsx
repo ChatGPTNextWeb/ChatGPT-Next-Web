@@ -523,8 +523,11 @@ export function Selector<T>(props: {
   }
   return (
     <div className={styles["selector"]} onClick={() => props.onClose?.()}>
-      <div className={styles["selector-content"]}>
-        {/* todo: add searchbox */}
+      <div
+        className={styles["selector-content"]}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* title and search box */}
         <div className={styles["selector-bar"]}>
           <div className={styles["selector-title"]}>
             {Locale.UI.SelectorTitle}
@@ -539,6 +542,7 @@ export function Selector<T>(props: {
             />
           </div>
         </div>
+        {/* list content */}
         <List>
           {filteredItems.length ? (
             filteredItems.map((item, i) => {
