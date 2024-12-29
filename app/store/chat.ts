@@ -1,4 +1,9 @@
-import { getMessageTextContent, trimTopic } from "../utils";
+import {
+  getMessageTextContent,
+  isDalle3,
+  safeLocalStorage,
+  trimTopic,
+} from "../utils";
 
 import { indexedDBStorage } from "@/app/utils/indexedDB-storage";
 import { nanoid } from "nanoid";
@@ -14,14 +19,13 @@ import {
   DEFAULT_INPUT_TEMPLATE,
   DEFAULT_MODELS,
   DEFAULT_SYSTEM_TEMPLATE,
+  GEMINI_SUMMARIZE_MODEL,
   KnowledgeCutOffDate,
+  ServiceProvider,
   StoreKey,
   SUMMARIZE_MODEL,
-  GEMINI_SUMMARIZE_MODEL,
-  ServiceProvider,
 } from "../constant";
 import Locale, { getLang } from "../locales";
-import { isDalle3, safeLocalStorage } from "../utils";
 import { prettyObject } from "../utils/format";
 import { createPersistStore } from "../utils/store";
 import { estimateTokenLength } from "../utils/token";
@@ -55,6 +59,7 @@ export type ChatMessage = RequestMessage & {
   model?: ModelType;
   tools?: ChatMessageTool[];
   audio_url?: string;
+  isMcpResponse?: boolean;
 };
 
 export function createMessage(override: Partial<ChatMessage>): ChatMessage {
@@ -368,20 +373,22 @@ export const useChatStore = createPersistStore(
         get().summarizeSession(false, targetSession);
       },
 
-      async onUserInput(content: string, attachImages?: string[]) {
+      async onUserInput(
+        content: string,
+        attachImages?: string[],
+        isMcpResponse?: boolean,
+      ) {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
 
-        const userContent = fillTemplateWith(content, modelConfig);
-        console.log("[User Input] after template: ", userContent);
+        // MCP Response no need to fill template
+        let mContent: string | MultimodalContent[] = isMcpResponse
+          ? content
+          : fillTemplateWith(content, modelConfig);
 
-        let mContent: string | MultimodalContent[] = userContent;
-
-        if (attachImages && attachImages.length > 0) {
+        if (!isMcpResponse && attachImages && attachImages.length > 0) {
           mContent = [
-            ...(userContent
-              ? [{ type: "text" as const, text: userContent }]
-              : []),
+            ...(content ? [{ type: "text" as const, text: content }] : []),
             ...attachImages.map((url) => ({
               type: "image_url" as const,
               image_url: { url },
@@ -392,6 +399,7 @@ export const useChatStore = createPersistStore(
         let userMessage: ChatMessage = createMessage({
           role: "user",
           content: mContent,
+          isMcpResponse,
         });
 
         const botMessage: ChatMessage = createMessage({
@@ -770,9 +778,10 @@ export const useChatStore = createPersistStore(
           lastInput,
         });
       },
+
+      /** check if the message contains MCP JSON and execute the MCP action */
       checkMcpJson(message: ChatMessage) {
-        const content =
-          typeof message.content === "string" ? message.content : "";
+        const content = getMessageTextContent(message);
         if (isMcpJson(content)) {
           try {
             const mcpRequest = extractMcpJson(content);
@@ -782,11 +791,14 @@ export const useChatStore = createPersistStore(
               executeMcpAction(mcpRequest.clientId, mcpRequest.mcp)
                 .then((result) => {
                   console.log("[MCP Response]", result);
-                  // 直接使用onUserInput发送结果
-                  get().onUserInput(
+                  const mcpResponse =
                     typeof result === "object"
                       ? JSON.stringify(result)
-                      : String(result),
+                      : String(result);
+                  get().onUserInput(
+                    `\`\`\`json:mcp:${mcpRequest.clientId}\n${mcpResponse}\n\`\`\``,
+                    [],
+                    true,
                   );
                 })
                 .catch((error) => showToast(String(error)));

@@ -1,6 +1,7 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 import { MCPClientLogger } from "./logger";
+import { McpRequestMessage } from "./types";
 import { z } from "zod";
 
 export interface ServerConfig {
@@ -79,6 +80,9 @@ export async function listPrimitives(client: Client) {
 }
 
 /** Execute a request */
-export async function executeRequest(client: Client, request: any) {
+export async function executeRequest(
+  client: Client,
+  request: McpRequestMessage,
+) {
   return client.request(request, z.any());
 }

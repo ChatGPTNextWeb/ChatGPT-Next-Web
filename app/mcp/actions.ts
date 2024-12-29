@@ -3,8 +3,9 @@
 import { createClient, executeRequest } from "./client";
 import { MCPClientLogger } from "./logger";
 import conf from "./mcp_config.json";
+import { McpRequestMessage } from "./types";
 
-const logger = new MCPClientLogger("MCP Server");
+const logger = new MCPClientLogger("MCP Actions");
 
 // Use Map to store all clients
 const clientsMap = new Map<string, any>();
@@ -51,7 +52,10 @@ export async function initializeMcpClients() {
 }
 
 // Execute MCP request
-export async function executeMcpAction(clientId: string, request: any) {
+export async function executeMcpAction(
+  clientId: string,
+  request: McpRequestMessage,
+) {
   try {
     // Find the corresponding client
     const client = clientsMap.get(clientId);
@@ -61,6 +65,7 @@ export async function executeMcpAction(clientId: string, request: any) {
     }
 
     logger.info(`Executing MCP request for ${clientId}`);
+
     // Execute request and return result
     return await executeRequest(client, request);
   } catch (error) {
