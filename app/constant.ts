@@ -233,6 +233,8 @@ export const XAI = {
 export const ChatGLM = {
   ExampleEndpoint: CHATGLM_BASE_URL,
   ChatPath: "api/paas/v4/chat/completions",
+  ImagePath: "api/paas/v4/images/generations",
+  VideoPath: "api/paas/v4/videos/generations",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -303,6 +305,7 @@ export const VISION_MODEL_REGEXES = [
   /qwen2-vl/,
   /gpt-4-turbo(?!.*preview)/, // Matches "gpt-4-turbo" but not "gpt-4-turbo-preview"
   /^dall-e-3$/, // Matches exactly "dall-e-3"
+  /glm-4v/,
 ];
 
 export const EXCLUDE_VISION_MODEL_REGEXES = [/claude-3-5-haiku-20241022/];
@@ -431,6 +434,15 @@ const chatglmModels = [
   "glm-4-long",
   "glm-4-flashx",
   "glm-4-flash",
+  "glm-4v-plus",
+  "glm-4v",
+  "glm-4v-flash", // free
+  "cogview-3-plus",
+  "cogview-3",
+  "cogview-3-flash", // free
+  // 目前无法适配轮询任务
+  //   "cogvideox",
+  //   "cogvideox-flash", // free
 ];
 
 let seq = 1000; // 内置的模型序号生成器从1000开始
@@ -586,11 +598,6 @@ export const internalAllowedWebDavEndpoints = [
 ];
 
 export const DEFAULT_GA_ID = "G-89WN60ZK2E";
-export const PLUGINS = [
-  { name: "Plugins", path: Path.Plugins },
-  { name: "Stable Diffusion", path: Path.Sd },
-  { name: "Search Chat", path: Path.SearchChat },
-];
 
 export const SAAS_CHAT_URL = "https://nextchat.dev/chat";
 export const SAAS_CHAT_UTM_URL = "https://nextchat.dev/chat?utm=github";

@@ -72,6 +72,8 @@ import {
   isDalle3,
   showPlugins,
   safeLocalStorage,
+  getModelSizes,
+  supportsCustomSize,
 } from "../utils";
 
 import { uploadImage as uploadImageRemote } from "@/app/utils/chat";
@@ -79,7 +81,7 @@ import { uploadImage as uploadImageRemote } from "@/app/utils/chat";
 import dynamic from "next/dynamic";
 
 import { ChatControllerPool } from "../client/controller";
-import { DalleSize, DalleQuality, DalleStyle } from "../typing";
+import { DalleQuality, DalleStyle, ModelSize } from "../typing";
 import { Prompt, usePromptStore } from "../store/prompt";
 import Locale from "../locales";
 
@@ -519,10 +521,11 @@ export function ChatActions(props: {
   const [showSizeSelector, setShowSizeSelector] = useState(false);
   const [showQualitySelector, setShowQualitySelector] = useState(false);
   const [showStyleSelector, setShowStyleSelector] = useState(false);
-  const dalle3Sizes: DalleSize[] = ["1024x1024", "1792x1024", "1024x1792"];
+  const modelSizes = getModelSizes(currentModel);
   const dalle3Qualitys: DalleQuality[] = ["standard", "hd"];
   const dalle3Styles: DalleStyle[] = ["vivid", "natural"];
-  const currentSize = session.mask.modelConfig?.size ?? "1024x1024";
+  const currentSize =
+    session.mask.modelConfig?.size ?? ("1024x1024" as ModelSize);
   const currentQuality = session.mask.modelConfig?.quality ?? "standard";
   const currentStyle = session.mask.modelConfig?.style ?? "vivid";
 
@@ -673,7 +676,7 @@ export function ChatActions(props: {
           />
         )}
 
-        {isDalle3(currentModel) && (
+        {supportsCustomSize(currentModel) && (
           <ChatAction
             onClick={() => setShowSizeSelector(true)}
             text={currentSize}
@@ -684,7 +687,7 @@ export function ChatActions(props: {
         {showSizeSelector && (
           <Selector
             defaultSelectedValue={currentSize}
-            items={dalle3Sizes.map((m) => ({
+            items={modelSizes.map((m) => ({
               title: m,
               value: m,
             }))}
