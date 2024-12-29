@@ -81,7 +81,7 @@
   border-radius: 0 0 10px 10px;
   box-shadow: var(--card-shadow);
   margin-bottom: 20px;
-  animation: slide-in ease 0.3s;
+
   background: var(--white);
 }
 
@@ -341,6 +341,7 @@
   }
 
   &-content {
+    animation: slide-in ease 0.3s;
     min-width: 300px;
     .list {
       max-height: 50vh;
