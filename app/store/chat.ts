@@ -30,6 +30,7 @@ import { useAccessStore } from "./access";
 import { collectModelsWithDefaultModel } from "../utils/model";
 import { createEmptyMask, Mask } from "./mask";
 import { executeMcpAction } from "../mcp/actions";
+import { extractMcpJson, isMcpJson } from "../mcp/utils";
 
 const localStorage = safeLocalStorage();
 
@@ -356,31 +357,14 @@ export const useChatStore = createPersistStore(
 
       onNewMessage(message: ChatMessage, targetSession: ChatSession) {
         get().updateTargetSession(targetSession, (session) => {
-          // Check and process MCP JSON
-          const content =
-            typeof message.content === "string" ? message.content : "";
-          const mcpMatch = content.match(/```json:mcp:(\w+)([\s\S]*?)```/);
-          if (mcpMatch) {
-            try {
-              const clientId = mcpMatch[1];
-              const mcp = JSON.parse(mcpMatch[2]);
-              console.log("[MCP Request]", clientId, mcp);
-              // Execute MCP action
-              executeMcpAction(clientId, mcp)
-                .then((result) => {
-                  console.log("[MCP Response]", result);
-                })
-                .catch((error) => {
-                  console.error("[MCP Error]", error);
-                });
-            } catch (error) {
-              console.error("[MCP Error]", error);
-            }
-          }
           session.messages = session.messages.concat();
           session.lastUpdate = Date.now();
         });
+
         get().updateStat(message, targetSession);
+
+        get().checkMcpJson(message);
+
         get().summarizeSession(false, targetSession);
       },
 
@@ -785,6 +769,32 @@ export const useChatStore = createPersistStore(
         set({
           lastInput,
         });
+      },
+      checkMcpJson(message: ChatMessage) {
+        const content =
+          typeof message.content === "string" ? message.content : "";
+        if (isMcpJson(content)) {
+          try {
+            const mcpRequest = extractMcpJson(content);
+            if (mcpRequest) {
+              console.debug("[MCP Request]", mcpRequest);
+
+              executeMcpAction(mcpRequest.clientId, mcpRequest.mcp)
+                .then((result) => {
+                  console.log("[MCP Response]", result);
+                  // 直接使用onUserInput发送结果
+                  get().onUserInput(
+                    typeof result === "object"
+                      ? JSON.stringify(result)
+                      : String(result),
+                  );
+                })
+                .catch((error) => showToast(String(error)));
+            }
+          } catch (error) {
+            console.error("[MCP Error]", error);
+          }
+        }
       },
     };
 
