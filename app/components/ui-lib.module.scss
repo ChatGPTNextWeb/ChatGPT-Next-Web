@@ -345,6 +345,8 @@
     width: 30rem;
     .list {
       max-height: 50vh;
+      min-height: 50vh;
+
       overflow-x: hidden;
       overflow-y: auto;
 
