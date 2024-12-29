@@ -66,8 +66,8 @@ export function collectModelTable(
 
   // default models
   models.forEach((m) => {
-    // using <modelName>@<providerId> as fullName
-    modelTable[`${m.name}@${m?.provider?.id}`] = {
+    // using <modelName>@<providerType> as fullName
+    modelTable[`${m.name}@${m?.provider?.providerType}`] = {
       ...m,
       displayName: m.name, // 'provider' is copied over if it exists
     };
@@ -126,7 +126,7 @@ export function collectModelTable(
             displayName: displayName || customModelName,
             available,
             provider, // Use optional chaining
-            sorted: CustomSeq.next(`${customModelName}@${provider?.id}`),
+            sorted: CustomSeq.next(`${customModelName}@${provider?.providerType}`),
           };
         }
       }
