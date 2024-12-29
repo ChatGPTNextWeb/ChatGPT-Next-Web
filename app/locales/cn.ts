@@ -759,7 +759,7 @@ const cn = {
     Sync: "同步",
     Config: "配置",
     Search: "搜索",
-    SelectorTitle: "选择model",
+    SelectorTitle: "选择",
     NoResults: "没有结果",
   },
   Exporter: {

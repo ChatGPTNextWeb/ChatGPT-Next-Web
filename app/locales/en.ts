@@ -765,7 +765,7 @@ const en: LocaleType = {
     Sync: "Sync",
     Config: "Config",
     Search: "Search",
-    SelectorTitle: "Choose Model",
+    SelectorTitle: "Select",
     NoResults: "No Results",
   },
   Exporter: {
