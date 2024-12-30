@@ -127,7 +127,7 @@ describe('collectModelTable', () => {
   });
 
   test('All models except OpenAI should be excluded, and additional models should be added when customized as "-all, +*openai,gpt-4o@azure"', () => {
-    const customModels = '-all, +*openai,gpt-4o@azure';
+    const customModels = '-all,+*openai,gpt-4o@azure';
     const result = collectModelTable(mockModels, customModels);
 
     expect(result['gpt-3.5-turbo@openai'].available).toBe(true);
