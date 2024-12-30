@@ -10,6 +10,7 @@ import { handle as alibabaHandler } from "../../alibaba";
 import { handle as moonshotHandler } from "../../moonshot";
 import { handle as stabilityHandler } from "../../stability";
 import { handle as iflytekHandler } from "../../iflytek";
+import { handle as deepseekHandler } from "../../deepseek";
 import { handle as xaiHandler } from "../../xai";
 import { handle as chatglmHandler } from "../../glm";
 import { handle as proxyHandler } from "../../proxy";
@@ -40,6 +41,8 @@ async function handle(
       return stabilityHandler(req, { params });
     case ApiPath.Iflytek:
       return iflytekHandler(req, { params });
+    case ApiPath.DeepSeek:
+      return deepseekHandler(req, { params });
     case ApiPath.XAI:
       return xaiHandler(req, { params });
     case ApiPath.ChatGLM:
