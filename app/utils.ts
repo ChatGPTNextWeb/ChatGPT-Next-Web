@@ -7,6 +7,7 @@ import { ServiceProvider } from "./constant";
 import { fetch as tauriStreamFetch } from "./utils/stream";
 import { VISION_MODEL_REGEXES, EXCLUDE_VISION_MODEL_REGEXES } from "./constant";
 import { getClientConfig } from "./config/client";
+import { ModelSize } from "./typing";
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
@@ -269,6 +270,28 @@ export function isVisionModel(model: string) {
 
 export function isDalle3(model: string) {
   return "dall-e-3" === model;
+}
+
+export function getModelSizes(model: string): ModelSize[] {
+  if (isDalle3(model)) {
+    return ["1024x1024", "1792x1024", "1024x1792"];
+  }
+  if (model.toLowerCase().includes("cogview")) {
+    return [
+      "1024x1024",
+      "768x1344",
+      "864x1152",
+      "1344x768",
+      "1152x864",
+      "1440x720",
+      "720x1440",
+    ];
+  }
+  return [];
+}
+
+export function supportsCustomSize(model: string): boolean {
+  return getModelSizes(model).length > 0;
 }
 
 export function showPlugins(provider: ServiceProvider, model: string) {
