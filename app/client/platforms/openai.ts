@@ -24,7 +24,7 @@ import {
   stream,
 } from "@/app/utils/chat";
 import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
-import { DalleSize, DalleQuality, DalleStyle } from "@/app/typing";
+import { ModelSize, DalleQuality, DalleStyle } from "@/app/typing";
 
 import {
   ChatOptions,
@@ -73,7 +73,7 @@ export interface DalleRequestPayload {
   prompt: string;
   response_format: "url" | "b64_json";
   n: number;
-  size: DalleSize;
+  size: ModelSize;
   quality: DalleQuality;
   style: DalleStyle;
 }
