@@ -192,6 +192,14 @@ ChatGLM Api Key.
 
 ChatGLM Api Url.
 
+### `DEEPSEEK_API_KEY` (可选)
+
+DeepSeek Api Key.
+
+### `DEEPSEEK_URL` (可选)
+
+DeepSeek Api Url.
+
 
 ### `HIDE_USER_API_KEY` （可选）
 
