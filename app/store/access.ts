@@ -146,7 +146,7 @@ export const useAccessStore = createPersistStore(
 
       return get().needCode;
     },
-    setVisionModels() {
+    getVisionModels() {
       this.fetch();
       return get().visionModels;
     },
