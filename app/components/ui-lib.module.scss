@@ -343,10 +343,8 @@
   &-content {
     animation: slide-in ease 0.3s;
     width: 30rem;
+    height: 60vh;
     .list {
-      max-height: 50vh;
-      min-height: 50vh;
-
       overflow-x: hidden;
       overflow-y: auto;
 
