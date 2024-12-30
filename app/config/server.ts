@@ -72,6 +72,9 @@ declare global {
       IFLYTEK_API_KEY?: string;
       IFLYTEK_API_SECRET?: string;
 
+      DEEPSEEK_URL?: string;
+      DEEPSEEK_API_KEY?: string;
+
       // xai only
       XAI_URL?: string;
       XAI_API_KEY?: string;
@@ -148,6 +151,7 @@ export const getServerSideConfig = () => {
   const isAlibaba = !!process.env.ALIBABA_API_KEY;
   const isMoonshot = !!process.env.MOONSHOT_API_KEY;
   const isIflytek = !!process.env.IFLYTEK_API_KEY;
+  const isDeepSeek = !!process.env.DEEPSEEK_API_KEY;
   const isXAI = !!process.env.XAI_API_KEY;
   const isChatGLM = !!process.env.CHATGLM_API_KEY;
   // const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
@@ -211,6 +215,10 @@ export const getServerSideConfig = () => {
     iflytekUrl: process.env.IFLYTEK_URL,
     iflytekApiKey: process.env.IFLYTEK_API_KEY,
     iflytekApiSecret: process.env.IFLYTEK_API_SECRET,
+
+    isDeepSeek,
+    deepseekUrl: process.env.DEEPSEEK_URL,
+    deepseekApiKey: getApiKey(process.env.DEEPSEEK_API_KEY),
 
     isXAI,
     xaiUrl: process.env.XAI_URL,
