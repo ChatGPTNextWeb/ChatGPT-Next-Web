@@ -121,12 +121,14 @@ export function collectModelTable(
           if (displayName && provider.providerName == "ByteDance") {
             [customModelName, displayName] = [displayName, customModelName];
           }
-          modelTable[`${customModelName}@${provider?.id}`] = {
+          modelTable[`${customModelName}@${provider?.providerType}`] = {
             name: customModelName,
             displayName: displayName || customModelName,
             available,
             provider, // Use optional chaining
-            sorted: CustomSeq.next(`${customModelName}@${provider?.providerType}`),
+            sorted: CustomSeq.next(
+              `${customModelName}@${provider?.providerType}`,
+            ),
           };
         }
       }
