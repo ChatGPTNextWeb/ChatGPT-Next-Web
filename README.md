@@ -312,6 +312,14 @@ ChatGLM Api Key.
 
 ChatGLM Api Url.
 
+### `DEEPSEEK_API_KEY` (optional)
+
+DeepSeek Api Key.
+
+### `DEEPSEEK_URL` (optional)
+
+DeepSeek Api Url.
+
 ### `HIDE_USER_API_KEY` (optional)
 
 > Default: Empty
