@@ -91,7 +91,7 @@ async function request(req: NextRequest) {
         isModelNotavailableInServer(
           serverConfig.customModels,
           jsonBody?.model as string,
-          ServiceProvider.Moonshot as string,
+          ServiceProvider.DeepSeek as string,
         )
       ) {
         return NextResponse.json(
