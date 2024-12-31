@@ -2,7 +2,7 @@
 // azure and openai, using same models. so using same LLMApi.
 import {
   ApiPath,
-  DEFAULT_API_HOST,
+  OPENAI_BASE_URL,
   DEFAULT_MODELS,
   OpenaiPath,
   Azure,
@@ -24,7 +24,7 @@ import {
   stream,
 } from "@/app/utils/chat";
 import { cloudflareAIGatewayUrl } from "@/app/utils/cloudflare";
-import { DalleSize, DalleQuality, DalleStyle } from "@/app/typing";
+import { ModelSize, DalleQuality, DalleStyle } from "@/app/typing";
 
 import {
   ChatOptions,
@@ -42,6 +42,7 @@ import {
   isVisionModel,
   isDalle3 as _isDalle3,
 } from "@/app/utils";
+import { fetch } from "@/app/utils/stream";
 
 export interface OpenAIListModelResponse {
   object: string;
@@ -64,6 +65,7 @@ export interface RequestPayload {
   frequency_penalty: number;
   top_p: number;
   max_tokens?: number;
+  max_completion_tokens?: number;
 }
 
 export interface DalleRequestPayload {
@@ -71,7 +73,7 @@ export interface DalleRequestPayload {
   prompt: string;
   response_format: "url" | "b64_json";
   n: number;
-  size: DalleSize;
+  size: ModelSize;
   quality: DalleQuality;
   style: DalleStyle;
 }
@@ -98,7 +100,7 @@ export class ChatGPTApi implements LLMApi {
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
       const apiPath = isAzure ? ApiPath.Azure : ApiPath.OpenAI;
-      baseUrl = isApp ? DEFAULT_API_HOST + "/proxy" + apiPath : apiPath;
+      baseUrl = isApp ? OPENAI_BASE_URL : apiPath;
     }
 
     if (baseUrl.endsWith("/")) {
@@ -222,7 +224,7 @@ export class ChatGPTApi implements LLMApi {
       // O1 not support image, tools (plugin in ChatGPTNextWeb) and system, stream, logprobs, temperature, top_p, n, presence_penalty, frequency_penalty yet.
       requestPayload = {
         messages,
-        stream: !isO1 ? options.config.stream : false,
+        stream: options.config.stream,
         model: modelConfig.model,
         temperature: !isO1 ? modelConfig.temperature : 1,
         presence_penalty: !isO1 ? modelConfig.presence_penalty : 0,
@@ -232,6 +234,11 @@ export class ChatGPTApi implements LLMApi {
         // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
       };
 
+      // O1 使用 max_completion_tokens 控制token数 (https://platform.openai.com/docs/guides/reasoning#controlling-costs)
+      if (isO1) {
+        requestPayload["max_completion_tokens"] = modelConfig.max_tokens;
+      }
+
       // add max_tokens to vision model
       if (visionModel) {
         requestPayload["max_tokens"] = Math.max(modelConfig.max_tokens, 4000);
@@ -240,7 +247,7 @@ export class ChatGPTApi implements LLMApi {
 
     console.log("[Request] openai payload: ", requestPayload);
 
-    const shouldStream = !isDalle3 && !!options.config.stream && !isO1;
+    const shouldStream = !isDalle3 && !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
 
@@ -277,6 +284,7 @@ export class ChatGPTApi implements LLMApi {
         );
       }
       if (shouldStream) {
+        let index = -1;
         const [tools, funcs] = usePluginStore
           .getState()
           .getAsTools(
@@ -302,10 +310,10 @@ export class ChatGPTApi implements LLMApi {
             }>;
             const tool_calls = choices[0]?.delta?.tool_calls;
             if (tool_calls?.length > 0) {
-              const index = tool_calls[0]?.index;
               const id = tool_calls[0]?.id;
               const args = tool_calls[0]?.function?.arguments;
               if (id) {
+                index += 1;
                 runTools.push({
                   id,
                   type: tool_calls[0]?.type,
@@ -327,6 +335,8 @@ export class ChatGPTApi implements LLMApi {
             toolCallMessage: any,
             toolCallResult: any[],
           ) => {
+            // reset index value
+            index = -1;
             // @ts-ignore
             requestPayload?.messages?.splice(
               // @ts-ignore
@@ -349,7 +359,7 @@ export class ChatGPTApi implements LLMApi {
         // make a fetch request
         const requestTimeoutId = setTimeout(
           () => controller.abort(),
-          isDalle3 || isO1 ? REQUEST_TIMEOUT_MS * 2 : REQUEST_TIMEOUT_MS, // dalle3 using b64_json is slow.
+          isDalle3 || isO1 ? REQUEST_TIMEOUT_MS * 4 : REQUEST_TIMEOUT_MS, // dalle3 using b64_json is slow.
         );
 
         const res = await fetch(chatPath, chatPayload);
@@ -357,7 +367,7 @@ export class ChatGPTApi implements LLMApi {
 
         const resJson = await res.json();
         const message = await this.extractMessage(resJson);
-        options.onFinish(message);
+        options.onFinish(message, res);
       }
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);
