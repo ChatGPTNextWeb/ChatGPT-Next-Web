@@ -462,6 +462,17 @@ const cn = {
           SubTitle: "样例：",
         },
       },
+      DeepSeek: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义DeepSeek API Key",
+          Placeholder: "DeepSeek API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
       XAI: {
         ApiKey: {
           Title: "接口密钥",
