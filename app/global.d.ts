@@ -15,9 +15,6 @@ declare interface Window {
     core: {
       writeText(text: string): Promise<void>;
       invoke(command: string, payload?: Record<string, unknown>): Promise<any>;
-      dialog: {
-        save(options?: Record<string, unknown>): Promise<string | null>;
-      };
       fs: {
         writeBinaryFile(path: string, data: Uint8Array): Promise<void>;
         writeTextFile(path: string, data: string): Promise<void>;
@@ -40,6 +37,9 @@ declare interface Window {
           options?: Record<string, unknown>,
         ): Promise<Response<T>>;
       };
+    };
+    dialog: {
+      save(options?: Record<string, unknown>): Promise<string | null>;
     };
   };
 }

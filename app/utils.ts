@@ -45,7 +45,7 @@ export async function copyToClipboard(text: string) {
 
 export async function downloadAs(text: string, filename: string) {
   if (window.__TAURI__) {
-    const result = await window.__TAURI__.core.dialog.save({
+    const result = await window.__TAURI__.dialog.save({
       defaultPath: `${filename}`,
       filters: [
         {
