@@ -1614,7 +1614,7 @@ function _Chat() {
         event.key.toLowerCase() === "k"
       ) {
         event.preventDefault();
-        chatStore.updateCurrentSession((session) => {
+        chatStore.updateTargetSession(session, (session) => {
           if (session.clearContextIndex === session.messages.length) {
             session.clearContextIndex = undefined;
           } else {
@@ -1630,7 +1630,7 @@ function _Chat() {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [messages, chatStore, navigate]);
+  }, [messages, chatStore, navigate, session]);
 
   const [showChatSidePanel, setShowChatSidePanel] = useState(false);
 
