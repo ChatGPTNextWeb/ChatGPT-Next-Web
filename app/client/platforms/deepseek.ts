@@ -35,7 +35,7 @@ export class DeepSeekApi implements LLMApi {
     let baseUrl = "";
 
     if (accessStore.useCustomConfig) {
-      baseUrl = accessStore.moonshotUrl;
+      baseUrl = accessStore.deepseekUrl;
     }
 
     if (baseUrl.length === 0) {
