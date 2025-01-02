@@ -29,7 +29,7 @@ import { RequestPayload } from "./openai";
 import { fetch } from "@/app/utils/stream";
 
 export class GeminiProApi implements LLMApi {
-  path(path: string): string {
+  path(path: string, shouldStream = false): string {
     const accessStore = useAccessStore.getState();
 
     let baseUrl = "";
@@ -51,15 +51,27 @@ export class GeminiProApi implements LLMApi {
     console.log("[Proxy Endpoint] ", baseUrl, path);
 
     let chatPath = [baseUrl, path].join("/");
+    if (shouldStream) {
+      chatPath += chatPath.includes("?") ? "&alt=sse" : "?alt=sse";
+    }
 
-    chatPath += chatPath.includes("?") ? "&alt=sse" : "?alt=sse";
     return chatPath;
   }
   extractMessage(res: any) {
     console.log("[Response] gemini-pro response: ", res);
 
+    const getTextFromParts = (parts: any[]) => {
+      if (!Array.isArray(parts)) return "";
+
+      return parts
+        .map((part) => part?.text || "")
+        .filter((text) => text.trim() !== "")
+        .join("\n\n");
+    };
+
     return (
-      res?.candidates?.at(0)?.content?.parts.at(0)?.text ||
+      getTextFromParts(res?.candidates?.at(0)?.content?.parts) ||
+      getTextFromParts(res?.at(0)?.candidates?.at(0)?.content?.parts) ||
       res?.error?.message ||
       ""
     );
@@ -166,7 +178,10 @@ export class GeminiProApi implements LLMApi {
     options.onController?.(controller);
     try {
       // https://github.com/google-gemini/cookbook/blob/main/quickstarts/rest/Streaming_REST.ipynb
-      const chatPath = this.path(Google.ChatPath(modelConfig.model));
+      const chatPath = this.path(
+        Google.ChatPath(modelConfig.model),
+        shouldStream,
+      );
 
       const chatPayload = {
         method: "POST",
@@ -192,7 +207,10 @@ export class GeminiProApi implements LLMApi {
           requestPayload,
           getHeaders(),
           // @ts-ignore
-          [{ functionDeclarations: tools.map((tool) => tool.function) }],
+          tools.length > 0
+            ? // @ts-ignore
+              [{ functionDeclarations: tools.map((tool) => tool.function) }]
+            : [],
           funcs,
           controller,
           // parseSSE
@@ -214,7 +232,10 @@ export class GeminiProApi implements LLMApi {
                 },
               });
             }
-            return chunkJson?.candidates?.at(0)?.content.parts.at(0)?.text;
+            return chunkJson?.candidates
+              ?.at(0)
+              ?.content.parts?.map((part: { text: string }) => part.text)
+              .join("\n\n");
           },
           // processToolMessage, include tool_calls message and tool call results
           (
@@ -271,7 +292,7 @@ export class GeminiProApi implements LLMApi {
           );
         }
         const message = apiClient.extractMessage(resJson);
-        options.onFinish(message);
+        options.onFinish(message, res);
       }
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);
