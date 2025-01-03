@@ -62,8 +62,8 @@ async function request(req: NextRequest) {
 
   let authHeaderName = "x-api-key";
   let authValue =
-    req.headers.get(authHeaderName) ||
     req.headers.get("Authorization")?.replaceAll("Bearer ", "").trim() ||
+    req.headers.get(authHeaderName) ||
     serverConfig.anthropicApiKey ||
     "";
 
