@@ -233,23 +233,15 @@ export class MsEdgeTTS {
   }
 
   private _SSMLTemplate(input: string, options: ProsodyOptions = {}): string {
-    // 对 input 进行特殊字符替换
-    input = input
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
-
-    // 合并默认选项与传入选项
+    // in case future updates to the edge API block these elements, we'll be concatenating strings.
     options = { ...new ProsodyOptions(), ...options };
-
-    return `
-        <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="${this._voiceLocale}">
-            <voice name="${this._voice}">
-                <prosody pitch="${options.pitch}" rate="${options.rate}" volume="${options.volume}">
-                    ${input}
-                </prosody>
-            </voice>
-        </speak>`;
+    return `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="https://www.w3.org/2001/mstts" xml:lang="${this._voiceLocale}">
+                <voice name="${this._voice}">
+                    <prosody pitch="${options.pitch}" rate="${options.rate}" volume="${options.volume}">
+                        ${input}
+                    </prosody> 
+                </voice>
+            </speak>`;
   }
 
   /**
