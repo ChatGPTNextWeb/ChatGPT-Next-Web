@@ -1,4 +1,4 @@
-export const OWNER = "afrezhou";
+export const OWNER = "afredzhou";
 export const REPO = "ChatGPT-Next-Web";
 export const REPO_URL = `https://github.com/${OWNER}/${REPO}`;
 export const PLUGINS_REPO_URL = `https://github.com/${OWNER}/NextChat-Awesome-Plugins`;
