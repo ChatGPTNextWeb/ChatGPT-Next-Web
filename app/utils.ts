@@ -5,6 +5,9 @@ import { RequestMessage } from "./client/api";
 import { ServiceProvider } from "./constant";
 // import { fetch as tauriFetch, ResponseType } from "@tauri-apps/api/http";
 import { fetch as tauriStreamFetch } from "./utils/stream";
+import { VISION_MODEL_REGEXES, EXCLUDE_VISION_MODEL_REGEXES } from "./constant";
+import { useAccessStore } from "./store";
+import { ModelSize } from "./typing";
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
@@ -252,32 +255,43 @@ export function getMessageImages(message: RequestMessage): string[] {
 }
 
 export function isVisionModel(model: string) {
-  // Note: This is a better way using the TypeScript feature instead of `&&` or `||` (ts v5.5.0-dev.20240314 I've been using)
-
-  const excludeKeywords = ["claude-3-5-haiku-20241022"];
-  const visionKeywords = [
-    "vision",
-    "gpt-4o",
-    "claude-3",
-    "gemini-1.5",
-    "gemini-exp",
-    "learnlm",
-    "qwen-vl",
-    "qwen2-vl",
-  ];
-  const isGpt4Turbo =
-    model.includes("gpt-4-turbo") && !model.includes("preview");
-
+  const visionModels = useAccessStore.getState().visionModels;
+  const envVisionModels = visionModels
+    ?.split(",")
+    .map((m) => m.trim());
+  if (envVisionModels?.includes(model)) {
+    return true;
+  }
   return (
-    !excludeKeywords.some((keyword) => model.includes(keyword)) &&
-    (visionKeywords.some((keyword) => model.includes(keyword)) ||
-      isGpt4Turbo ||
-      isDalle3(model))
+    !EXCLUDE_VISION_MODEL_REGEXES.some((regex) => regex.test(model)) &&
+    VISION_MODEL_REGEXES.some((regex) => regex.test(model))
   );
 }
 
 export function isDalle3(model: string) {
   return "dall-e-3" === model;
+}
+
+export function getModelSizes(model: string): ModelSize[] {
+  if (isDalle3(model)) {
+    return ["1024x1024", "1792x1024", "1024x1792"];
+  }
+  if (model.toLowerCase().includes("cogview")) {
+    return [
+      "1024x1024",
+      "768x1344",
+      "864x1152",
+      "1344x768",
+      "1152x864",
+      "1440x720",
+      "720x1440",
+    ];
+  }
+  return [];
+}
+
+export function supportsCustomSize(model: string): boolean {
+  return getModelSizes(model).length > 0;
 }
 
 export function showPlugins(provider: ServiceProvider, model: string) {

@@ -192,6 +192,14 @@ ChatGLM Api Key.
 
 ChatGLM Api Url.
 
+### `DEEPSEEK_API_KEY` (可选)
+
+DeepSeek Api Key.
+
+### `DEEPSEEK_URL` (可选)
+
+DeepSeek Api Url.
+
 
 ### `HIDE_USER_API_KEY` （可选）
 
@@ -234,6 +242,13 @@ ChatGLM Api Url.
 ### `DEFAULT_MODEL` （可选）
 
 更改默认模型
+
+### `VISION_MODELS` (可选)
+
+> 默认值：空
+> 示例：`gpt-4-vision,claude-3-opus,my-custom-model` 表示为这些模型添加视觉能力，作为对默认模式匹配的补充（默认会检测包含"vision"、"claude-3"、"gemini-1.5"等关键词的模型）。
+
+在默认模式匹配之外，添加更多具有视觉能力的模型。多个模型用逗号分隔。
 
 ### `DEFAULT_INPUT_TEMPLATE` （可选）
 
