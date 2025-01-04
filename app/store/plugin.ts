@@ -18,9 +18,9 @@ export type Plugin = {
   enable: boolean;
   onlyNodeRuntime: boolean;
 
-  title: string;
-  version: string;
-  content: string;
+  title?: string;
+  version?: string;
+  content?: string;
   authType?: string;
   authLocation?: string;
   authHeader?: string;
