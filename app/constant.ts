@@ -476,12 +476,6 @@ export const DEFAULT_MODELS = [
     name,
     available: true,
     sorted: seq++,
-    provider: {
-      id: "azure",
-      providerName: "Azure",
-      providerType: "azure",
-      sorted: 2,
-    },
   })),
   ...googleModels.map((name) => ({
     name,
