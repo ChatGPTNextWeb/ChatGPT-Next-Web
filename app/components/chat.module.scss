@@ -751,3 +751,9 @@
     }
   }
 }
+
+.chat-input-actions-start {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
