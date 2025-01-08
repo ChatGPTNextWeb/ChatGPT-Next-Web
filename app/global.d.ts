@@ -10,6 +10,11 @@ declare module "*.scss" {
 
 declare module "*.svg";
 
+declare module "*.glsl" {
+  const content: string;
+  export default content;
+}
+
 declare interface Window {
   __TAURI__?: {
     writeText(text: string): Promise<void>;

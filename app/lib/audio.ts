@@ -21,6 +21,9 @@ export class AudioHandler {
     this.analyser = new AnalyserNode(this.context, { fftSize: 256 });
     this.analyserData = new Uint8Array(this.analyser.frequencyBinCount);
     this.mergeNode.connect(this.analyser);
+
+    this.dataArray = new Float32Array(this.analyser.frequencyBinCount);
+    this.initializeBands(this.analyser.frequencyBinCount);
   }
 
   getByteFrequencyData() {
@@ -94,6 +97,7 @@ export class AudioHandler {
     this.source.disconnect();
     this.stream.getTracks().forEach((track) => track.stop());
   }
+
   startStreamingPlayback() {
     this.isPlaying = true;
     this.nextPlayTime = this.context.currentTime;
@@ -148,6 +152,7 @@ export class AudioHandler {
       this.nextPlayTime = this.context.currentTime;
     }
   }
+
   _saveData(data: Int16Array, bytesPerSample = 16): Blob {
     const headerLength = 44;
     const numberOfChannels = 1;
@@ -171,10 +176,12 @@ export class AudioHandler {
     // using data.buffer, so no need to setUint16 to view.
     return new Blob([view, data.buffer], { type: "audio/mpeg" });
   }
+
   savePlayFile() {
     // @ts-ignore
     return this._saveData(new Int16Array(this.playBuffer));
   }
+
   saveRecordFile(
     audioStartMillis: number | undefined,
     audioEndMillis: number | undefined,
@@ -190,11 +197,83 @@ export class AudioHandler {
       new Int16Array(this.recordBuffer.slice(startIndex, endIndex)),
     );
   }
+
   async close() {
     this.recordBuffer = [];
     this.workletNode?.disconnect();
     this.source?.disconnect();
     this.stream?.getTracks().forEach((track) => track.stop());
     await this.context.close();
+  }
+
+  private readonly NUM_BANDS = 4;
+  private avgMag: Float32Array = new Float32Array(this.NUM_BANDS);
+  private dataArray: Float32Array | null = null;
+  private cumulativeAudio: Float32Array = new Float32Array(this.NUM_BANDS);
+  private binSize: number = 0;
+
+  private initializeBands = (frequencyBinCount: number) => {
+    this.binSize = Math.floor(frequencyBinCount / this.NUM_BANDS);
+  };
+
+  private createMagnitudeLookupTable = () => {
+    const GAIN_MULTIPLIER = 1.2;
+    const table = new Float32Array(100);
+    for (let i = 0; i < 100; i++) {
+      const db = -100 + i;
+      let magnitude = 1 - (Math.max(-100, Math.min(-10, db)) * -1) / 100;
+      magnitude = Math.pow(magnitude, 0.7) * GAIN_MULTIPLIER;
+      table[i] = Math.min(1, magnitude);
+    }
+    return table;
+  };
+
+  private magnitudeLookupTable = this.createMagnitudeLookupTable();
+
+  decibelToMagnitude = (db: number): number => {
+    if (db === -Infinity) return 0;
+    const index = Math.floor(db + 100);
+    if (index < 0) return 0;
+    if (index >= 100) return 1;
+    return this.magnitudeLookupTable[index];
+  };
+
+  getAudioData() {
+    if (!this.analyser || !this.dataArray) return;
+
+    const SMOOTHING_FACTOR = 0.2;
+    const FREQUENCY_WEIGHTS = [1.2, 1.0, 0.8, 0.6];
+
+    this.analyser.getFloatFrequencyData(this.dataArray);
+
+    let totalMagnitude = 0;
+
+    for (let i = 0; i < this.NUM_BANDS; i++) {
+      const startBin = i * this.binSize;
+      const endBin = startBin + this.binSize;
+      let sum = 0;
+
+      const bandData = this.dataArray.subarray(startBin, endBin);
+      for (let j = 0; j < bandData.length; j++) {
+        const magnitude =
+          this.decibelToMagnitude(bandData[j]) * FREQUENCY_WEIGHTS[i];
+        sum += magnitude;
+      }
+
+      this.avgMag[i] = sum / this.binSize;
+      totalMagnitude += this.avgMag[i];
+
+      this.cumulativeAudio[i] =
+        this.cumulativeAudio[i] * (1 - SMOOTHING_FACTOR) +
+        this.avgMag[i] * SMOOTHING_FACTOR;
+    }
+
+    const micLevel = Math.min(1, (totalMagnitude / this.NUM_BANDS) * 1.2);
+
+    return {
+      avgMag: this.avgMag,
+      micLevel,
+      cumulativeAudio: this.cumulativeAudio,
+    };
   }
 }

@@ -2039,6 +2039,30 @@ function _Chat() {
                             </div>
                           )}
                         </div>
+                        {!isUser &&
+                          message.toolMessages &&
+                          message.toolMessages.map((tool, index) => (
+                            <div
+                              className={styles["chat-message-tools-status"]}
+                              key={index}
+                            >
+                              <div
+                                className={styles["chat-message-tools-name"]}
+                              >
+                                <CheckmarkIcon
+                                  className={styles["chat-message-checkmark"]}
+                                />
+                                {tool.toolName}:
+                                <code
+                                  className={
+                                    styles["chat-message-tools-details"]
+                                  }
+                                >
+                                  {tool.toolInput}
+                                </code>
+                              </div>
+                            </div>
+                          ))}
                         {message?.tools?.length == 0 && showTyping && (
                           <div className={styles["chat-message-status"]}>
                             {Locale.Chat.Typing}

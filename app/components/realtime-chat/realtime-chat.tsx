@@ -21,6 +21,10 @@ import {
 import { AudioHandler } from "@/app/lib/audio";
 import { uploadImage } from "@/app/utils/chat";
 import { VoicePrint } from "@/app/components/voice-print";
+import {
+  OpenAIVoiceVisualizer,
+  AudioData,
+} from "../openai-voice-visualizer/openai-voice-visualizer";
 
 interface RealtimeChatProps {
   onClose?: () => void;
@@ -43,6 +47,7 @@ export function RealtimeChat({
   const [modality, setModality] = useState("audio");
   const [useVAD, setUseVAD] = useState(true);
   const [frequencies, setFrequencies] = useState<Uint8Array | undefined>();
+  const [audioData, setAudioData] = useState<AudioData | undefined>();
 
   const clientRef = useRef<RTClient | null>(null);
   const audioHandlerRef = useRef<AudioHandler | null>(null);
@@ -292,6 +297,9 @@ export function RealtimeChat({
         if (audioHandlerRef.current) {
           const freqData = audioHandlerRef.current.getByteFrequencyData();
           setFrequencies(freqData);
+
+          const audioData = audioHandlerRef.current.getAudioData();
+          setAudioData(audioData);
         }
         animationFrameId = requestAnimationFrame(animationFrame);
       };
@@ -299,6 +307,7 @@ export function RealtimeChat({
       animationFrameId = requestAnimationFrame(animationFrame);
     } else {
       setFrequencies(undefined);
+      setAudioData(undefined);
     }
 
     return () => {
@@ -327,11 +336,11 @@ export function RealtimeChat({
   return (
     <div className={styles["realtime-chat"]}>
       <div
-        className={clsx(styles["circle-mic"], {
-          [styles["pulse"]]: isRecording,
-        })}
+      // className={clsx(styles["circle-mic"], {
+      //   [styles["pulse"]]: isRecording,
+      // })}
       >
-        <VoicePrint frequencies={frequencies} isActive={isRecording} />
+        <OpenAIVoiceVisualizer audioData={audioData} isActive={isRecording} />
       </div>
 
       <div className={styles["bottom-icons"]}>
