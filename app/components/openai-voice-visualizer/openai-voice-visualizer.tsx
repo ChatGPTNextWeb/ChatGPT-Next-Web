@@ -228,8 +228,9 @@ export function OpenAIVoiceVisualizer({
   const initializeWebGL = useCallback(() => {
     if (!canvasRef.current) return;
 
-    canvasRef.current.width = CANVAS_SIZE;
-    canvasRef.current.height = CANVAS_SIZE;
+    const dpi = window.devicePixelRatio || 1;
+    canvasRef.current.width = CANVAS_SIZE * dpi;
+    canvasRef.current.height = CANVAS_SIZE * dpi;
 
     const { gl, program } = initWebGL(
       canvasRef.current,
