@@ -11,6 +11,10 @@
     "everything": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-everything"]
+    },
+    "docker-mcp": {
+      "command": "uvx",
+      "args": ["docker-mcp"]
     }
   }
 }
