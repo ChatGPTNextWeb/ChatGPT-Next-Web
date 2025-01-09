@@ -214,3 +214,23 @@ export async function getClientErrors(): Promise<
   }
   return errors;
 }
+
+// 获取客户端状态，不重新初始化
+export async function refreshClientStatus() {
+  logger.info("Refreshing client status...");
+
+  // 如果还没初始化过，则初始化
+  if (!initialized) {
+    return initializeMcpClients();
+  }
+
+  // 否则只更新错误状态
+  errorClients = [];
+  for (const [clientId, clientData] of clientsMap.entries()) {
+    if (clientData.errorMsg !== null) {
+      errorClients.push(clientId);
+    }
+  }
+
+  return { errorClients };
+}

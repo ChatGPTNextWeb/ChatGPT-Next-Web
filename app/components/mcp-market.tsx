@@ -17,8 +17,8 @@ import {
   updateMcpConfig,
   getClientPrimitives,
   restartAllClients,
-  reinitializeMcpClients,
   getClientErrors,
+  refreshClientStatus,
 } from "../mcp/actions";
 import { McpConfig, PresetServer, ServerConfig } from "../mcp/types";
 import clsx from "clsx";
@@ -45,7 +45,7 @@ export function McpMarketPage() {
 
   // 更新服务器状态
   const updateServerStatus = async () => {
-    await reinitializeMcpClients();
+    await refreshClientStatus();
     const errors = await getClientErrors();
     setClientErrors(errors);
   };
@@ -74,6 +74,8 @@ export function McpMarketPage() {
       setIsLoading(true);
       await updateMcpConfig(newConfig);
       setConfig(newConfig);
+      // 配置改变时需要重新初始化
+      await restartAllClients();
       await updateServerStatus();
       showToast("Configuration saved successfully");
     } catch (error) {
