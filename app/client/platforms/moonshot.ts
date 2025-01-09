@@ -2,7 +2,7 @@
 // azure and openai, using same models. so using same LLMApi.
 import {
   ApiPath,
-  DEFAULT_API_HOST,
+  MOONSHOT_BASE_URL,
   Moonshot,
   REQUEST_TIMEOUT_MS,
 } from "@/app/constant";
@@ -24,6 +24,7 @@ import {
 import { getClientConfig } from "@/app/config/client";
 import { getMessageTextContent } from "@/app/utils";
 import { RequestPayload } from "./openai";
+import { fetch } from "@/app/utils/stream";
 
 export class MoonshotApi implements LLMApi {
   private disableListModels = true;
@@ -40,7 +41,7 @@ export class MoonshotApi implements LLMApi {
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
       const apiPath = ApiPath.Moonshot;
-      baseUrl = isApp ? DEFAULT_API_HOST + "/proxy" + apiPath : apiPath;
+      baseUrl = isApp ? MOONSHOT_BASE_URL : apiPath;
     }
 
     if (baseUrl.endsWith("/")) {
@@ -179,7 +180,7 @@ export class MoonshotApi implements LLMApi {
 
         const resJson = await res.json();
         const message = this.extractMessage(resJson);
-        options.onFinish(message);
+        options.onFinish(message, res);
       }
     } catch (e) {
       console.log("[Request] failed to make a chat request", e);
