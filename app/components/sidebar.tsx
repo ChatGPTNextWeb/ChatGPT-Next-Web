@@ -9,6 +9,7 @@ import ChatGptIcon from "../icons/chatgpt.svg";
 import AddIcon from "../icons/add.svg";
 import DeleteIcon from "../icons/delete.svg";
 import MaskIcon from "../icons/mask.svg";
+import McpIcon from "../icons/mcp.svg";
 import DragIcon from "../icons/drag.svg";
 import DiscoveryIcon from "../icons/discovery.svg";
 
@@ -247,6 +248,15 @@ export function SideBar(props: { className?: string }) {
               } else {
                 navigate(Path.Masks, { state: { fromHome: true } });
               }
+            }}
+            shadow
+          />
+          <IconButton
+            icon={<McpIcon />}
+            text={shouldNarrow ? undefined : Locale.Mcp.Name}
+            className={styles["sidebar-bar-button"]}
+            onClick={() => {
+              navigate(Path.McpMarket, { state: { fromHome: true } });
             }}
             shadow
           />

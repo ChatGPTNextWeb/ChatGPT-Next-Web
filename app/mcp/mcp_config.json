@@ -8,13 +8,29 @@
         "/Users/kadxy/Desktop"
       ]
     },
-    "everything": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-everything"]
-    },
     "docker-mcp": {
       "command": "uvx",
       "args": ["docker-mcp"]
+    },
+    "difyworkflow": {
+      "command": "mcp-difyworkflow-server",
+      "args": ["-base-url", "23"],
+      "env": {
+        "DIFY_WORKFLOW_NAME": "23",
+        "DIFY_API_KEYS": "23"
+      }
+    },
+    "postgres": {
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "mcp/postgres", null]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@executeautomation/playwright-mcp-server"]
+    },
+    "gdrive": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-gdrive"]
     }
   }
 }

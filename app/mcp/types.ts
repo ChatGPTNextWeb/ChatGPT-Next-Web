@@ -59,3 +59,41 @@ export const McpNotificationsSchema: z.ZodType<McpNotifications> = z.object({
   method: z.string(),
   params: z.record(z.unknown()).optional(),
 });
+
+// MCP 服务器配置相关类型
+export interface ServerConfig {
+  command: string;
+  args: string[];
+  env?: Record<string, string>;
+}
+
+export interface McpConfig {
+  mcpServers: Record<string, ServerConfig>;
+}
+
+export interface ArgsMapping {
+  type: "spread" | "single" | "env";
+  position?: number;
+  key?: string;
+}
+
+export interface PresetServer {
+  id: string;
+  name: string;
+  description: string;
+  command: string;
+  baseArgs: string[];
+  configurable: boolean;
+  configSchema?: {
+    properties: Record<
+      string,
+      {
+        type: string;
+        description?: string;
+        required?: boolean;
+        minItems?: number;
+      }
+    >;
+  };
+  argsMapping?: Record<string, ArgsMapping>;
+}

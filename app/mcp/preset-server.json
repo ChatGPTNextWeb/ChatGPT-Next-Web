@@ -1,0 +1,206 @@
+[
+  {
+    "id": "filesystem",
+    "name": "Filesystem",
+    "description": "Secure file operations with configurable access controls",
+    "command": "npx",
+    "baseArgs": ["-y", "@modelcontextprotocol/server-filesystem"],
+    "configurable": true,
+    "configSchema": {
+      "properties": {
+        "paths": {
+          "type": "array",
+          "description": "Allowed file system paths",
+          "required": true,
+          "minItems": 1
+        }
+      }
+    },
+    "argsMapping": {
+      "paths": {
+        "type": "spread",
+        "position": 2
+      }
+    }
+  },
+  {
+    "id": "github",
+    "name": "GitHub",
+    "description": "Repository management, file operations, and GitHub API integration",
+    "command": "npx",
+    "baseArgs": ["-y", "@modelcontextprotocol/server-github"],
+    "configurable": true,
+    "configSchema": {
+      "properties": {
+        "token": {
+          "type": "string",
+          "description": "GitHub Personal Access Token",
+          "required": true
+        }
+      }
+    },
+    "argsMapping": {
+      "token": {
+        "type": "env",
+        "key": "GITHUB_PERSONAL_ACCESS_TOKEN"
+      }
+    }
+  },
+  {
+    "id": "gdrive",
+    "name": "Google Drive",
+    "description": "File access and search capabilities for Google Drive",
+    "command": "npx",
+    "baseArgs": ["-y", "@modelcontextprotocol/server-gdrive"],
+    "configurable": false
+  },
+  {
+    "id": "playwright",
+    "name": "Playwright",
+    "description": "Browser automation and webscrapping with Playwright",
+    "command": "npx",
+    "baseArgs": ["-y", "@executeautomation/playwright-mcp-server"],
+    "configurable": false
+  },
+  {
+    "id": "mongodb",
+    "name": "MongoDB",
+    "description": "Direct interaction with MongoDB databases",
+    "command": "node",
+    "baseArgs": ["dist/index.js"],
+    "configurable": true,
+    "configSchema": {
+      "properties": {
+        "connectionString": {
+          "type": "string",
+          "description": "MongoDB connection string",
+          "required": true
+        }
+      }
+    },
+    "argsMapping": {
+      "connectionString": {
+        "type": "single",
+        "position": 1
+      }
+    }
+  },
+  {
+    "id": "difyworkflow",
+    "name": "Dify Workflow",
+    "description": "Tools to query and execute Dify workflows",
+    "command": "mcp-difyworkflow-server",
+    "baseArgs": ["-base-url"],
+    "configurable": true,
+    "configSchema": {
+      "properties": {
+        "baseUrl": {
+          "type": "string",
+          "description": "Dify API base URL",
+          "required": true
+        },
+        "workflowName": {
+          "type": "string",
+          "description": "Dify workflow name",
+          "required": true
+        },
+        "apiKeys": {
+          "type": "string",
+          "description": "Comma-separated Dify API keys",
+          "required": true
+        }
+      }
+    },
+    "argsMapping": {
+      "baseUrl": {
+        "type": "single",
+        "position": 1
+      },
+      "workflowName": {
+        "type": "env",
+        "key": "DIFY_WORKFLOW_NAME"
+      },
+      "apiKeys": {
+        "type": "env",
+        "key": "DIFY_API_KEYS"
+      }
+    }
+  },
+  {
+    "id": "postgres",
+    "name": "PostgreSQL",
+    "description": "Read-only database access with schema inspection",
+    "command": "docker",
+    "baseArgs": ["run", "-i", "--rm", "mcp/postgres"],
+    "configurable": true,
+    "configSchema": {
+      "properties": {
+        "connectionString": {
+          "type": "string",
+          "description": "PostgreSQL connection string",
+          "required": true
+        }
+      }
+    },
+    "argsMapping": {
+      "connectionString": {
+        "type": "single",
+        "position": 4
+      }
+    }
+  },
+  {
+    "id": "brave-search",
+    "name": "Brave Search",
+    "description": "Web and local search using Brave's Search API",
+    "command": "npx",
+    "baseArgs": ["-y", "@modelcontextprotocol/server-brave-search"],
+    "configurable": true,
+    "configSchema": {
+      "properties": {
+        "apiKey": {
+          "type": "string",
+          "description": "Brave Search API Key",
+          "required": true
+        }
+      }
+    },
+    "argsMapping": {
+      "apiKey": {
+        "type": "env",
+        "key": "BRAVE_API_KEY"
+      }
+    }
+  },
+  {
+    "id": "google-maps",
+    "name": "Google Maps",
+    "description": "Location services, directions, and place details",
+    "command": "npx",
+    "baseArgs": ["-y", "@modelcontextprotocol/server-google-maps"],
+    "configurable": true,
+    "configSchema": {
+      "properties": {
+        "apiKey": {
+          "type": "string",
+          "description": "Google Maps API Key",
+          "required": true
+        }
+      }
+    },
+    "argsMapping": {
+      "apiKey": {
+        "type": "env",
+        "key": "GOOGLE_MAPS_API_KEY"
+      }
+    }
+  },
+  {
+    "id": "docker-mcp",
+    "name": "Docker",
+    "description": "Run and manage docker containers, docker compose, and logs",
+    "command": "uvx",
+    "baseArgs": ["docker-mcp"],
+    "configurable": false
+  }
+]
