@@ -65,7 +65,7 @@ export function McpMarketPage() {
         setIsLoading(false);
       }
     };
-    init();
+    init().then();
   }, []);
 
   // 保存配置
@@ -352,7 +352,7 @@ export function McpMarketPage() {
                 icon={<RestartIcon />}
                 bordered
                 onClick={handleRestart}
-                text="Restart"
+                text="Restart All"
                 disabled={isLoading}
               />
             </div>
@@ -458,7 +458,7 @@ export function McpMarketPage() {
                         {isServerAdded(server.id) && (
                           <IconButton
                             icon={<EyeIcon />}
-                            text="Detail"
+                            text="Tools"
                             onClick={async () => {
                               if (clientErrors[server.id] !== null) {
                                 showToast("Server is not running");
