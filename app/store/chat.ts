@@ -203,6 +203,7 @@ async function getMcpSystemPrompt(): Promise<string> {
   primitives = primitives.filter((i) =>
     i.primitives.some((p) => p.type === "tool"),
   );
+
   let primitivesString = "";
   primitives.forEach((i) => {
     primitivesString += MCP_PRIMITIVES_TEMPLATE.replace(
@@ -210,9 +211,10 @@ async function getMcpSystemPrompt(): Promise<string> {
       i.clientId,
     ).replace(
       "{{ primitives }}",
-      i.primitives.map((p) => JSON.stringify(p)).join("\n"),
+      i.primitives.map((p) => JSON.stringify(p, null, 2)).join("\n"),
     );
   });
+
   return MCP_SYSTEM_TEMPLATE.replace("{{ MCP_PRIMITIVES }}", primitivesString);
 }
 
