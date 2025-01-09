@@ -421,12 +421,11 @@ export function ChatAction(props: {
 function useScrollToBottom(
   scrollRef: RefObject<HTMLDivElement>,
   detach: boolean = false,
+  messages: ChatMessage[],
 ) {
   // for auto-scroll
-
   const [autoScroll, setAutoScroll] = useState(true);
-
-  function scrollDomToBottom() {
+  const scrollDomToBottom = useCallback(() => {
     const dom = scrollRef.current;
     if (dom) {
       requestAnimationFrame(() => {
@@ -434,7 +433,7 @@ function useScrollToBottom(
         dom.scrollTo(0, dom.scrollHeight);
       });
     }
-  }
+  }, [scrollRef]);
 
   // auto scroll
   useEffect(() => {
@@ -442,6 +441,15 @@ function useScrollToBottom(
       scrollDomToBottom();
     }
   });
+
+  // auto scroll when messages length changes
+  const lastMessagesLength = useRef(messages.length);
+  useEffect(() => {
+    if (messages.length > lastMessagesLength.current && !detach) {
+      scrollDomToBottom();
+    }
+    lastMessagesLength.current = messages.length;
+  }, [messages.length, detach, scrollDomToBottom]);
 
   return {
     scrollRef,
@@ -978,6 +986,7 @@ function _Chat() {
   const { setAutoScroll, scrollDomToBottom } = useScrollToBottom(
     scrollRef,
     (isScrolledToBottom || isAttachWithTop) && !isTyping,
+    session.messages,
   );
   const [hitBottom, setHitBottom] = useState(true);
   const isMobileScreen = useMobileScreen();
