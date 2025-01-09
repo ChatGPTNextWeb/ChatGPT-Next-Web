@@ -4,25 +4,25 @@ import conf from "./mcp_config.json";
 
 const logger = new MCPClientLogger("MCP Server Example", true);
 
-async function main() {
-  logger.info("Connecting to server...");
+const TEST_SERVER = "everything";
 
-  const client = await createClient(conf.mcpServers.everything, "everything");
+async function main() {
+  logger.info(`All MCP servers: ${Object.keys(conf.mcpServers).join(", ")}`);
+
+  logger.info(`Connecting to server ${TEST_SERVER}...`);
+
+  const client = await createClient(conf.mcpServers[TEST_SERVER], TEST_SERVER);
   const primitives = await listPrimitives(client);
 
-  logger.success(`Connected to server everything`);
+  logger.success(`Connected to server ${TEST_SERVER}`);
 
   logger.info(
-    `server capabilities: ${Object.keys(
-      client.getServerCapabilities() ?? [],
-    ).join(", ")}`,
+    `${TEST_SERVER} supported primitives:\n${JSON.stringify(
+      primitives.filter((i) => i.type === "tool"),
+      null,
+      2,
+    )}`,
   );
-
-  logger.info("Server supports the following primitives:");
-
-  primitives.forEach((primitive) => {
-    logger.info("\n" + JSON.stringify(primitive, null, 2));
-  });
 }
 
 main().catch((error) => {

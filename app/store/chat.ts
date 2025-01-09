@@ -21,6 +21,8 @@ import {
   DEFAULT_SYSTEM_TEMPLATE,
   GEMINI_SUMMARIZE_MODEL,
   KnowledgeCutOffDate,
+  MCP_PRIMITIVES_TEMPLATE,
+  MCP_SYSTEM_TEMPLATE,
   ServiceProvider,
   StoreKey,
   SUMMARIZE_MODEL,
@@ -33,7 +35,7 @@ import { ModelConfig, ModelType, useAppConfig } from "./config";
 import { useAccessStore } from "./access";
 import { collectModelsWithDefaultModel } from "../utils/model";
 import { createEmptyMask, Mask } from "./mask";
-import { executeMcpAction } from "../mcp/actions";
+import { executeMcpAction, getAllPrimitives } from "../mcp/actions";
 import { extractMcpJson, isMcpJson } from "../mcp/utils";
 
 const localStorage = safeLocalStorage();
@@ -194,6 +196,24 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
   });
 
   return output;
+}
+
+async function getMcpSystemPrompt(): Promise<string> {
+  let primitives = await getAllPrimitives();
+  primitives = primitives.filter((i) =>
+    i.primitives.some((p) => p.type === "tool"),
+  );
+  let primitivesString = "";
+  primitives.forEach((i) => {
+    primitivesString += MCP_PRIMITIVES_TEMPLATE.replace(
+      "{{ clientId }}",
+      i.clientId,
+    ).replace(
+      "{{ primitives }}",
+      i.primitives.map((p) => JSON.stringify(p)).join("\n"),
+    );
+  });
+  return MCP_SYSTEM_TEMPLATE.replace("{{ MCP_PRIMITIVES }}", primitivesString);
 }
 
 const DEFAULT_CHAT_STATE = {
@@ -409,7 +429,7 @@ export const useChatStore = createPersistStore(
         });
 
         // get recent messages
-        const recentMessages = get().getMessagesWithMemory();
+        const recentMessages = await get().getMessagesWithMemory();
         const sendMessages = recentMessages.concat(userMessage);
         const messageIndex = session.messages.length + 1;
 
@@ -508,7 +528,7 @@ export const useChatStore = createPersistStore(
         }
       },
 
-      getMessagesWithMemory() {
+      async getMessagesWithMemory() {
         const session = get().currentSession();
         const modelConfig = session.mask.modelConfig;
         const clearContextIndex = session.clearContextIndex ?? 0;
@@ -524,18 +544,26 @@ export const useChatStore = createPersistStore(
           (session.mask.modelConfig.model.startsWith("gpt-") ||
             session.mask.modelConfig.model.startsWith("chatgpt-"));
 
+        const mcpSystemPrompt = await getMcpSystemPrompt();
+
         var systemPrompts: ChatMessage[] = [];
         systemPrompts = shouldInjectSystemPrompts
           ? [
               createMessage({
                 role: "system",
-                content: fillTemplateWith("", {
-                  ...modelConfig,
-                  template: DEFAULT_SYSTEM_TEMPLATE,
-                }),
+                content:
+                  fillTemplateWith("", {
+                    ...modelConfig,
+                    template: DEFAULT_SYSTEM_TEMPLATE,
+                  }) + mcpSystemPrompt,
               }),
             ]
-          : [];
+          : [
+              createMessage({
+                role: "system",
+                content: mcpSystemPrompt,
+              }),
+            ];
         if (shouldInjectSystemPrompts) {
           console.log(
             "[Global System Prompt] ",
@@ -796,12 +824,12 @@ export const useChatStore = createPersistStore(
                       ? JSON.stringify(result)
                       : String(result);
                   get().onUserInput(
-                    `\`\`\`json:mcp:${mcpRequest.clientId}\n${mcpResponse}\n\`\`\``,
+                    `\`\`\`json:mcp-response:${mcpRequest.clientId}\n${mcpResponse}\n\`\`\``,
                     [],
                     true,
                   );
                 })
-                .catch((error) => showToast(String(error)));
+                .catch((error) => showToast("MCP execution failed", error));
             }
           } catch (error) {
             console.error("[MCP Error]", error);

@@ -1,6 +1,11 @@
 "use server";
-
-import { createClient, executeRequest } from "./client";
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import {
+  createClient,
+  executeRequest,
+  listPrimitives,
+  Primitive,
+} from "./client";
 import { MCPClientLogger } from "./logger";
 import conf from "./mcp_config.json";
 import { McpRequestMessage } from "./types";
@@ -8,7 +13,10 @@ import { McpRequestMessage } from "./types";
 const logger = new MCPClientLogger("MCP Actions");
 
 // Use Map to store all clients
-const clientsMap = new Map<string, any>();
+const clientsMap = new Map<
+  string,
+  { client: Client; primitives: Primitive[] }
+>();
 
 // Whether initialized
 let initialized = false;
@@ -30,8 +38,11 @@ export async function initializeMcpClients() {
     try {
       logger.info(`Initializing MCP client: ${clientId}`);
       const client = await createClient(config, clientId);
-      clientsMap.set(clientId, client);
-      logger.success(`Client ${clientId} initialized`);
+      const primitives = await listPrimitives(client);
+      clientsMap.set(clientId, { client, primitives });
+      logger.success(
+        `Client [${clientId}] initialized, ${primitives.length} primitives supported`,
+      );
     } catch (error) {
       errorClients.push(clientId);
       logger.error(`Failed to initialize client ${clientId}: ${error}`);
@@ -58,7 +69,7 @@ export async function executeMcpAction(
 ) {
   try {
     // Find the corresponding client
-    const client = clientsMap.get(clientId);
+    const client = clientsMap.get(clientId)?.client;
     if (!client) {
       logger.error(`Client ${clientId} not found`);
       return;
@@ -79,4 +90,17 @@ export async function getAvailableClients() {
   return Array.from(clientsMap.keys()).filter(
     (clientId) => !errorClients.includes(clientId),
   );
+}
+
+// Get all primitives from all clients
+export async function getAllPrimitives(): Promise<
+  {
+    clientId: string;
+    primitives: Primitive[];
+  }[]
+> {
+  return Array.from(clientsMap.entries()).map(([clientId, { primitives }]) => ({
+    clientId,
+    primitives,
+  }));
 }

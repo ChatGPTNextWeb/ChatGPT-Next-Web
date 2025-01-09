@@ -40,13 +40,13 @@ export async function createClient(
   return client;
 }
 
-interface Primitive {
+export interface Primitive {
   type: "resource" | "tool" | "prompt";
   value: any;
 }
 
 /** List all resources, tools, and prompts */
-export async function listPrimitives(client: Client) {
+export async function listPrimitives(client: Client): Promise<Primitive[]> {
   const capabilities = client.getServerCapabilities();
   const primitives: Primitive[] = [];
   const promises = [];
