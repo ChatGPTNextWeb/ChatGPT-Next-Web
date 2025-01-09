@@ -14,8 +14,12 @@ import { formatDocumentsAsString } from "langchain/util/document";
 import { RunnableSequence } from "@langchain/core/runnables";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 
-export const parseInputs = (inputs: string): [string, string] => {
-  const [baseUrl, task] = inputs.split(",").map((input) => {
+export const parseInputs = (inputs: string): [string, string, string] => {
+  // Sometimes the inputs are enclosed in brackets, remove them
+  if (inputs.startsWith("[") && inputs.endsWith("]")) {
+    inputs = inputs.slice(1, -1);
+  }
+  const [baseUrl, task, search] = inputs.split(",").map((input) => {
     let t = input.trim();
     t = t.startsWith('"') ? t.slice(1) : t;
     t = t.endsWith('"') ? t.slice(0, -1) : t;
@@ -23,7 +27,7 @@ export const parseInputs = (inputs: string): [string, string] => {
     return t.trim();
   });
 
-  return [baseUrl, task];
+  return [baseUrl, task, search];
 };
 
 const getPdfBlob = async (baseUrl: string) => {
@@ -91,8 +95,8 @@ export class PDFBrowser extends Tool {
 
   /** @ignore */
   async _call(inputs: string, runManager?: CallbackManagerForToolRun) {
-    const [baseUrl, task] = parseInputs(inputs);
-    const doSummary = !task;
+    const [baseUrl, task, search_item] = parseInputs(inputs);
+    const doSearch = !search_item.includes("EMPTY");
 
     let pdfBlob;
     try {
@@ -104,7 +108,7 @@ export class PDFBrowser extends Tool {
       return "There was a problem connecting to the site";
     }
 
-    const loader = new WebPDFLoader(pdfBlob);
+    const loader = new WebPDFLoader(pdfBlob, { parsedItemSeparator: "" });
     const docs = await loader.load();
     const vectorStore = await MemoryVectorStore.fromDocuments(
       docs,
@@ -113,25 +117,32 @@ export class PDFBrowser extends Tool {
 
     const texts = await this.textSplitter.splitText(getDocsText(docs));
 
+    const PAGE_CUTOFF_LIMIT = 20;
+    const page_cutoff =
+      docs.length > PAGE_CUTOFF_LIMIT ? PAGE_CUTOFF_LIMIT : docs.length;
+
     let context;
-    // if we want a summary grab first 4
-    if (doSummary) {
-      context = texts.slice(0, 4).join("\n");
-    }
-    // search term well embed and grab top 4
-    else {
+    let input;
+
+    if (doSearch) {
+      // search term well embed and grab top 10 pages
       const results = await vectorStore.similaritySearch(
-        task,
-        4,
+        search_item,
+        page_cutoff,
         undefined,
         runManager?.getChild("vectorstore"),
       );
       context = formatDocumentsAsString(results);
+      input = `Please conduct ${task} relating ${search_item} on the following text,
+        you should first read and comprehend the text and find out how ${search_item} is involved in the text\n 
+        TEXT:\n ${context}.`;
+    } else {
+      // In other cases all pages will be used
+      context = texts.slice(0, page_cutoff).join("\n");
+      input = `Please conduct ${task} on the following text:
+        you should first read and comprehend the text before finishing the ${task}\n 
+        TEXT:\n ${context}`;
     }
-
-    const input = `Text:${context}\n\nI need ${
-      doSummary ? "a summary" : task
-    } from the above text.`;
 
     console.log("[pdf-browser]", input);
 
@@ -141,5 +152,8 @@ export class PDFBrowser extends Tool {
 
   name = "pdf-browser";
 
-  description = `useful for when you need to find something on or summarize a pdf file. input should be a comma separated list of "ONE valid http URL including protocol","what you want to find on the pdf page or empty string for a summary".`;
+  description = `useful for when you need to deal with pdf files. input should be a comma separated list of items without enclosing brackets. 
+  "ONE valid http URL including protocol",
+  "plain instruction upon what you want to do with this file",
+  "keywords if some searching is requested, set empty tag [EMPTY] if none"`;
 }
