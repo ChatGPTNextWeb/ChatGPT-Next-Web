@@ -130,8 +130,8 @@ const DEFAULT_ACCESS_STATE = {
   edgeTTSVoiceName: "zh-CN-YunxiNeural",
 
   isUseOpenAIEndpointForAllModels: false,
-
   disableModelProviderDisplay: false,
+  isUseRemoteModels: false,
 };
 
 export const useAccessStore = createPersistStore(
@@ -154,6 +154,12 @@ export const useAccessStore = createPersistStore(
       this.fetch();
 
       return get().isUseOpenAIEndpointForAllModels;
+    },
+
+    useRemoteModels() {
+      this.fetch();
+
+      return get().isUseRemoteModels;
     },
 
     edgeVoiceName() {

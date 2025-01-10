@@ -238,5 +238,6 @@ export const getServerSideConfig = () => {
       !!process.env.USE_OPENAI_ENDPOINT_FOR_ALL_MODELS,
 
     disableModelProviderDisplay: !!process.env.DISABLE_MODEL_PROVIDER_DISPLAY,
+    isUseRemoteModels: !!process.env.USE_REMOTE_MODELS,
   };
 };
