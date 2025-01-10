@@ -399,7 +399,7 @@ docker run -d -p 3000:3000 \
 
 ## 捐赠
 
-[请项目原作者喝杯咖啡](https://www.buymeacoffee.com/yidadaa)
+<a href="https://www.buymeacoffee.com/gosuto" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
 ## 感谢
 
