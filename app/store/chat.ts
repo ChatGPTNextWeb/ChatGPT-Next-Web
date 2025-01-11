@@ -214,7 +214,11 @@ export const useChatStore = createPersistStore(
         const newSession = createEmptySession();
 
         newSession.topic = currentSession.topic;
-        newSession.messages = [...currentSession.messages];
+        // 深拷贝消息
+        newSession.messages = currentSession.messages.map(msg => ({
+          ...msg,
+          id: nanoid(), // 生成新的消息 ID
+        }));
         newSession.mask = {
           ...currentSession.mask,
           modelConfig: {
