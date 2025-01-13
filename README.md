@@ -9,6 +9,10 @@
 
 English / [简体中文](./README_CN.md)
 
+<a href="https://trendshift.io/repositories/5973" target="_blank"><img src="https://trendshift.io/api/badge/repositories/5973" alt="ChatGPTNextWeb%2FChatGPT-Next-Web | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+
+
+
 One-Click to get a well-designed cross-platform ChatGPT web UI, with Claude, GPT4 & Gemini Pro support.
 
 一键免费部署你的跨平台私人 ChatGPT 应用, 支持 Claude, GPT4 & Gemini Pro 模型。
