@@ -15,7 +15,14 @@ export async function createClient(
   const transport = new StdioClientTransport({
     command: config.command,
     args: config.args,
-    env: config.env,
+    env: {
+      ...Object.fromEntries(
+        Object.entries(process.env)
+          .filter(([_, v]) => v !== undefined)
+          .map(([k, v]) => [k, v as string]),
+      ),
+      ...(config.env || {}),
+    },
   });
 
   const client = new Client(
