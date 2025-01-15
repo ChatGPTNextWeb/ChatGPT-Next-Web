@@ -61,16 +61,6 @@ export function McpMarketPage() {
     return id in (config?.mcpServers ?? {});
   };
 
-  // 获取客户端状态
-  const updateClientStatus = async (clientId: string) => {
-    const status = await getClientStatus(clientId);
-    setClientStatuses((prev) => ({
-      ...prev,
-      [clientId]: status,
-    }));
-    return status;
-  };
-
   // 从服务器获取初始状态
   useEffect(() => {
     const loadInitialState = async () => {
@@ -82,8 +72,7 @@ export function McpMarketPage() {
         // 获取所有客户端的状态
         const statuses: Record<string, any> = {};
         for (const clientId of Object.keys(config.mcpServers)) {
-          const status = await getClientStatus(clientId);
-          statuses[clientId] = status;
+          statuses[clientId] = await getClientStatus(clientId);
         }
         setClientStatuses(statuses);
       } catch (error) {
@@ -220,8 +209,7 @@ export function McpMarketPage() {
       // 更新所有客户端状态
       const statuses: Record<string, any> = {};
       for (const clientId of Object.keys(newConfig.mcpServers)) {
-        const status = await getClientStatus(clientId);
-        statuses[clientId] = status;
+        statuses[clientId] = await getClientStatus(clientId);
       }
       setClientStatuses(statuses);
 
