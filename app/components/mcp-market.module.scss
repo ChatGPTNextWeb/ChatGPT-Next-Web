@@ -39,8 +39,6 @@
     }
 
     .mcp-market-item {
-      display: flex;
-      justify-content: space-between;
       padding: 20px;
       border: var(--border-in-light);
       animation: slide-in ease 0.3s;
@@ -68,118 +66,106 @@
 
       .mcp-market-header {
         display: flex;
-        align-items: center;
+        justify-content: space-between;
+        align-items: flex-start;
+        width: 100%;
 
         .mcp-market-title {
-          .mcp-market-name {
-            font-size: 14px;
-            font-weight: bold;
-            display: flex;
+          flex-grow: 1;
+          margin-right: 20px;
+          max-width: calc(100% - 300px);
+        }
+
+        .mcp-market-name {
+          font-size: 14px;
+          font-weight: bold;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-bottom: 8px;
+
+          .server-status {
+            display: inline-flex;
             align-items: center;
-            gap: 8px;
+            margin-left: 10px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            background-color: #22c55e;
+            color: #fff;
 
-            .server-status {
+            &.error {
+              background-color: #ef4444;
+            }
+
+            .error-message {
+              margin-left: 4px;
               font-size: 12px;
-              padding: 2px 6px;
-              border-radius: 4px;
-              margin-left: 8px;
-              background-color: #10b981;
-              color: white;
-
-              &.error {
-                background-color: #ef4444;
-              }
-
-              &.waiting {
-                background-color: #f59e0b;
-              }
-
-              .error-message {
-                font-size: 11px;
-                opacity: 0.9;
-                margin-left: 4px;
-              }
             }
           }
-
-          .mcp-market-info {
-            font-size: 12px;
-            color: var(--black-50);
-            margin-top: 4px;
-          }
         }
-      }
 
-      .mcp-market-actions {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-
-        :global(.icon-button) {
-          transition: all 0.3s ease;
-          border: 1px solid transparent;
+        .repo-link {
+          color: var(--primary);
+          font-size: 12px;
+          display: inline-flex;
+          align-items: center;
+          gap: 4px;
+          text-decoration: none;
+          opacity: 0.8;
+          transition: opacity 0.2s;
 
           &:hover {
-            transform: translateY(-1px);
-            filter: brightness(1.1);
+            opacity: 1;
           }
 
-          &.action-primary {
-            background-color: var(--primary);
-            color: white;
-
-            svg {
-              filter: brightness(2);
-            }
-
-            &:hover {
-              background-color: var(--primary);
-              border-color: var(--primary);
-            }
-          }
-
-          &.action-warning {
-            background-color: var(--warning);
-            color: white;
-
-            svg {
-              filter: brightness(2);
-            }
-
-            &:hover {
-              background-color: var(--warning);
-              border-color: var(--warning);
-            }
-          }
-
-          &.action-danger {
-            background-color: transparent;
-            color: var(--danger);
-            border-color: var(--danger);
-
-            &:hover {
-              background-color: var(--danger);
-              color: white;
-
-              svg {
-                filter: brightness(2);
-              }
-            }
-          }
-
-          &.action-error {
-            color: #ef4444 !important;
-            border-color: #ef4444 !important;
+          svg {
+            width: 14px;
+            height: 14px;
           }
         }
-      }
 
-      @media screen and (max-width: 600px) {
-        flex-direction: column;
-        gap: 10px;
+        .tags-container {
+          display: flex;
+          gap: 4px;
+          flex-wrap: wrap;
+          margin-bottom: 8px;
+        }
+
+        .tag {
+          background: var(--gray);
+          color: var(--black);
+          padding: 2px 6px;
+          border-radius: 4px;
+          font-size: 10px;
+          opacity: 0.8;
+        }
+
+        .mcp-market-info {
+          color: var(--black);
+          font-size: 12px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
 
         .mcp-market-actions {
+          display: flex;
+          gap: 8px;
+          align-items: flex-start;
+          flex-shrink: 0;
+          min-width: 180px;
           justify-content: flex-end;
+
+          :global(.icon-button) {
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+
+            &:hover {
+              transform: translateY(-1px);
+              filter: brightness(1.1);
+            }
+          }
         }
       }
     }
@@ -311,11 +297,6 @@
           border-color: var(--primary);
           outline: none;
           box-shadow: 0 0 0 2px var(--primary-10);
-        }
-
-        &::placeholder {
-          color: var(--gray-300) !important;
-          opacity: 1;
         }
       }
 
@@ -534,7 +515,7 @@
     }
   }
 
-  .primitives-list {
+  .tools-list {
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -545,11 +526,11 @@
     word-break: break-word;
     box-sizing: border-box;
 
-    .primitive-item {
+    .tool-item {
       width: 100%;
       box-sizing: border-box;
 
-      .primitive-name {
+      .tool-name {
         font-size: 14px;
         font-weight: 600;
         color: var(--black);
@@ -560,7 +541,7 @@
         width: 100%;
       }
 
-      .primitive-description {
+      .tool-description {
         font-size: 13px;
         color: var(--gray-500);
         line-height: 1.6;
@@ -590,9 +571,12 @@
       border-radius: 10px;
       padding: 10px;
       margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
 
       .list-header {
-        margin-bottom: 10px;
+        margin-bottom: 0;
 
         .list-title {
           font-size: 14px;

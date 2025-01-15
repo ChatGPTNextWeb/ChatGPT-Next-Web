@@ -21,8 +21,8 @@ import {
   DEFAULT_SYSTEM_TEMPLATE,
   GEMINI_SUMMARIZE_MODEL,
   KnowledgeCutOffDate,
-  MCP_PRIMITIVES_TEMPLATE,
   MCP_SYSTEM_TEMPLATE,
+  MCP_TOOLS_TEMPLATE,
   ServiceProvider,
   StoreKey,
   SUMMARIZE_MODEL,
@@ -35,7 +35,7 @@ import { ModelConfig, ModelType, useAppConfig } from "./config";
 import { useAccessStore } from "./access";
 import { collectModelsWithDefaultModel } from "../utils/model";
 import { createEmptyMask, Mask } from "./mask";
-import { executeMcpAction, getAllPrimitives } from "../mcp/actions";
+import { executeMcpAction, getAllTools } from "../mcp/actions";
 import { extractMcpJson, isMcpJson } from "../mcp/utils";
 
 const localStorage = safeLocalStorage();
@@ -199,23 +199,24 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
 }
 
 async function getMcpSystemPrompt(): Promise<string> {
-  let primitives = await getAllPrimitives();
-  primitives = primitives.filter((i) =>
-    i.primitives.some((p) => p.type === "tool"),
-  );
+  const tools = await getAllTools();
 
-  let primitivesString = "";
-  primitives.forEach((i) => {
-    primitivesString += MCP_PRIMITIVES_TEMPLATE.replace(
+  let toolsStr = "";
+
+  tools.forEach((i) => {
+    // error client has no tools
+    if (!i.tools) return;
+
+    toolsStr += MCP_TOOLS_TEMPLATE.replace(
       "{{ clientId }}",
       i.clientId,
     ).replace(
-      "{{ primitives }}",
-      i.primitives.map((p) => JSON.stringify(p, null, 2)).join("\n"),
+      "{{ tools }}",
+      i.tools.tools.map((p: object) => JSON.stringify(p, null, 2)).join("\n"),
     );
   });
 
-  return MCP_SYSTEM_TEMPLATE.replace("{{ MCP_PRIMITIVES }}", primitivesString);
+  return MCP_SYSTEM_TEMPLATE.replace("{{ MCP_TOOLS }}", toolsStr);
 }
 
 const DEFAULT_CHAT_STATE = {

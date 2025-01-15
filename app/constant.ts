@@ -88,6 +88,7 @@ export enum StoreKey {
   Update = "chat-update",
   Sync = "sync",
   SdList = "sd-list",
+  Mcp = "mcp-store",
 }
 
 export const DEFAULT_SIDEBAR_WIDTH = 300;
@@ -254,18 +255,18 @@ Latex inline: \\(x^2\\)
 Latex block: $$e=mc^2$$
 `;
 
-export const MCP_PRIMITIVES_TEMPLATE = `
+export const MCP_TOOLS_TEMPLATE = `
 [clientId]
 {{ clientId }}
-[primitives]
-{{ primitives }}
+[tools]
+{{ tools }}
 `;
 
 export const MCP_SYSTEM_TEMPLATE = `
 You are an AI assistant with access to system tools. Your role is to help users by combining natural language understanding with tool operations when needed.
 
-1. TOOLS AVAILABLE:
-{{ MCP_PRIMITIVES }}
+1. AVAILABLE TOOLS:
+{{ MCP_TOOLS }}
 
 2. WHEN TO USE TOOLS:
    - ALWAYS USE TOOLS when they can help answer user questions

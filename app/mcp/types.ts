@@ -1,6 +1,7 @@
 // ref: https://spec.modelcontextprotocol.io/specification/basic/messages/
 
 import { z } from "zod";
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 
 export interface McpRequestMessage {
   jsonrpc?: "2.0";
@@ -60,6 +61,32 @@ export const McpNotificationsSchema: z.ZodType<McpNotifications> = z.object({
   params: z.record(z.unknown()).optional(),
 });
 
+////////////
+// Next Chat
+////////////
+export interface ListToolsResponse {
+  tools: {
+    name?: string;
+    description?: string;
+    inputSchema?: object;
+    [key: string]: any;
+  };
+}
+
+export type McpClientData = McpActiveClient | McpErrorClient;
+
+interface McpActiveClient {
+  client: Client;
+  tools: ListToolsResponse;
+  errorMsg: null;
+}
+
+interface McpErrorClient {
+  client: null;
+  tools: null;
+  errorMsg: string;
+}
+
 // MCP 服务器配置相关类型
 export interface ServerConfig {
   command: string;
@@ -67,23 +94,52 @@ export interface ServerConfig {
   env?: Record<string, string>;
 }
 
-export interface McpConfig {
+export interface McpConfigData {
+  // MCP Server 的配置
   mcpServers: Record<string, ServerConfig>;
 }
 
+export const DEFAULT_MCP_CONFIG: McpConfigData = {
+  mcpServers: {},
+};
+
 export interface ArgsMapping {
+  // 参数映射的类型
   type: "spread" | "single" | "env";
+
+  // 参数映射的位置
   position?: number;
+
+  // 参数映射的 key
   key?: string;
 }
 
 export interface PresetServer {
+  // MCP Server 的唯一标识，作为最终配置文件 Json 的 key
   id: string;
+
+  // MCP Server 的显示名称
   name: string;
+
+  // MCP Server 的描述
   description: string;
+
+  // MCP Server 的仓库地址
+  repo: string;
+
+  // MCP Server 的标签
+  tags: string[];
+
+  // MCP Server 的命令
   command: string;
+
+  // MCP Server 的参数
   baseArgs: string[];
+
+  // MCP Server 是否需要配置
   configurable: boolean;
+
+  // MCP Server 的配置 schema
   configSchema?: {
     properties: Record<
       string,
@@ -95,5 +151,7 @@ export interface PresetServer {
       }
     >;
   };
+
+  // MCP Server 的参数映射
   argsMapping?: Record<string, ArgsMapping>;
 }

@@ -29,6 +29,8 @@ import { getClientConfig } from "../config/client";
 import { type ClientApi, getClientApi } from "../client/api";
 import { useAccessStore } from "../store";
 import clsx from "clsx";
+import { initializeMcpSystem } from "../mcp/actions";
+import { showToast } from "./ui-lib";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -241,6 +243,14 @@ export function Home() {
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());
     useAccessStore.getState().fetch();
+  }, []);
+
+  useEffect(() => {
+    // 初始化 MCP 系统
+    initializeMcpSystem().catch((error) => {
+      console.error("Failed to initialize MCP system:", error);
+      showToast("Failed to initialize MCP system");
+    });
   }, []);
 
   if (!useHasHydrated()) {
