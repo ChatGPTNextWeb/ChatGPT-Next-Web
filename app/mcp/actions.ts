@@ -98,6 +98,9 @@ async function initializeSingleClient(
   try {
     const client = await createClient(clientId, serverConfig);
     const tools = await listTools(client);
+    logger.info(
+      `Supported tools for [${clientId}]: ${JSON.stringify(tools, null, 2)}`,
+    );
     clientsMap.set(clientId, { client, tools, errorMsg: null });
     logger.success(`Client [${clientId}] initialized successfully`);
   } catch (error) {
@@ -130,6 +133,13 @@ export async function initializeMcpSystem() {
 export async function addMcpServer(clientId: string, config: ServerConfig) {
   try {
     const currentConfig = await getMcpConfigFromFile();
+    const isNewServer = !(clientId in currentConfig.mcpServers);
+
+    // 如果是新服务器，设置默认状态为 active
+    if (isNewServer && !config.status) {
+      config.status = "active";
+    }
+
     const newConfig = {
       ...currentConfig,
       mcpServers: {
@@ -138,8 +148,12 @@ export async function addMcpServer(clientId: string, config: ServerConfig) {
       },
     };
     await updateMcpConfig(newConfig);
-    // 只初始化新添加的服务器
-    await initializeSingleClient(clientId, config);
+
+    // 只有新服务器或状态为 active 的服务器才初始化
+    if (isNewServer || config.status === "active") {
+      await initializeSingleClient(clientId, config);
+    }
+
     return newConfig;
   } catch (error) {
     logger.error(`Failed to add server [${clientId}]: ${error}`);

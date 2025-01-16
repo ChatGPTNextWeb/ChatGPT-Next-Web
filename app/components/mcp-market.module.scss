@@ -85,6 +85,50 @@
         border-bottom-right-radius: 10px;
       }
 
+      &.loading {
+        position: relative;
+        &::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent
+          );
+          background-size: 200% 100%;
+          animation: loading-pulse 1.5s infinite;
+        }
+      }
+
+      .operation-status {
+        display: inline-flex;
+        align-items: center;
+        margin-left: 10px;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        background-color: #16a34a;
+        color: #fff;
+        animation: pulse 1.5s infinite;
+
+        &[data-status="stopping"] {
+          background-color: #9ca3af;
+        }
+
+        &[data-status="starting"] {
+          background-color: #4ade80;
+        }
+
+        &[data-status="error"] {
+          background-color: #f87171;
+        }
+      }
+
       .mcp-market-header {
         display: flex;
         justify-content: space-between;
@@ -583,5 +627,26 @@
         }
       }
     }
+  }
+}
+
+@keyframes loading-pulse {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
   }
 }

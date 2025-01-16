@@ -52,6 +52,9 @@ export function McpMarketPage() {
   >({});
   const [loadingPresets, setLoadingPresets] = useState(true);
   const [presetServers, setPresetServers] = useState<PresetServer[]>([]);
+  const [loadingStates, setLoadingStates] = useState<Record<string, string>>(
+    {},
+  );
 
   useEffect(() => {
     const loadPresetServers = async () => {
@@ -141,8 +144,12 @@ export function McpMarketPage() {
     const preset = presetServers.find((s) => s.id === editingServerId);
     if (!preset || !preset.configSchema || !editingServerId) return;
 
+    // 先关闭模态框
+    const savingServerId = editingServerId;
+    setEditingServerId(undefined);
+
     try {
-      setIsLoading(true);
+      updateLoadingState(savingServerId, "Updating configuration...");
       // 构建服务器配置
       const args = [...preset.baseArgs];
       const env: Record<string, string> = {};
@@ -172,25 +179,38 @@ export function McpMarketPage() {
         ...(Object.keys(env).length > 0 ? { env } : {}),
       };
 
+      // 检查是否是新增还是编辑
+      const isNewServer = !isServerAdded(savingServerId);
+
+      // 如果是编辑现有服务器，保持原有状态
+      if (!isNewServer) {
+        const currentConfig = await getMcpConfigFromFile();
+        const currentStatus = currentConfig.mcpServers[savingServerId]?.status;
+        if (currentStatus) {
+          serverConfig.status = currentStatus;
+        }
+      }
+
       // 更新配置并初始化新服务器
-      const newConfig = await addMcpServer(editingServerId, serverConfig);
+      const newConfig = await addMcpServer(savingServerId, serverConfig);
       setConfig(newConfig);
 
-      // 更新状态
-      const status = await getClientStatus(editingServerId);
-      setClientStatuses((prev) => ({
-        ...prev,
-        [editingServerId]: status,
-      }));
+      // 只有新增的服务器才需要获取状态（因为会自动启动）
+      if (isNewServer) {
+        const status = await getClientStatus(savingServerId);
+        setClientStatuses((prev) => ({
+          ...prev,
+          [savingServerId]: status,
+        }));
+      }
 
-      setEditingServerId(undefined);
-      showToast("Server configuration saved successfully");
+      showToast("Server configuration updated successfully");
     } catch (error) {
       showToast(
         error instanceof Error ? error.message : "Failed to save configuration",
       );
     } finally {
-      setIsLoading(false);
+      updateLoadingState(savingServerId, null);
     }
   };
 
@@ -210,36 +230,24 @@ export function McpMarketPage() {
     }
   };
 
-  // 重启所有客户端
-  const handleRestartAll = async () => {
-    try {
-      setIsLoading(true);
-      const newConfig = await restartAllClients();
-      setConfig(newConfig);
-
-      // 更新所有客户端状态
-      const statuses: Record<string, any> = {};
-      for (const clientId of Object.keys(newConfig.mcpServers)) {
-        statuses[clientId] = await getClientStatus(clientId);
+  // 更新加载状态的辅助函数
+  const updateLoadingState = (id: string, message: string | null) => {
+    setLoadingStates((prev) => {
+      if (message === null) {
+        const { [id]: _, ...rest } = prev;
+        return rest;
       }
-      setClientStatuses(statuses);
-
-      showToast("Successfully restarted all clients");
-    } catch (error) {
-      showToast("Failed to restart clients");
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
+      return { ...prev, [id]: message };
+    });
   };
 
-  // 添加服务器
+  // 修改添加服务器函数
   const addServer = async (preset: PresetServer) => {
     if (!preset.configurable) {
       try {
-        setIsLoading(true);
-        showToast("Creating MCP client...");
-        // 如果服务器不需要配置，直接添加
+        const serverId = preset.id;
+        updateLoadingState(serverId, "Creating MCP client...");
+
         const serverConfig: ServerConfig = {
           command: preset.command,
           args: [...preset.baseArgs],
@@ -254,7 +262,7 @@ export function McpMarketPage() {
           [preset.id]: status,
         }));
       } finally {
-        setIsLoading(false);
+        updateLoadingState(preset.id, null);
       }
     } else {
       // 如果需要配置，打开配置对话框
@@ -263,33 +271,13 @@ export function McpMarketPage() {
     }
   };
 
-  // 移除服务器
-  // const removeServer = async (id: string) => {
-  //   try {
-  //     setIsLoading(true);
-  //     const newConfig = await removeMcpServer(id);
-  //     setConfig(newConfig);
-
-  //     // 移除状态
-  //     setClientStatuses((prev) => {
-  //       const newStatuses = { ...prev };
-  //       delete newStatuses[id];
-  //       return newStatuses;
-  //     });
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  // 暂停服务器
+  // 修改暂停服务器函数
   const pauseServer = async (id: string) => {
     try {
-      setIsLoading(true);
-      showToast("Stopping server...");
+      updateLoadingState(id, "Stopping server...");
       const newConfig = await pauseMcpServer(id);
       setConfig(newConfig);
 
-      // 更新状态为暂停
       setClientStatuses((prev) => ({
         ...prev,
         [id]: { status: "paused", errorMsg: null },
@@ -299,27 +287,22 @@ export function McpMarketPage() {
       showToast("Failed to stop server");
       console.error(error);
     } finally {
-      setIsLoading(false);
+      updateLoadingState(id, null);
     }
   };
 
-  // 恢复服务器
+  // 修改恢复服务器函数
   const resumeServer = async (id: string) => {
     try {
-      setIsLoading(true);
-      showToast("Starting server...");
+      updateLoadingState(id, "Starting server...");
 
-      // 尝试启动服务器
       const success = await resumeMcpServer(id);
-
-      // 获取最新状态（这个状态是从 clientsMap 中获取的，反映真实状态）
       const status = await getClientStatus(id);
       setClientStatuses((prev) => ({
         ...prev,
         [id]: status,
       }));
 
-      // 根据启动结果显示消息
       if (success) {
         showToast("Server started successfully");
       } else {
@@ -333,7 +316,29 @@ export function McpMarketPage() {
       );
       console.error(error);
     } finally {
-      setIsLoading(false);
+      updateLoadingState(id, null);
+    }
+  };
+
+  // 修改重启所有客户端函数
+  const handleRestartAll = async () => {
+    try {
+      updateLoadingState("all", "Restarting all servers...");
+      const newConfig = await restartAllClients();
+      setConfig(newConfig);
+
+      const statuses: Record<string, any> = {};
+      for (const clientId of Object.keys(newConfig.mcpServers)) {
+        statuses[clientId] = await getClientStatus(clientId);
+      }
+      setClientStatuses(statuses);
+
+      showToast("Successfully restarted all clients");
+    } catch (error) {
+      showToast("Failed to restart clients");
+      console.error(error);
+    } finally {
+      updateLoadingState("all", null);
     }
   };
 
@@ -445,6 +450,14 @@ export function McpMarketPage() {
     return statusMap[status.status];
   };
 
+  // 获取操作状态的类型
+  const getOperationStatusType = (message: string) => {
+    if (message.toLowerCase().includes("stopping")) return "stopping";
+    if (message.toLowerCase().includes("starting")) return "starting";
+    if (message.toLowerCase().includes("error")) return "error";
+    return "default";
+  };
+
   // 渲染服务器列表
   const renderServerList = () => {
     if (loadingPresets) {
@@ -478,29 +491,46 @@ export function McpMarketPage() {
       .sort((a, b) => {
         const aStatus = checkServerStatus(a.id).status;
         const bStatus = checkServerStatus(b.id).status;
+        const aLoading = loadingStates[a.id];
+        const bLoading = loadingStates[b.id];
 
         // 定义状态优先级
         const statusPriority: Record<string, number> = {
-          error: 0, // 最高优先级
-          active: 1, // 运行中
-          paused: 2, // 已暂停
-          undefined: 3, // 未配置/未找到
+          error: 0, // 错误状态最高优先级
+          active: 1, // 已启动次之
+          starting: 2, // 正在启动
+          stopping: 3, // 正在停止
+          paused: 4, // 已暂停
+          undefined: 5, // 未配置最低优先级
         };
 
+        // 获取实际状态（包括加载状态）
+        const getEffectiveStatus = (status: string, loading?: string) => {
+          if (loading) {
+            const operationType = getOperationStatusType(loading);
+            return operationType === "default" ? status : operationType;
+          }
+          return status;
+        };
+
+        const aEffectiveStatus = getEffectiveStatus(aStatus, aLoading);
+        const bEffectiveStatus = getEffectiveStatus(bStatus, bLoading);
+
         // 首先按状态排序
-        if (aStatus !== bStatus) {
+        if (aEffectiveStatus !== bEffectiveStatus) {
           return (
-            (statusPriority[aStatus] || 3) - (statusPriority[bStatus] || 3)
+            (statusPriority[aEffectiveStatus] ?? 5) -
+            (statusPriority[bEffectiveStatus] ?? 5)
           );
         }
 
-        // 然后按名称排序
+        // 状态相同时按名称排序
         return a.name.localeCompare(b.name);
       })
       .map((server) => (
         <div
           className={clsx(styles["mcp-market-item"], {
-            [styles["disabled"]]: isLoading,
+            [styles["loading"]]: loadingStates[server.id],
           })}
           key={server.id}
         >
@@ -508,7 +538,17 @@ export function McpMarketPage() {
             <div className={styles["mcp-market-title"]}>
               <div className={styles["mcp-market-name"]}>
                 {server.name}
-                {getServerStatusDisplay(server.id)}
+                {loadingStates[server.id] && (
+                  <span
+                    className={styles["operation-status"]}
+                    data-status={getOperationStatusType(
+                      loadingStates[server.id],
+                    )}
+                  >
+                    {loadingStates[server.id]}
+                  </span>
+                )}
+                {!loadingStates[server.id] && getServerStatusDisplay(server.id)}
                 {server.repo && (
                   <a
                     href={server.repo}
@@ -605,8 +645,10 @@ export function McpMarketPage() {
           <div className="window-header-title">
             <div className="window-header-main-title">
               MCP Market
-              {isLoading && (
-                <span className={styles["loading-indicator"]}>Loading...</span>
+              {loadingStates["all"] && (
+                <span className={styles["loading-indicator"]}>
+                  {loadingStates["all"]}
+                </span>
               )}
             </div>
             <div className="window-header-sub-title">
