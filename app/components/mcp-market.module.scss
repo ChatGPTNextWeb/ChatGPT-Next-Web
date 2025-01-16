@@ -17,6 +17,27 @@
     padding: 20px;
     overflow-y: auto;
 
+    .loading-container,
+    .empty-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 200px;
+      width: 100%;
+      background-color: var(--white);
+      border: var(--border-in-light);
+      border-radius: 10px;
+      animation: slide-in ease 0.3s;
+    }
+
+    .loading-text,
+    .empty-text {
+      font-size: 14px;
+      color: var(--black);
+      opacity: 0.5;
+      text-align: center;
+    }
+
     .mcp-market-filter {
       width: 100%;
       max-width: 100%;

@@ -11,7 +11,6 @@ import GithubIcon from "../icons/github.svg";
 import { List, ListItem, Modal, showToast } from "./ui-lib";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import presetServersJson from "../mcp/preset-server.json";
 import {
   addMcpServer,
   getClientStatus,
@@ -32,8 +31,6 @@ import clsx from "clsx";
 import PlayIcon from "../icons/play.svg";
 import StopIcon from "../icons/pause.svg";
 
-const presetServers = presetServersJson as PresetServer[];
-
 interface ConfigProperty {
   type: string;
   description?: string;
@@ -53,6 +50,28 @@ export function McpMarketPage() {
   const [clientStatuses, setClientStatuses] = useState<
     Record<string, ServerStatusResponse>
   >({});
+  const [loadingPresets, setLoadingPresets] = useState(true);
+  const [presetServers, setPresetServers] = useState<PresetServer[]>([]);
+
+  useEffect(() => {
+    const loadPresetServers = async () => {
+      try {
+        setLoadingPresets(true);
+        const response = await fetch("https://nextchat.club/mcp/list");
+        if (!response.ok) {
+          throw new Error("Failed to load preset servers");
+        }
+        const data = await response.json();
+        setPresetServers(data?.data ?? []);
+      } catch (error) {
+        console.error("Failed to load preset servers:", error);
+        showToast("Failed to load preset servers");
+      } finally {
+        setLoadingPresets(false);
+      }
+    };
+    loadPresetServers().then();
+  }, []);
 
   // 检查服务器是否已添加
   const isServerAdded = (id: string) => {
@@ -440,6 +459,24 @@ export function McpMarketPage() {
 
   // 渲染服务器列表
   const renderServerList = () => {
+    if (loadingPresets) {
+      return (
+        <div className={styles["loading-container"]}>
+          <div className={styles["loading-text"]}>
+            Loading preset server list...
+          </div>
+        </div>
+      );
+    }
+
+    if (!Array.isArray(presetServers) || presetServers.length === 0) {
+      return (
+        <div className={styles["empty-container"]}>
+          <div className={styles["empty-text"]}>No servers available</div>
+        </div>
+      );
+    }
+
     return presetServers
       .filter((server) => {
         if (searchText.length === 0) return true;
