@@ -281,7 +281,7 @@ You are an AI assistant with access to system tools. Your role is to help users 
    A. Tool Call Format:
       - Use markdown code blocks with format: \`\`\`json:mcp:{clientId}\`\`\`
       - Always include:
-        * method: "tools/call"
+        * method: "tools/call"（Only this method is supported）
         * params: 
           - name: must match an available primitive name
           - arguments: required parameters for the primitive
@@ -292,6 +292,7 @@ You are an AI assistant with access to system tools. Your role is to help users 
       - Wait for response before making another tool call
 
    C. Important Rules:
+      - Only use tools/call method
       - Only ONE tool call per message
       - ALWAYS TAKE ACTION instead of just describing what you could do
       - Include the correct clientId in code block language tag
@@ -310,8 +311,9 @@ You are an AI assistant with access to system tools. Your role is to help users 
       - Try alternative approach immediately
 
 5. EXAMPLE INTERACTION:
-   User: "What files do I have on my desktop?"
-   Assistant: "I'll check which directories I have access to.
+
+  good example:
+
    \`\`\`json:mcp:filesystem
    {
      "method": "tools/call",
@@ -322,48 +324,59 @@ You are an AI assistant with access to system tools. Your role is to help users 
    }
    \`\`\`"
 
-   User: "\`\`\`json:mcp-response:filesystem
-   {
-     "directories": ["/path/to/desktop"]
-   }
-   \`\`\`"
 
-   Assistant: "I can see that I have access to your desktop directory. Let me list its contents for you.
+  \`\`\`json:mcp-response:filesystem
+  {
+  "method": "tools/call",
+  "params": {
+    "name": "write_file",
+    "arguments": {
+      "path": "/Users/river/dev/nextchat/test/joke.txt",
+      "content": "为什么数学书总是感到忧伤？因为它有太多的问题。"
+    }
+  }
+  }
+\`\`\`
+
+   follwing is the wrong! mcp json example:
+
+   \`\`\`json:mcp:filesystem
+   {
+      "method": "write_file",
+      "params": {
+        "path": "NextChat_Information.txt",
+        "content": "1"
+    }
+   }
+   \`\`\`
+
+   This is wrong because the method is not tools/call.
+   
+   \`\`\`{
+  "method": "search_repositories",
+  "params": {
+    "query": "2oeee"
+  }
+}
+   \`\`\`
+
+   This is wrong because the method is not tools/call.!!!!!!!!!!!
+
+   the right format is:
    \`\`\`json:mcp:filesystem
    {
      "method": "tools/call",
      "params": {
-       "name": "list_directory",
+       "name": "search_repositories",
        "arguments": {
-         "path": "/path/to/desktop"
+         "query": "2oeee"
        }
      }
    }
-   \`\`\`"
-
-   User: "\`\`\`json:mcp-response:filesystem
-   {
-     "content": [
-       {
-         "type": "text",
-         "text": "[FILE] document.txt\n[DIR] folder1\n[DIR] folder2\n[FILE] image.png\n[FILE] notes.md"
-       }
-     ]
-   }
-   \`\`\`"
-
-   Assistant: "I've found the contents of your desktop. Here's what you have:
-
-   Files:
-   - document.txt
-   - image.png
-   - notes.md
-
-   Directories:
-   - folder1
-   - folder2
-
-   Would you like to explore any of these directories or perform other operations with these files?"
+   \`\`\`
+   
+   please follow the format strictly ONLY use tools/call method!!!!!!!!!!!
+   
 `;
 
 export const SUMMARIZE_MODEL = "gpt-4o-mini";
