@@ -73,31 +73,6 @@
     "configurable": false
   },
   {
-    "id": "mongodb",
-    "name": "MongoDB",
-    "description": "Direct interaction with MongoDB databases",
-    "repo": "",
-    "tags": ["database", "mongodb", "nosql"],
-    "command": "node",
-    "baseArgs": ["dist/index.js"],
-    "configurable": true,
-    "configSchema": {
-      "properties": {
-        "connectionString": {
-          "type": "string",
-          "description": "MongoDB connection string",
-          "required": true
-        }
-      }
-    },
-    "argsMapping": {
-      "connectionString": {
-        "type": "single",
-        "position": 1
-      }
-    }
-  },
-  {
     "id": "difyworkflow",
     "name": "Dify Workflow",
     "description": "Tools to query and execute Dify workflows",

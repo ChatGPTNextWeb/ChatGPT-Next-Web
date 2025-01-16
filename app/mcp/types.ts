@@ -87,11 +87,20 @@ interface McpErrorClient {
   errorMsg: string;
 }
 
+// 服务器状态类型
+export type ServerStatus = "undefined" | "active" | "paused" | "error";
+
+export interface ServerStatusResponse {
+  status: ServerStatus;
+  errorMsg: string | null;
+}
+
 // MCP 服务器配置相关类型
 export interface ServerConfig {
   command: string;
   args: string[];
   env?: Record<string, string>;
+  status?: "active" | "paused" | "error";
 }
 
 export interface McpConfigData {

@@ -98,6 +98,10 @@
               background-color: #ef4444;
             }
 
+            &.stopped {
+              background-color: #6b7280;
+            }
+
             .error-message {
               margin-left: 4px;
               font-size: 12px;
@@ -151,21 +155,11 @@
 
         .mcp-market-actions {
           display: flex;
-          gap: 8px;
+          gap: 12px;
           align-items: flex-start;
           flex-shrink: 0;
           min-width: 180px;
           justify-content: flex-end;
-
-          :global(.icon-button) {
-            transition: all 0.3s ease;
-            border: 1px solid transparent;
-
-            &:hover {
-              transform: translateY(-1px);
-              filter: brightness(1.1);
-            }
-          }
         }
       }
     }
@@ -211,30 +205,6 @@
 
         &::placeholder {
           color: var(--gray-300);
-        }
-      }
-
-      :global(.icon-button) {
-        width: 32px;
-        height: 32px;
-        padding: 0;
-        border-radius: 6px;
-        background-color: transparent;
-        border: 1px solid var(--gray-200);
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        &:hover {
-          background-color: var(--gray-100);
-          border-color: var(--gray-300);
-        }
-
-        svg {
-          width: 16px;
-          height: 16px;
-          opacity: 0.7;
         }
       }
     }

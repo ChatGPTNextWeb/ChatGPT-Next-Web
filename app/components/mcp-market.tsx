@@ -17,16 +17,20 @@ import {
   getClientStatus,
   getClientTools,
   getMcpConfigFromFile,
-  removeMcpServer,
   restartAllClients,
+  pauseMcpServer,
+  resumeMcpServer,
 } from "../mcp/actions";
 import {
   ListToolsResponse,
   McpConfigData,
   PresetServer,
   ServerConfig,
+  ServerStatusResponse,
 } from "../mcp/types";
 import clsx from "clsx";
+import PlayIcon from "../icons/play.svg";
+import StopIcon from "../icons/pause.svg";
 
 const presetServers = presetServersJson as PresetServer[];
 
@@ -47,13 +51,7 @@ export function McpMarketPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [config, setConfig] = useState<McpConfigData>();
   const [clientStatuses, setClientStatuses] = useState<
-    Record<
-      string,
-      {
-        status: "active" | "error" | "undefined";
-        errorMsg: string | null;
-      }
-    >
+    Record<string, ServerStatusResponse>
   >({});
 
   // 检查服务器是否已添加
@@ -253,18 +251,74 @@ export function McpMarketPage() {
   };
 
   // 移除服务器
-  const removeServer = async (id: string) => {
+  // const removeServer = async (id: string) => {
+  //   try {
+  //     setIsLoading(true);
+  //     const newConfig = await removeMcpServer(id);
+  //     setConfig(newConfig);
+
+  //     // 移除状态
+  //     setClientStatuses((prev) => {
+  //       const newStatuses = { ...prev };
+  //       delete newStatuses[id];
+  //       return newStatuses;
+  //     });
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // 暂停服务器
+  const pauseServer = async (id: string) => {
     try {
       setIsLoading(true);
-      const newConfig = await removeMcpServer(id);
+      showToast("Stopping server...");
+      const newConfig = await pauseMcpServer(id);
       setConfig(newConfig);
 
-      // 移除状态
-      setClientStatuses((prev) => {
-        const newStatuses = { ...prev };
-        delete newStatuses[id];
-        return newStatuses;
-      });
+      // 更新状态为暂停
+      setClientStatuses((prev) => ({
+        ...prev,
+        [id]: { status: "paused", errorMsg: null },
+      }));
+      showToast("Server stopped successfully");
+    } catch (error) {
+      showToast("Failed to stop server");
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 恢复服务器
+  const resumeServer = async (id: string) => {
+    try {
+      setIsLoading(true);
+      showToast("Starting server...");
+
+      // 尝试启动服务器
+      const success = await resumeMcpServer(id);
+
+      // 获取最新状态（这个状态是从 clientsMap 中获取的，反映真实状态）
+      const status = await getClientStatus(id);
+      setClientStatuses((prev) => ({
+        ...prev,
+        [id]: status,
+      }));
+
+      // 根据启动结果显示消息
+      if (success) {
+        showToast("Server started successfully");
+      } else {
+        throw new Error("Failed to start server");
+      }
+    } catch (error) {
+      showToast(
+        error instanceof Error
+          ? error.message
+          : "Failed to start server, please check logs",
+      );
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -332,7 +386,12 @@ export function McpMarketPage() {
         } else if (prop.type === "string") {
           const currentValue = userConfig[key as keyof typeof userConfig] || "";
           return (
-            <ListItem key={key} title={key} subTitle={prop.description}>
+            <ListItem
+              key={key}
+              title={key}
+              subTitle={prop.description}
+              vertical
+            >
               <div className={styles["input-item"]}>
                 <input
                   type="text"
@@ -356,6 +415,29 @@ export function McpMarketPage() {
     return clientStatuses[clientId] || { status: "undefined", errorMsg: null };
   };
 
+  // 修改状态显示逻辑
+  const getServerStatusDisplay = (clientId: string) => {
+    const status = checkServerStatus(clientId);
+
+    const statusMap = {
+      undefined: null, // 未配置/未找到不显示
+      paused: (
+        <span className={clsx(styles["server-status"], styles["stopped"])}>
+          Stopped
+        </span>
+      ),
+      active: <span className={styles["server-status"]}>Running</span>,
+      error: (
+        <span className={clsx(styles["server-status"], styles["error"])}>
+          Error
+          <span className={styles["error-message"]}>: {status.errorMsg}</span>
+        </span>
+      ),
+    };
+
+    return statusMap[status.status];
+  };
+
   // 渲染服务器列表
   const renderServerList = () => {
     return presetServers
@@ -373,15 +455,18 @@ export function McpMarketPage() {
         const bStatus = checkServerStatus(b.id).status;
 
         // 定义状态优先级
-        const statusPriority = {
-          error: 0,
-          active: 1,
-          undefined: 2,
+        const statusPriority: Record<string, number> = {
+          error: 0, // 最高优先级
+          active: 1, // 运行中
+          paused: 2, // 已暂停
+          undefined: 3, // 未配置/未找到
         };
 
         // 首先按状态排序
         if (aStatus !== bStatus) {
-          return statusPriority[aStatus] - statusPriority[bStatus];
+          return (
+            (statusPriority[aStatus] || 3) - (statusPriority[bStatus] || 3)
+          );
         }
 
         // 然后按名称排序
@@ -398,25 +483,7 @@ export function McpMarketPage() {
             <div className={styles["mcp-market-title"]}>
               <div className={styles["mcp-market-name"]}>
                 {server.name}
-                {checkServerStatus(server.id).status !== "undefined" && (
-                  <span
-                    className={clsx(styles["server-status"], {
-                      [styles["error"]]:
-                        checkServerStatus(server.id).status === "error",
-                    })}
-                  >
-                    {checkServerStatus(server.id).status === "error" ? (
-                      <>
-                        Error
-                        <span className={styles["error-message"]}>
-                          : {checkServerStatus(server.id).errorMsg}
-                        </span>
-                      </>
-                    ) : (
-                      "Active"
-                    )}
-                  </span>
-                )}
+                {getServerStatusDisplay(server.id)}
                 {server.repo && (
                   <a
                     href={server.repo}
@@ -450,39 +517,52 @@ export function McpMarketPage() {
                     <IconButton
                       icon={<EditIcon />}
                       text="Configure"
-                      className={clsx({
-                        [styles["action-error"]]:
-                          checkServerStatus(server.id).status === "error",
-                      })}
                       onClick={() => setEditingServerId(server.id)}
                       disabled={isLoading}
                     />
                   )}
-                  <IconButton
-                    icon={<EyeIcon />}
-                    text="Tools"
-                    onClick={async () => {
-                      setViewingServerId(server.id);
-                      await loadTools(server.id);
-                    }}
-                    disabled={
-                      isLoading ||
-                      checkServerStatus(server.id).status === "error"
-                    }
-                  />
-                  <IconButton
-                    icon={<DeleteIcon />}
-                    text="Remove"
-                    className={styles["action-danger"]}
-                    onClick={() => removeServer(server.id)}
-                    disabled={isLoading}
-                  />
+                  {checkServerStatus(server.id).status === "paused" ? (
+                    <>
+                      <IconButton
+                        icon={<PlayIcon />}
+                        text="Start"
+                        onClick={() => resumeServer(server.id)}
+                        disabled={isLoading}
+                      />
+                      {/* <IconButton
+                        icon={<DeleteIcon />}
+                        text="Remove"
+                        onClick={() => removeServer(server.id)}
+                        disabled={isLoading}
+                      /> */}
+                    </>
+                  ) : (
+                    <>
+                      <IconButton
+                        icon={<EyeIcon />}
+                        text="Tools"
+                        onClick={async () => {
+                          setViewingServerId(server.id);
+                          await loadTools(server.id);
+                        }}
+                        disabled={
+                          isLoading ||
+                          checkServerStatus(server.id).status === "error"
+                        }
+                      />
+                      <IconButton
+                        icon={<StopIcon />}
+                        text="Stop"
+                        onClick={() => pauseServer(server.id)}
+                        disabled={isLoading}
+                      />
+                    </>
+                  )}
                 </>
               ) : (
                 <IconButton
                   icon={<AddIcon />}
                   text="Add"
-                  className={styles["action-primary"]}
                   onClick={() => addServer(server)}
                   disabled={isLoading}
                 />
