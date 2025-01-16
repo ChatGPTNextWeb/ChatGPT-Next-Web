@@ -140,7 +140,7 @@ export function McpMarketPage() {
         setUserConfig({});
       }
     }
-  }, [editingServerId, config]);
+  }, [editingServerId, config, presetServers]);
 
   // 保存服务器配置
   const saveServerConfig = async () => {
@@ -405,22 +405,16 @@ export function McpMarketPage() {
         } else if (prop.type === "string") {
           const currentValue = userConfig[key as keyof typeof userConfig] || "";
           return (
-            <ListItem
-              key={key}
-              title={key}
-              subTitle={prop.description}
-              vertical
-            >
-              <div className={styles["input-item"]}>
-                <input
-                  type="text"
-                  value={currentValue}
-                  placeholder={`Enter ${key}`}
-                  onChange={(e) => {
-                    setUserConfig({ ...userConfig, [key]: e.target.value });
-                  }}
-                />
-              </div>
+            <ListItem key={key} title={key} subTitle={prop.description}>
+              <input
+                aria-label={key}
+                type="text"
+                value={currentValue}
+                placeholder={`Enter ${key}`}
+                onChange={(e) => {
+                  setUserConfig({ ...userConfig, [key]: e.target.value });
+                }}
+              />
             </ListItem>
           );
         }
