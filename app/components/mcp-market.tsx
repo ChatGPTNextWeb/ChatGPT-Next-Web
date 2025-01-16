@@ -102,12 +102,6 @@ export function McpMarketPage() {
     loadInitialState();
   }, []);
 
-  // Debug: 监控状态变化
-  useEffect(() => {
-    console.log("MCP Market - Current config:", config);
-    console.log("MCP Market - Current clientStatuses:", clientStatuses);
-  }, [config, clientStatuses]);
-
   // 加载当前编辑服务器的配置
   useEffect(() => {
     if (editingServerId && config) {
