@@ -81,6 +81,8 @@ declare global {
 
       // custom template for preprocessing user input
       DEFAULT_INPUT_TEMPLATE?: string;
+
+      ENABLE_MCP?: string; // enable mcp functionality
     }
   }
 }
@@ -129,7 +131,9 @@ export const getServerSideConfig = () => {
     if (customModels) customModels += ",";
     customModels += DEFAULT_MODELS.filter(
       (m) =>
-        (m.name.startsWith("gpt-4") || m.name.startsWith("chatgpt-4o") || m.name.startsWith("o1")) &&
+        (m.name.startsWith("gpt-4") ||
+          m.name.startsWith("chatgpt-4o") ||
+          m.name.startsWith("o1")) &&
         !m.name.startsWith("gpt-4o-mini"),
     )
       .map((m) => "-" + m.name)
@@ -249,5 +253,6 @@ export const getServerSideConfig = () => {
     customModels,
     defaultModel,
     allowedWebDavEndpoints,
+    enableMcp: !!process.env.ENABLE_MCP,
   };
 };

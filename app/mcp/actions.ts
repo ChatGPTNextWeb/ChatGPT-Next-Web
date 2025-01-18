@@ -16,6 +16,7 @@ import {
 } from "./types";
 import fs from "fs/promises";
 import path from "path";
+import { getServerSideConfig } from "../config/server";
 
 const logger = new MCPClientLogger("MCP Actions");
 const CONFIG_PATH = path.join(process.cwd(), "app/mcp/mcp_config.json");
@@ -117,6 +118,12 @@ async function initializeSingleClient(
 export async function initializeMcpSystem() {
   logger.info("MCP Actions starting...");
   try {
+    // 检查是否已有活跃的客户端
+    if (clientsMap.size > 0) {
+      logger.info("MCP system already initialized, skipping...");
+      return;
+    }
+
     const config = await getMcpConfigFromFile();
     // 初始化所有客户端
     for (const [clientId, serverConfig] of Object.entries(config.mcpServers)) {
@@ -351,4 +358,15 @@ export async function reinitializeClient(clientId: string) {
     throw new Error(`Server config not found for client ${clientId}`);
   }
   await initializeSingleClient(clientId, serverConfig);
+}
+
+// 检查 MCP 是否启用
+export async function isMcpEnabled() {
+  try {
+    const serverConfig = getServerSideConfig();
+    return !!serverConfig.enableMcp;
+  } catch (error) {
+    logger.error(`Failed to check MCP status: ${error}`);
+    return false;
+  }
 }

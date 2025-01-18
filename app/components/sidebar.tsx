@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo, useState, Fragment } from "react";
+import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
 
 import styles from "./home.module.scss";
 
@@ -30,8 +30,9 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { isIOS, useMobileScreen } from "../utils";
 import dynamic from "next/dynamic";
-import { showConfirm, Selector } from "./ui-lib";
+import { Selector, showConfirm } from "./ui-lib";
 import clsx from "clsx";
+import { isMcpEnabled } from "../mcp/actions";
 
 const ChatList = dynamic(async () => (await import("./chat-list")).ChatList, {
   loading: () => null,
@@ -129,6 +130,7 @@ export function useDragSideBar() {
     shouldNarrow,
   };
 }
+
 export function SideBarContainer(props: {
   children: React.ReactNode;
   onDragStart: (e: MouseEvent) => void;
@@ -224,6 +226,17 @@ export function SideBar(props: { className?: string }) {
   const navigate = useNavigate();
   const config = useAppConfig();
   const chatStore = useChatStore();
+  const [mcpEnabled, setMcpEnabled] = useState(false);
+
+  useEffect(() => {
+    // 检查 MCP 是否启用
+    const checkMcpStatus = async () => {
+      const enabled = await isMcpEnabled();
+      setMcpEnabled(enabled);
+      console.log("[SideBar] MCP enabled:", enabled);
+    };
+    checkMcpStatus();
+  }, []);
 
   return (
     <SideBarContainer
@@ -251,15 +264,17 @@ export function SideBar(props: { className?: string }) {
             }}
             shadow
           />
-          <IconButton
-            icon={<McpIcon />}
-            text={shouldNarrow ? undefined : Locale.Mcp.Name}
-            className={styles["sidebar-bar-button"]}
-            onClick={() => {
-              navigate(Path.McpMarket, { state: { fromHome: true } });
-            }}
-            shadow
-          />
+          {mcpEnabled && (
+            <IconButton
+              icon={<McpIcon />}
+              text={shouldNarrow ? undefined : Locale.Mcp.Name}
+              className={styles["sidebar-bar-button"]}
+              onClick={() => {
+                navigate(Path.McpMarket, { state: { fromHome: true } });
+              }}
+              shadow
+            />
+          )}
           <IconButton
             icon={<DiscoveryIcon />}
             text={shouldNarrow ? undefined : Locale.Discovery.Name}

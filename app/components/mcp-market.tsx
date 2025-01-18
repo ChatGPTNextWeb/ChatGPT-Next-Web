@@ -16,8 +16,9 @@ import {
   getClientStatus,
   getClientTools,
   getMcpConfigFromFile,
-  restartAllClients,
+  isMcpEnabled,
   pauseMcpServer,
+  restartAllClients,
   resumeMcpServer,
 } from "../mcp/actions";
 import {
@@ -30,6 +31,7 @@ import {
 import clsx from "clsx";
 import PlayIcon from "../icons/play.svg";
 import StopIcon from "../icons/pause.svg";
+import { Path } from "../constant";
 
 interface ConfigProperty {
   type: string;
@@ -40,6 +42,7 @@ interface ConfigProperty {
 
 export function McpMarketPage() {
   const navigate = useNavigate();
+  const [mcpEnabled, setMcpEnabled] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [userConfig, setUserConfig] = useState<Record<string, any>>({});
   const [editingServerId, setEditingServerId] = useState<string | undefined>();
@@ -56,8 +59,22 @@ export function McpMarketPage() {
     {},
   );
 
+  // 检查 MCP 是否启用
+  useEffect(() => {
+    const checkMcpStatus = async () => {
+      const enabled = await isMcpEnabled();
+      setMcpEnabled(enabled);
+      if (!enabled) {
+        navigate(Path.Home);
+      }
+    };
+    checkMcpStatus();
+  }, [navigate]);
+
+  // 加载预设服务器
   useEffect(() => {
     const loadPresetServers = async () => {
+      if (!mcpEnabled) return;
       try {
         setLoadingPresets(true);
         const response = await fetch("https://nextchat.club/mcp/list");
@@ -73,17 +90,13 @@ export function McpMarketPage() {
         setLoadingPresets(false);
       }
     };
-    loadPresetServers().then();
-  }, []);
+    loadPresetServers();
+  }, [mcpEnabled]);
 
-  // 检查服务器是否已添加
-  const isServerAdded = (id: string) => {
-    return id in (config?.mcpServers ?? {});
-  };
-
-  // 从服务器获取初始状态
+  // 加载初始状态
   useEffect(() => {
     const loadInitialState = async () => {
+      if (!mcpEnabled) return;
       try {
         setIsLoading(true);
         const config = await getMcpConfigFromFile();
@@ -103,41 +116,49 @@ export function McpMarketPage() {
       }
     };
     loadInitialState();
-  }, []);
+  }, [mcpEnabled]);
 
   // 加载当前编辑服务器的配置
   useEffect(() => {
-    if (editingServerId && config) {
-      const currentConfig = config.mcpServers[editingServerId];
-      if (currentConfig) {
-        // 从当前配置中提取用户配置
-        const preset = presetServers.find((s) => s.id === editingServerId);
-        if (preset?.configSchema) {
-          const userConfig: Record<string, any> = {};
-          Object.entries(preset.argsMapping || {}).forEach(([key, mapping]) => {
-            if (mapping.type === "spread") {
-              // 对于 spread 类型，从 args 中提取数组
-              const startPos = mapping.position ?? 0;
-              userConfig[key] = currentConfig.args.slice(startPos);
-            } else if (mapping.type === "single") {
-              // 对于 single 类型，获取单个值
-              userConfig[key] = currentConfig.args[mapping.position ?? 0];
-            } else if (
-              mapping.type === "env" &&
-              mapping.key &&
-              currentConfig.env
-            ) {
-              // 对于 env 类型，从环境变量中获取值
-              userConfig[key] = currentConfig.env[mapping.key];
-            }
-          });
-          setUserConfig(userConfig);
-        }
-      } else {
-        setUserConfig({});
+    if (!editingServerId || !config) return;
+    const currentConfig = config.mcpServers[editingServerId];
+    if (currentConfig) {
+      // 从当前配置中提取用户配置
+      const preset = presetServers.find((s) => s.id === editingServerId);
+      if (preset?.configSchema) {
+        const userConfig: Record<string, any> = {};
+        Object.entries(preset.argsMapping || {}).forEach(([key, mapping]) => {
+          if (mapping.type === "spread") {
+            // For spread types, extract the array from args.
+            const startPos = mapping.position ?? 0;
+            userConfig[key] = currentConfig.args.slice(startPos);
+          } else if (mapping.type === "single") {
+            // For single types, get a single value
+            userConfig[key] = currentConfig.args[mapping.position ?? 0];
+          } else if (
+            mapping.type === "env" &&
+            mapping.key &&
+            currentConfig.env
+          ) {
+            // For env types, get values from environment variables
+            userConfig[key] = currentConfig.env[mapping.key];
+          }
+        });
+        setUserConfig(userConfig);
       }
+    } else {
+      setUserConfig({});
     }
   }, [editingServerId, config, presetServers]);
+
+  if (!mcpEnabled) {
+    return null;
+  }
+
+  // 检查服务器是否已添加
+  const isServerAdded = (id: string) => {
+    return id in (config?.mcpServers ?? {});
+  };
 
   // 保存服务器配置
   const saveServerConfig = async () => {
@@ -291,8 +312,8 @@ export function McpMarketPage() {
     }
   };
 
-  // 修改恢复服务器函数
-  const resumeServer = async (id: string) => {
+  // Restart server
+  const restartServer = async (id: string) => {
     try {
       updateLoadingState(id, "Starting server...");
 
@@ -320,7 +341,7 @@ export function McpMarketPage() {
     }
   };
 
-  // 修改重启所有客户端函数
+  // Restart all clients
   const handleRestartAll = async () => {
     try {
       updateLoadingState("all", "Restarting all servers...");
@@ -342,7 +363,7 @@ export function McpMarketPage() {
     }
   };
 
-  // 渲染配置表单
+  // Render configuration form
   const renderConfigForm = () => {
     const preset = presetServers.find((s) => s.id === editingServerId);
     if (!preset?.configSchema) return null;
@@ -422,12 +443,10 @@ export function McpMarketPage() {
     );
   };
 
-  // 检查服务器状态
   const checkServerStatus = (clientId: string) => {
     return clientStatuses[clientId] || { status: "undefined", errorMsg: null };
   };
 
-  // 修改状态显示逻辑
   const getServerStatusDisplay = (clientId: string) => {
     const status = checkServerStatus(clientId);
 
@@ -450,7 +469,7 @@ export function McpMarketPage() {
     return statusMap[status.status];
   };
 
-  // 获取操作状态的类型
+  // Get the type of operation status
   const getOperationStatusType = (message: string) => {
     if (message.toLowerCase().includes("stopping")) return "stopping";
     if (message.toLowerCase().includes("starting")) return "starting";
@@ -496,15 +515,15 @@ export function McpMarketPage() {
 
         // 定义状态优先级
         const statusPriority: Record<string, number> = {
-          error: 0, // 错误状态最高优先级
-          active: 1, // 已启动次之
-          starting: 2, // 正在启动
-          stopping: 3, // 正在停止
-          paused: 4, // 已暂停
-          undefined: 5, // 未配置最低优先级
+          error: 0, // Highest priority for error status
+          active: 1, // Second for active
+          starting: 2, // Starting
+          stopping: 3, // Stopping
+          paused: 4, // Paused
+          undefined: 5, // Lowest priority for undefined
         };
 
-        // 获取实际状态（包括加载状态）
+        // Get actual status (including loading status)
         const getEffectiveStatus = (status: string, loading?: string) => {
           if (loading) {
             const operationType = getOperationStatusType(loading);
@@ -524,7 +543,7 @@ export function McpMarketPage() {
           );
         }
 
-        // 状态相同时按名称排序
+        // Sort by name when statuses are the same
         return a.name.localeCompare(b.name);
       })
       .map((server) => (
@@ -591,7 +610,7 @@ export function McpMarketPage() {
                       <IconButton
                         icon={<PlayIcon />}
                         text="Start"
-                        onClick={() => resumeServer(server.id)}
+                        onClick={() => restartServer(server.id)}
                         disabled={isLoading}
                       />
                       {/* <IconButton
@@ -720,7 +739,6 @@ export function McpMarketPage() {
           </div>
         )}
 
-        {/*支持的Tools*/}
         {viewingServerId && (
           <div className="modal-mask">
             <Modal

@@ -29,8 +29,7 @@ import { getClientConfig } from "../config/client";
 import { type ClientApi, getClientApi } from "../client/api";
 import { useAccessStore } from "../store";
 import clsx from "clsx";
-import { initializeMcpSystem } from "../mcp/actions";
-import { showToast } from "./ui-lib";
+import { initializeMcpSystem, isMcpEnabled } from "../mcp/actions";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -243,14 +242,20 @@ export function Home() {
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());
     useAccessStore.getState().fetch();
-  }, []);
 
-  useEffect(() => {
-    // 初始化 MCP 系统
-    initializeMcpSystem().catch((error) => {
-      console.error("Failed to initialize MCP system:", error);
-      showToast("Failed to initialize MCP system");
-    });
+    const initMcp = async () => {
+      try {
+        const enabled = await isMcpEnabled();
+        if (enabled) {
+          console.log("[MCP] initializing...");
+          await initializeMcpSystem();
+          console.log("[MCP] initialized");
+        }
+      } catch (err) {
+        console.error("[MCP] failed to initialize:", err);
+      }
+    };
+    initMcp();
   }, []);
 
   if (!useHasHydrated()) {

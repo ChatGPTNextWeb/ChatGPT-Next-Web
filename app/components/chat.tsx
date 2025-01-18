@@ -122,7 +122,7 @@ import { isEmpty } from "lodash-es";
 import { getModelProvider } from "../utils/model";
 import { RealtimeChat } from "@/app/components/realtime-chat";
 import clsx from "clsx";
-import { getAvailableClientsCount } from "../mcp/actions";
+import { getAvailableClientsCount, isMcpEnabled } from "../mcp/actions";
 
 const localStorage = safeLocalStorage();
 
@@ -135,14 +135,21 @@ const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
 const MCPAction = () => {
   const navigate = useNavigate();
   const [count, setCount] = useState<number>(0);
+  const [mcpEnabled, setMcpEnabled] = useState(false);
 
   useEffect(() => {
-    const loadCount = async () => {
-      const count = await getAvailableClientsCount();
-      setCount(count);
+    const checkMcpStatus = async () => {
+      const enabled = await isMcpEnabled();
+      setMcpEnabled(enabled);
+      if (enabled) {
+        const count = await getAvailableClientsCount();
+        setCount(count);
+      }
     };
-    loadCount();
+    checkMcpStatus();
   }, []);
+
+  if (!mcpEnabled) return null;
 
   return (
     <ChatAction
