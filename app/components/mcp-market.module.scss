@@ -167,6 +167,11 @@
               background-color: #6b7280;
             }
 
+            &.initializing {
+              background-color: #f59e0b;
+              animation: pulse 1.5s infinite;
+            }
+
             .error-message {
               margin-left: 4px;
               font-size: 12px;

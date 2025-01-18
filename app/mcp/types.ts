@@ -73,7 +73,16 @@ export interface ListToolsResponse {
   };
 }
 
-export type McpClientData = McpActiveClient | McpErrorClient;
+export type McpClientData =
+  | McpActiveClient
+  | McpErrorClient
+  | McpInitializingClient;
+
+interface McpInitializingClient {
+  client: null;
+  tools: null;
+  errorMsg: null;
+}
 
 interface McpActiveClient {
   client: Client;
@@ -88,7 +97,12 @@ interface McpErrorClient {
 }
 
 // 服务器状态类型
-export type ServerStatus = "undefined" | "active" | "paused" | "error";
+export type ServerStatus =
+  | "undefined"
+  | "active"
+  | "paused"
+  | "error"
+  | "initializing";
 
 export interface ServerStatusResponse {
   status: ServerStatus;

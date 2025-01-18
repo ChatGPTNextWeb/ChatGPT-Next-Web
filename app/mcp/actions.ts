@@ -24,40 +24,54 @@ const CONFIG_PATH = path.join(process.cwd(), "app/mcp/mcp_config.json");
 const clientsMap = new Map<string, McpClientData>();
 
 // 获取客户端状态
-export async function getClientStatus(
-  clientId: string,
-): Promise<ServerStatusResponse> {
-  const status = clientsMap.get(clientId);
+export async function getClientsStatus(): Promise<
+  Record<string, ServerStatusResponse>
+> {
   const config = await getMcpConfigFromFile();
-  const serverConfig = config.mcpServers[clientId];
+  const result: Record<string, ServerStatusResponse> = {};
 
-  // 如果配置中不存在该服务器
-  if (!serverConfig) {
-    return { status: "undefined", errorMsg: null };
+  for (const clientId of Object.keys(config.mcpServers)) {
+    const status = clientsMap.get(clientId);
+    const serverConfig = config.mcpServers[clientId];
+
+    if (!serverConfig) {
+      result[clientId] = { status: "undefined", errorMsg: null };
+      continue;
+    }
+
+    if (serverConfig.status === "paused") {
+      result[clientId] = { status: "paused", errorMsg: null };
+      continue;
+    }
+
+    if (!status) {
+      result[clientId] = { status: "undefined", errorMsg: null };
+      continue;
+    }
+
+    if (
+      status.client === null &&
+      status.tools === null &&
+      status.errorMsg === null
+    ) {
+      result[clientId] = { status: "initializing", errorMsg: null };
+      continue;
+    }
+
+    if (status.errorMsg) {
+      result[clientId] = { status: "error", errorMsg: status.errorMsg };
+      continue;
+    }
+
+    if (status.client) {
+      result[clientId] = { status: "active", errorMsg: null };
+      continue;
+    }
+
+    result[clientId] = { status: "error", errorMsg: "Client not found" };
   }
 
-  // 如果服务器配置为暂停状态
-  if (serverConfig.status === "paused") {
-    return { status: "paused", errorMsg: null };
-  }
-
-  // 如果 clientsMap 中没有记录
-  if (!status) {
-    return { status: "undefined", errorMsg: null };
-  }
-
-  // 如果有错误
-  if (status.errorMsg) {
-    return { status: "error", errorMsg: status.errorMsg };
-  }
-
-  // 如果客户端正常运行
-  if (status.client) {
-    return { status: "active", errorMsg: null };
-  }
-
-  // 如果客户端不存在
-  return { status: "error", errorMsg: "Client not found" };
+  return result;
 }
 
 // 获取客户端工具
@@ -96,22 +110,32 @@ async function initializeSingleClient(
   }
 
   logger.info(`Initializing client [${clientId}]...`);
-  try {
-    const client = await createClient(clientId, serverConfig);
-    const tools = await listTools(client);
-    logger.info(
-      `Supported tools for [${clientId}]: ${JSON.stringify(tools, null, 2)}`,
-    );
-    clientsMap.set(clientId, { client, tools, errorMsg: null });
-    logger.success(`Client [${clientId}] initialized successfully`);
-  } catch (error) {
-    clientsMap.set(clientId, {
-      client: null,
-      tools: null,
-      errorMsg: error instanceof Error ? error.message : String(error),
+
+  // 先设置初始化状态
+  clientsMap.set(clientId, {
+    client: null,
+    tools: null,
+    errorMsg: null, // null 表示正在初始化
+  });
+
+  // 异步初始化
+  createClient(clientId, serverConfig)
+    .then(async (client) => {
+      const tools = await listTools(client);
+      logger.info(
+        `Supported tools for [${clientId}]: ${JSON.stringify(tools, null, 2)}`,
+      );
+      clientsMap.set(clientId, { client, tools, errorMsg: null });
+      logger.success(`Client [${clientId}] initialized successfully`);
+    })
+    .catch((error) => {
+      clientsMap.set(clientId, {
+        client: null,
+        tools: null,
+        errorMsg: error instanceof Error ? error.message : String(error),
+      });
+      logger.error(`Failed to initialize client [${clientId}]: ${error}`);
     });
-    logger.error(`Failed to initialize client [${clientId}]: ${error}`);
-  }
 }
 
 // 初始化系统
@@ -184,7 +208,7 @@ export async function pauseMcpServer(clientId: string) {
         ...currentConfig.mcpServers,
         [clientId]: {
           ...serverConfig,
-          status: "paused" as const,
+          status: "paused",
         },
       },
     };
@@ -205,7 +229,7 @@ export async function pauseMcpServer(clientId: string) {
 }
 
 // 恢复服务器
-export async function resumeMcpServer(clientId: string): Promise<boolean> {
+export async function resumeMcpServer(clientId: string): Promise<void> {
   try {
     const currentConfig = await getMcpConfigFromFile();
     const serverConfig = currentConfig.mcpServers[clientId];
@@ -233,10 +257,6 @@ export async function resumeMcpServer(clientId: string): Promise<boolean> {
         },
       };
       await updateMcpConfig(newConfig);
-
-      // 再次确认状态
-      const status = await getClientStatus(clientId);
-      return status.status === "active";
     } catch (error) {
       const currentConfig = await getMcpConfigFromFile();
       const serverConfig = currentConfig.mcpServers[clientId];
@@ -254,7 +274,7 @@ export async function resumeMcpServer(clientId: string): Promise<boolean> {
         errorMsg: error instanceof Error ? error.message : String(error),
       });
       logger.error(`Failed to initialize client [${clientId}]: ${error}`);
-      return false;
+      throw error;
     }
   } catch (error) {
     logger.error(`Failed to resume server [${clientId}]: ${error}`);
@@ -297,6 +317,7 @@ export async function restartAllClients() {
         await removeClient(client.client);
       }
     }
+
     // 清空状态
     clientsMap.clear();
 
@@ -350,21 +371,11 @@ async function updateMcpConfig(config: McpConfigData): Promise<void> {
   }
 }
 
-// 重新初始化单个客户端
-export async function reinitializeClient(clientId: string) {
-  const config = await getMcpConfigFromFile();
-  const serverConfig = config.mcpServers[clientId];
-  if (!serverConfig) {
-    throw new Error(`Server config not found for client ${clientId}`);
-  }
-  await initializeSingleClient(clientId, serverConfig);
-}
-
 // 检查 MCP 是否启用
 export async function isMcpEnabled() {
   try {
     const serverConfig = getServerSideConfig();
-    return !!serverConfig.enableMcp;
+    return serverConfig.enableMcp;
   } catch (error) {
     logger.error(`Failed to check MCP status: ${error}`);
     return false;

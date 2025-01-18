@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   addMcpServer,
-  getClientStatus,
+  getClientsStatus,
   getClientTools,
   getMcpConfigFromFile,
   isMcpEnabled,
@@ -71,6 +71,23 @@ export function McpMarketPage() {
     checkMcpStatus();
   }, [navigate]);
 
+  // 添加状态轮询
+  useEffect(() => {
+    if (!mcpEnabled || !config) return;
+
+    const updateStatuses = async () => {
+      const statuses = await getClientsStatus();
+      setClientStatuses(statuses);
+    };
+
+    // 立即执行一次
+    updateStatuses();
+    // 每 1000ms 轮询一次
+    const timer = setInterval(updateStatuses, 1000);
+
+    return () => clearInterval(timer);
+  }, [mcpEnabled, config]);
+
   // 加载预设服务器
   useEffect(() => {
     const loadPresetServers = async () => {
@@ -103,10 +120,7 @@ export function McpMarketPage() {
         setConfig(config);
 
         // 获取所有客户端的状态
-        const statuses: Record<string, any> = {};
-        for (const clientId of Object.keys(config.mcpServers)) {
-          statuses[clientId] = await getClientStatus(clientId);
-        }
+        const statuses = await getClientsStatus();
         setClientStatuses(statuses);
       } catch (error) {
         console.error("Failed to load initial state:", error);
@@ -165,7 +179,6 @@ export function McpMarketPage() {
     const preset = presetServers.find((s) => s.id === editingServerId);
     if (!preset || !preset.configSchema || !editingServerId) return;
 
-    // 先关闭模态框
     const savingServerId = editingServerId;
     setEditingServerId(undefined);
 
@@ -200,31 +213,8 @@ export function McpMarketPage() {
         ...(Object.keys(env).length > 0 ? { env } : {}),
       };
 
-      // 检查是否是新增还是编辑
-      const isNewServer = !isServerAdded(savingServerId);
-
-      // 如果是编辑现有服务器，保持原有状态
-      if (!isNewServer) {
-        const currentConfig = await getMcpConfigFromFile();
-        const currentStatus = currentConfig.mcpServers[savingServerId]?.status;
-        if (currentStatus) {
-          serverConfig.status = currentStatus;
-        }
-      }
-
-      // 更新配置并初始化新服务器
       const newConfig = await addMcpServer(savingServerId, serverConfig);
       setConfig(newConfig);
-
-      // 只有新增的服务器才需要获取状态（因为会自动启动）
-      if (isNewServer) {
-        const status = await getClientStatus(savingServerId);
-        setClientStatuses((prev) => ({
-          ...prev,
-          [savingServerId]: status,
-        }));
-      }
-
       showToast("Server configuration updated successfully");
     } catch (error) {
       showToast(
@@ -277,11 +267,8 @@ export function McpMarketPage() {
         setConfig(newConfig);
 
         // 更新状态
-        const status = await getClientStatus(preset.id);
-        setClientStatuses((prev) => ({
-          ...prev,
-          [preset.id]: status,
-        }));
+        const statuses = await getClientsStatus();
+        setClientStatuses(statuses);
       } finally {
         updateLoadingState(preset.id, null);
       }
@@ -298,11 +285,6 @@ export function McpMarketPage() {
       updateLoadingState(id, "Stopping server...");
       const newConfig = await pauseMcpServer(id);
       setConfig(newConfig);
-
-      setClientStatuses((prev) => ({
-        ...prev,
-        [id]: { status: "paused", errorMsg: null },
-      }));
       showToast("Server stopped successfully");
     } catch (error) {
       showToast("Failed to stop server");
@@ -316,19 +298,7 @@ export function McpMarketPage() {
   const restartServer = async (id: string) => {
     try {
       updateLoadingState(id, "Starting server...");
-
-      const success = await resumeMcpServer(id);
-      const status = await getClientStatus(id);
-      setClientStatuses((prev) => ({
-        ...prev,
-        [id]: status,
-      }));
-
-      if (success) {
-        showToast("Server started successfully");
-      } else {
-        throw new Error("Failed to start server");
-      }
+      await resumeMcpServer(id);
     } catch (error) {
       showToast(
         error instanceof Error
@@ -347,14 +317,7 @@ export function McpMarketPage() {
       updateLoadingState("all", "Restarting all servers...");
       const newConfig = await restartAllClients();
       setConfig(newConfig);
-
-      const statuses: Record<string, any> = {};
-      for (const clientId of Object.keys(newConfig.mcpServers)) {
-        statuses[clientId] = await getClientStatus(clientId);
-      }
-      setClientStatuses(statuses);
-
-      showToast("Successfully restarted all clients");
+      showToast("Restarting all clients");
     } catch (error) {
       showToast("Failed to restart clients");
       console.error(error);
@@ -452,6 +415,12 @@ export function McpMarketPage() {
 
     const statusMap = {
       undefined: null, // 未配置/未找到不显示
+      // 添加初始化状态
+      initializing: (
+        <span className={clsx(styles["server-status"], styles["initializing"])}>
+          Initializing
+        </span>
+      ),
       paused: (
         <span className={clsx(styles["server-status"], styles["stopped"])}>
           Stopped
@@ -517,10 +486,11 @@ export function McpMarketPage() {
         const statusPriority: Record<string, number> = {
           error: 0, // Highest priority for error status
           active: 1, // Second for active
-          starting: 2, // Starting
-          stopping: 3, // Stopping
-          paused: 4, // Paused
-          undefined: 5, // Lowest priority for undefined
+          initializing: 2, // Initializing
+          starting: 3, // Starting
+          stopping: 4, // Stopping
+          paused: 5, // Paused
+          undefined: 6, // Lowest priority for undefined
         };
 
         // Get actual status (including loading status)
@@ -529,6 +499,11 @@ export function McpMarketPage() {
             const operationType = getOperationStatusType(loading);
             return operationType === "default" ? status : operationType;
           }
+
+          if (status === "initializing" && !loading) {
+            return "active";
+          }
+
           return status;
         };
 
@@ -538,8 +513,8 @@ export function McpMarketPage() {
         // 首先按状态排序
         if (aEffectiveStatus !== bEffectiveStatus) {
           return (
-            (statusPriority[aEffectiveStatus] ?? 5) -
-            (statusPriority[bEffectiveStatus] ?? 5)
+            (statusPriority[aEffectiveStatus] ?? 6) -
+            (statusPriority[bEffectiveStatus] ?? 6)
           );
         }
 
