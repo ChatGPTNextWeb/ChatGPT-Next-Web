@@ -107,6 +107,7 @@ const en: LocaleType = {
       copyLastMessage: "Copy Last Reply",
       copyLastCode: "Copy Last Code Block",
       showShortcutKey: "Show Shortcuts",
+      clearContext: "Clear Context",
     },
   },
   Export: {
@@ -440,6 +441,17 @@ const en: LocaleType = {
           Title: "Moonshot API Key",
           SubTitle: "Use a custom Moonshot API Key",
           Placeholder: "Moonshot API Key",
+        },
+        Endpoint: {
+          Title: "Endpoint Address",
+          SubTitle: "Example: ",
+        },
+      },
+      DeepSeek: {
+        ApiKey: {
+          Title: "DeepSeek API Key",
+          SubTitle: "Use a custom DeepSeek API Key",
+          Placeholder: "DeepSeek API Key",
         },
         Endpoint: {
           Title: "Endpoint Address",
