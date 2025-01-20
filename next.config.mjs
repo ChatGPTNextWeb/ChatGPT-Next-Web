@@ -71,8 +71,10 @@ if (mode !== "export") {
       // },
       {
         // https://{resource_name}.openai.azure.com/openai/deployments/{deploy_name}/chat/completions
-        source: "/api/proxy/azure/:resource_name/deployments/:deploy_name/:path*",
-        destination: "https://:resource_name.openai.azure.com/openai/deployments/:deploy_name/:path*",
+        source:
+          "/api/proxy/azure/:resource_name/deployments/:deploy_name/:path*",
+        destination:
+          "https://:resource_name.openai.azure.com/openai/deployments/:deploy_name/:path*",
       },
       {
         source: "/api/proxy/google/:path*",
@@ -99,7 +101,7 @@ if (mode !== "export") {
         destination: "https://dashscope.aliyuncs.com/api/:path*",
       },
     ];
-    
+
     return {
       beforeFiles: ret,
     };

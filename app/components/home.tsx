@@ -2,7 +2,7 @@
 
 require("../polyfill");
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import styles from "./home.module.scss";
 
 import BotIcon from "../icons/bot.svg";
@@ -18,8 +18,8 @@ import { getISOLang, getLang } from "../locales";
 
 import {
   HashRouter as Router,
-  Routes,
   Route,
+  Routes,
   useLocation,
 } from "react-router-dom";
 import { SideBar } from "./sidebar";
@@ -29,6 +29,7 @@ import { getClientConfig } from "../config/client";
 import { type ClientApi, getClientApi } from "../client/api";
 import { useAccessStore } from "../store";
 import clsx from "clsx";
+import { initializeMcpSystem, isMcpEnabled } from "../mcp/actions";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -73,6 +74,13 @@ const SearchChat = dynamic(
 const Sd = dynamic(async () => (await import("./sd")).Sd, {
   loading: () => <Loading noLogo />,
 });
+
+const McpMarketPage = dynamic(
+  async () => (await import("./mcp-market")).McpMarketPage,
+  {
+    loading: () => <Loading noLogo />,
+  },
+);
 
 export function useSwitchTheme() {
   const config = useAppConfig();
@@ -193,6 +201,7 @@ function Screen() {
             <Route path={Path.SearchChat} element={<SearchChat />} />
             <Route path={Path.Chat} element={<Chat />} />
             <Route path={Path.Settings} element={<Settings />} />
+            <Route path={Path.McpMarket} element={<McpMarketPage />} />
           </Routes>
         </WindowContent>
       </>
@@ -233,6 +242,20 @@ export function Home() {
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());
     useAccessStore.getState().fetch();
+
+    const initMcp = async () => {
+      try {
+        const enabled = await isMcpEnabled();
+        if (enabled) {
+          console.log("[MCP] initializing...");
+          await initializeMcpSystem();
+          console.log("[MCP] initialized");
+        }
+      } catch (err) {
+        console.error("[MCP] failed to initialize:", err);
+      }
+    };
+    initMcp();
   }, []);
 
   if (!useHasHydrated()) {
