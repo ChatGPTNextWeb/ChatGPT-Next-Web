@@ -72,6 +72,9 @@ import {
   safeLocalStorage,
   getModelSizes,
   supportsCustomSize,
+  useMobileScreen,
+  selectOrCopy,
+  showPlugins,
 } from "../utils";
 
 import { uploadImage as uploadImageRemote } from "@/app/utils/chat";
