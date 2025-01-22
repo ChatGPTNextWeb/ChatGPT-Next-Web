@@ -5,6 +5,7 @@
 </a>
 
 
+
 <h1 align="center">NextChat (ChatGPT Next Web)</h1>
 
 English / [简体中文](./README_CN.md)
@@ -38,6 +39,12 @@ One-Click to get a well-designed cross-platform ChatGPT web UI, with Claude, GPT
 [<img src="https://github.com/user-attachments/assets/903482d4-3e87-4134-9af1-f2588fa90659" height="60" width="288" >](https://monica.im/?utm=nxcrp)
 
 </div>
+
+## 🫣 NextChat Support MCP  ! 
+> Before build, please set env ENABLE_MCP=true
+
+<img src="https://github.com/user-attachments/assets/d8851f40-4e36-4335-b1a4-ec1e11488c7e"/>
+
 
 ## Enterprise Edition
 
@@ -333,6 +340,12 @@ Stability API key.
 
 Customize Stability API url.
 
+
+### `ENABLE_MCP` (optional)
+
+Enable MCP（Model Context Protocol）Feature
+
+
 ## Requirements
 
 NodeJS >= 18, Docker >= 20
@@ -389,6 +402,16 @@ If your proxy needs password, use:
 
 ```shell
 -e PROXY_URL="http://127.0.0.1:7890 user pass"
+```
+
+If enable MCP, use：
+
+```
+docker run -d -p 3000:3000 \
+   -e OPENAI_API_KEY=sk-xxxx \
+   -e CODE=your-password \
+   -e ENABLE_MCP=true \
+   yidadaa/chatgpt-next-web
 ```
 
 ### Shell

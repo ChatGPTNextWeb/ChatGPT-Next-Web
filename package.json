@@ -13,6 +13,7 @@
     "export:dev": "concurrently -r \"yarn mask:watch\"  \"cross-env BUILD_MODE=export BUILD_APP=1 next dev\"",
     "app:dev": "concurrently -r \"yarn mask:watch\" \"yarn tauri dev\"",
     "app:build": "yarn mask && yarn tauri build",
+    "app:clear": "yarn tauri dev",
     "prompts": "node ./scripts/fetch-prompts.mjs",
     "prepare": "husky install",
     "proxy-dev": "sh ./scripts/init-proxy.sh && proxychains -f ./scripts/proxychains.conf yarn dev",
@@ -22,6 +23,7 @@
   "dependencies": {
     "@fortaine/fetch-event-source": "^3.0.6",
     "@hello-pangea/dnd": "^16.5.0",
+    "@modelcontextprotocol/sdk": "^1.0.4",
     "@next/third-parties": "^14.1.0",
     "@svgr/webpack": "^6.5.1",
     "@vercel/analytics": "^0.1.11",
@@ -49,14 +51,15 @@
     "remark-breaks": "^3.0.2",
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
+    "rt-client": "https://github.com/Azure-Samples/aoai-realtime-audio-sdk/releases/download/js/v0.5.0/rt-client-0.5.0.tgz",
     "sass": "^1.59.2",
     "spark-md5": "^3.0.2",
     "use-debounce": "^9.0.4",
-    "zustand": "^4.3.8",
-    "rt-client": "https://github.com/Azure-Samples/aoai-realtime-audio-sdk/releases/download/js/v0.5.0/rt-client-0.5.0.tgz"
+    "zod": "^3.24.1",
+    "zustand": "^4.3.8"
   },
   "devDependencies": {
-    "@tauri-apps/api": "^1.6.0",
+    "@tauri-apps/api": "^2.1.1",
     "@tauri-apps/cli": "1.5.11",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
