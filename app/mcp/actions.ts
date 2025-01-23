@@ -365,6 +365,8 @@ export async function getMcpConfigFromFile(): Promise<McpConfigData> {
 // 更新 MCP 配置文件
 async function updateMcpConfig(config: McpConfigData): Promise<void> {
   try {
+    // 确保目录存在
+    await fs.mkdir(path.dirname(CONFIG_PATH), { recursive: true });
     await fs.writeFile(CONFIG_PATH, JSON.stringify(config, null, 2));
   } catch (error) {
     throw error;
