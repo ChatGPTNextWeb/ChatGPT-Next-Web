@@ -115,7 +115,7 @@ export class DeepSeekApi implements LLMApi {
         headers: getHeaders(),
       };
 
-      console.log(chatPayload);
+      // console.log(chatPayload);
 
       // make a fetch request
       const requestTimeoutId = setTimeout(
@@ -138,7 +138,7 @@ export class DeepSeekApi implements LLMApi {
           controller,
           // parseSSE
           (text: string, runTools: ChatMessageTool[]) => {
-            console.log("parseSSE", text, runTools);
+            // console.log("parseSSE", text, runTools);
             const json = JSON.parse(text);
             const choices = json.choices as Array<{
               delta: {
