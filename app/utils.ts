@@ -16,8 +16,8 @@ export function trimTopic(topic: string) {
   return (
     topic
       // fix for gemini
-      .replace(/^["""*]+|[""*]+$/g, "")
-      .replace(/[，。！？""""、,.!?*]*$/, "")
+      .replace(/^["“”*]+|["“”*]+$/g, "")
+      .replace(/[，。！？”“"、,.!?*]*$/, "")
   );
 }
 
