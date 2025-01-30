@@ -41,7 +41,7 @@ One-Click to get a well-designed cross-platform ChatGPT web UI, with Claude, GPT
 </div>
 
 ## 🥳 DeepSeek R1 Now Support ! 
- > Especially Thinking UI For DeepSeek Reasoner Model
+ > Purpose-Built UI for DeepSeek Reasoner Model
  
 <img src="https://github.com/user-attachments/assets/f3952210-3af1-4dc0-9b81-40eaa4847d9a"/>
 
