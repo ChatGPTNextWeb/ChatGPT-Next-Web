@@ -1,7 +1,7 @@
 <div align="center">
 
 <a href='https://nextchat.dev/chat'>
-  <img src="https://github.com/user-attachments/assets/01bc9e7b-e6b6-4eb6-958a-310fd19faf79" width="1000" alt="icon"/>
+  <img src="https://github.com/user-attachments/assets/83bdcc07-ae5e-4954-a53a-ac151ba6ccf3" width="1000" alt="icon"/>
 </a>
 
 
