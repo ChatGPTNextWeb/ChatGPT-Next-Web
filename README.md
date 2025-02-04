@@ -352,6 +352,13 @@ Customize Stability API url.
 
 Enable MCP（Model Context Protocol）Feature
 
+### `SILICONFLOW_API_KEY` (optional)
+
+SiliconFlow API Key.
+
+### `SILICONFLOW_URL` (optional)
+
+SiliconFlow API URL.
 
 ## Requirements
 

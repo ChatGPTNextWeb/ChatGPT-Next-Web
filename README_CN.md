@@ -267,6 +267,13 @@ Stability API密钥
 
 启用MCP（Model Context Protocol）功能
 
+### `SILICONFLOW_API_KEY` (optional)
+
+SiliconFlow API Key.
+
+### `SILICONFLOW_URL` (optional)
+
+SiliconFlow API URL.
 
 ## 开发
 
