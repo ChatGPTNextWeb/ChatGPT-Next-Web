@@ -84,6 +84,9 @@ declare global {
       CHATGLM_URL?: string;
       CHATGLM_API_KEY?: string;
 
+      SILICONFLOW_URL?: string;
+      SILICONFLOW_API_KEY?: string;
+
       // custom template for preprocessing user input
       DEFAULT_INPUT_TEMPLATE?: string;
 
@@ -158,6 +161,7 @@ export const getServerSideConfig = () => {
   const isDeepSeek = !!process.env.DEEPSEEK_API_KEY;
   const isXAI = !!process.env.XAI_API_KEY;
   const isChatGLM = !!process.env.CHATGLM_API_KEY;
+  const isSiliconFlow = !!process.env.SILICONFLOW_API_KEY;
   // const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   // const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
   // const randomIndex = Math.floor(Math.random() * apiKeys.length);
@@ -231,6 +235,10 @@ export const getServerSideConfig = () => {
     isChatGLM,
     chatglmUrl: process.env.CHATGLM_URL,
     chatglmApiKey: getApiKey(process.env.CHATGLM_API_KEY),
+
+    isSiliconFlow,
+    siliconflowUrl: process.env.SILICONFLOW_URL,
+    siliconflowApiKey: getApiKey(process.env.SILICONFLOW_API_KEY),
 
     cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID,
     cloudflareKVNamespaceId: process.env.CLOUDFLARE_KV_NAMESPACE_ID,

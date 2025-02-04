@@ -34,6 +34,8 @@ export const XAI_BASE_URL = "https://api.x.ai";
 
 export const CHATGLM_BASE_URL = "https://open.bigmodel.cn";
 
+export const SILICONFLOW_BASE_URL = "https://api.siliconflow.cn";
+
 export const CACHE_URL_PREFIX = "/api/cache";
 export const UPLOAD_URL = `${CACHE_URL_PREFIX}/upload`;
 
@@ -69,6 +71,7 @@ export enum ApiPath {
   XAI = "/api/xai",
   ChatGLM = "/api/chatglm",
   DeepSeek = "/api/deepseek",
+  SiliconFlow = "/api/siliconflow",
 }
 
 export enum SlotID {
@@ -125,6 +128,7 @@ export enum ServiceProvider {
   XAI = "XAI",
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
+  SiliconFlow = "SiliconFlow",
 }
 
 // Google API safety settings, see https://ai.google.dev/gemini-api/docs/safety-settings
@@ -150,6 +154,7 @@ export enum ModelProvider {
   XAI = "XAI",
   ChatGLM = "ChatGLM",
   DeepSeek = "DeepSeek",
+  SiliconFlow = "SiliconFlow",
 }
 
 export const Stability = {
@@ -247,6 +252,11 @@ export const ChatGLM = {
   ChatPath: "api/paas/v4/chat/completions",
   ImagePath: "api/paas/v4/images/generations",
   VideoPath: "api/paas/v4/videos/generations",
+};
+
+export const SiliconFlow = {
+  ExampleEndpoint: SILICONFLOW_BASE_URL,
+  ChatPath: "v1/chat/completions",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -589,6 +599,45 @@ const chatglmModels = [
   //   "cogvideox-flash", // free
 ];
 
+const siliconflowModels = [
+  "deepseek-ai/DeepSeek-R1",
+  "deepseek-ai/DeepSeek-V3",
+  "meta-llama/Llama-3.3-70B-Instruct",
+  "AIDC-AI/Marco-o1",
+  "deepseek-ai/DeepSeek-V2.5",
+  "Qwen/Qwen2.5-72B-Instruct-128K",
+  "Qwen/Qwen2.5-72B-Instruct",
+  "Qwen/Qwen2.5-32B-Instruct",
+  "Qwen/Qwen2.5-14B-Instruct",
+  "Qwen/Qwen2.5-7B-Instruct",
+  "Qwen/Qwen2.5-Coder-32B-Instruct",
+  "Qwen/Qwen2.5-Coder-7B-Instruct",
+  "Qwen/Qwen2-7B-Instruct",
+  "Qwen/Qwen2-1.5B-Instruct",
+  "Qwen/QwQ-32B-Preview",
+  "TeleAI/TeleChat2",
+  "01-ai/Yi-1.5-34B-Chat-16K",
+  "01-ai/Yi-1.5-9B-Chat-16K",
+  "01-ai/Yi-1.5-6B-Chat",
+  "THUDM/glm-4-9b-chat",
+  "Vendor-A/Qwen/Qwen2.5-72B-Instruct",
+  "internlm/internlm2_5-7b-chat",
+  "internlm/internlm2_5-20b-chat",
+  "nvidia/Llama-3.1-Nemotron-70B-Instruct",
+  "meta-llama/Meta-Llama-3.1-405B-Instruct",
+  "meta-llama/Meta-Llama-3.1-70B-Instruct",
+  "meta-llama/Meta-Llama-3.1-8B-Instruct",
+  "google/gemma-2-27b-it",
+  "google/gemma-2-9b-it",
+  "Pro/Qwen/Qwen2.5-7B-Instruct",
+  "Pro/Qwen/Qwen2-7B-Instruct",
+  "Pro/Qwen/Qwen2-1.5B-Instruct",
+  "Pro/THUDM/chatglm3-6b",
+  "Pro/THUDM/glm-4-9b-chat",
+  "Pro/meta-llama/Meta-Llama-3.1-8B-Instruct",
+  "Pro/google/gemma-2-9b-it",
+];
+
 let seq = 1000; // 内置的模型序号生成器从1000开始
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
@@ -732,6 +781,17 @@ export const DEFAULT_MODELS = [
       providerName: "DeepSeek",
       providerType: "deepseek",
       sorted: 13,
+    },
+  })),
+  ...siliconflowModels.map((name) => ({
+    name,
+    available: true,
+    sorted: seq++,
+    provider: {
+      id: "siliconflow",
+      providerName: "SiliconFlow",
+      providerType: "siliconflow",
+      sorted: 14,
     },
   })),
 ] as const;

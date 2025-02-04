@@ -277,6 +277,14 @@ DeepSeek Api Key.
 
 DeepSeek Api Url.
 
+### `SILICONFLOW_API_KEY` (optional)
+
+SiliconFlow Api Key.
+
+### `SILICONFLOW_URL` (optional)
+
+SiliconFlow Api Url
+
 ### `HIDE_USER_API_KEY` (optional)
 
 > Default: Empty

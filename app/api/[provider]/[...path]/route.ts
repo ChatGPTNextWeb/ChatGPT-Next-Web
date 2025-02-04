@@ -13,6 +13,7 @@ import { handle as iflytekHandler } from "../../iflytek";
 import { handle as deepseekHandler } from "../../deepseek";
 import { handle as xaiHandler } from "../../xai";
 import { handle as chatglmHandler } from "../../glm";
+import { handle as siliconflowHandler } from "../../siliconflow";
 import { handle as proxyHandler } from "../../proxy";
 
 async function handle(
@@ -43,6 +44,8 @@ async function handle(
       return iflytekHandler(req, { params });
     case ApiPath.DeepSeek:
       return deepseekHandler(req, { params });
+    case ApiPath.SiliconFlow:
+      return siliconflowHandler(req, { params });
     case ApiPath.XAI:
       return xaiHandler(req, { params });
     case ApiPath.ChatGLM:

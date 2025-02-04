@@ -201,6 +201,13 @@ DeepSeek Api Key.
 
 DeepSeek Api Url.
 
+### `SILICONFLOW_API_KEY`（可选）
+
+SiliconFlow Api Key.
+
+### `SILICONFLOW_URL`（可选）
+
+SiliconFlow Api Url
 
 ### `HIDE_USER_API_KEY` （可选）
 
