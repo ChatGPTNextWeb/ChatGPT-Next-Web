@@ -23,6 +23,7 @@ declare global {
       DISABLE_FAST_LINK?: string; // disallow parse settings from url or not
       CUSTOM_MODELS?: string; // to control custom models
       DEFAULT_MODEL?: string; // to control default model in every new chat window
+      DEFAULT_COMPRESS_MODEL?: string; // to control default compress model
       VISION_MODELS?: string; // to control vision models
 
       // stability only
@@ -131,6 +132,7 @@ export const getServerSideConfig = () => {
   const disableGPT4 = !!process.env.DISABLE_GPT4;
   let customModels = process.env.CUSTOM_MODELS ?? "";
   let defaultModel = process.env.DEFAULT_MODEL ?? "";
+  let defaultCompressModel = process.env.DEFAULT_COMPRESS_MODEL ?? "";
   let visionModels = process.env.VISION_MODELS ?? "";
 
   if (disableGPT4) {
@@ -140,6 +142,9 @@ export const getServerSideConfig = () => {
       .join(",");
     if (defaultModel && isGPT4Model(defaultModel)) {
       defaultModel = "";
+    }
+    if (defaultCompressModel && isGPT4Model(defaultCompressModel)) {
+      defaultCompressModel = "";
     }
   }
 
@@ -253,6 +258,7 @@ export const getServerSideConfig = () => {
     disableFastLink: !!process.env.DISABLE_FAST_LINK,
     customModels,
     defaultModel,
+    defaultCompressModel,
     visionModels,
     allowedWebDavEndpoints,
     enableMcp: process.env.ENABLE_MCP === "true",
