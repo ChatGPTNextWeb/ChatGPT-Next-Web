@@ -74,6 +74,7 @@ import {
   SAAS_CHAT_URL,
   ChatGLM,
   DeepSeek,
+  SiliconFlow,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
@@ -1318,6 +1319,46 @@ export function Settings() {
       </ListItem>
     </>
   );
+  const siliconflowConfigComponent = accessStore.provider ===
+    ServiceProvider.SiliconFlow && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.SiliconFlow.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.SiliconFlow.Endpoint.SubTitle +
+          SiliconFlow.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.SiliconFlow.Endpoint.Title}
+          type="text"
+          value={accessStore.siliconflowUrl}
+          placeholder={SiliconFlow.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.siliconflowUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.SiliconFlow.ApiKey.Title}
+        subTitle={Locale.Settings.Access.SiliconFlow.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.SiliconFlow.ApiKey.Title}
+          value={accessStore.siliconflowApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.SiliconFlow.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.siliconflowApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
 
   const stabilityConfigComponent = accessStore.provider ===
     ServiceProvider.Stability && (
@@ -1780,6 +1821,7 @@ export function Settings() {
                   {lflytekConfigComponent}
                   {XAIConfigComponent}
                   {chatglmConfigComponent}
+                  {siliconflowConfigComponent}
                 </>
               )}
             </>
