@@ -19,7 +19,8 @@ export function trimTopic(topic: string) {
 
 export const readFileContent = async (file: UploadFile): Promise<string> => {
   const host_url = new URL(window.location.href);
-  if (!file.url.includes(host_url.host)) {
+  const file_url = new URL(file.url);
+  if (file_url.host !== host_url.host) {
     throw new Error(`The URL ${file.url} is not allowed to access.`);
   }
   try {
