@@ -17,6 +17,7 @@ import {
   XAI_BASE_URL,
   CHATGLM_BASE_URL,
   BEDROCK_BASE_URL,
+  SILICONFLOW_BASE_URL,
 } from "../constant";
 import { getHeaders } from "../client/api";
 import { getClientConfig } from "../config/client";
@@ -44,6 +45,10 @@ const DEFAULT_DEEPSEEK_URL = isApp ? DEEPSEEK_BASE_URL : ApiPath.DeepSeek;
 const DEFAULT_XAI_URL = isApp ? XAI_BASE_URL : ApiPath.XAI;
 const DEFAULT_CHATGLM_URL = isApp ? CHATGLM_BASE_URL : ApiPath.ChatGLM;
 const DEFAULT_BEDROCK_URL = isApp ? BEDROCK_BASE_URL : ApiPath.Bedrock;
+
+const DEFAULT_SILICONFLOW_URL = isApp
+  ? SILICONFLOW_BASE_URL
+  : ApiPath.SiliconFlow;
 
 const DEFAULT_ACCESS_STATE = {
   accessCode: "",
@@ -121,6 +126,11 @@ const DEFAULT_ACCESS_STATE = {
   awsSecretKey: "",
   encryptionKey: "",
   bedrockAnthropicVersion: "bedrock-2023-05-31",
+
+  // siliconflow
+  siliconflowUrl: DEFAULT_SILICONFLOW_URL,
+  siliconflowApiKey: "",
+
 
   // server config
   needCode: true,
@@ -203,6 +213,7 @@ export const useAccessStore = createPersistStore(
       return ensure(get(), ["chatglmApiKey"]);
     },
 
+
     isValidBedrock() {
       return ensure(get(), [
         "awsRegion",
@@ -210,6 +221,11 @@ export const useAccessStore = createPersistStore(
         "awsSecretKey",
         "encryptionKey",
       ]);
+    },
+
+    isValidSiliconFlow() {
+      return ensure(get(), ["siliconflowApiKey"]);
+
     },
 
     isAuthorized() {
@@ -231,6 +247,7 @@ export const useAccessStore = createPersistStore(
         this.isValidXAI() ||
         this.isValidChatGLM() ||
         this.isValidBedrock() ||
+        this.isValidSiliconFlow() ||
         !this.enabledAccessControl() ||
         (this.enabledAccessControl() && ensure(get(), ["accessCode"]))
       );

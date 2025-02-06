@@ -108,6 +108,9 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
           ":" +
           serverConfig.awsSecretKey;
         break;
+      case ModelProvider.SiliconFlow:
+        systemApiKey = serverConfig.siliconFlowApiKey;
+        break;
       case ModelProvider.GPT:
       default:
         if (req.nextUrl.pathname.includes("azure/deployments")) {
