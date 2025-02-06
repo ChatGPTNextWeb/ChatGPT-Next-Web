@@ -40,6 +40,12 @@ export const readFileContent = async (file: UploadFile): Promise<string> => {
   }
 };
 
+/**
+ * Estimates the token count of a text file using character-based weights.
+ * Note: This is a rough estimation as standard tokenizers cannot be used due to environment constraints.
+ * @param file - The file to analyze
+ * @returns Estimated token count in thousands (K)
+ */
 export const countTokens = async (file: UploadFile) => {
   const text = await readFileContent(file);
   let totalTokens = 0;
