@@ -69,9 +69,16 @@ export class GeminiProApi implements LLMApi {
         .join("\n\n");
     };
 
+    let content = "";
+    if (Array.isArray(res)) {
+      res.map((item) => {
+        content += getTextFromParts(item?.candidates?.at(0)?.content?.parts);
+      });
+    }
+
     return (
       getTextFromParts(res?.candidates?.at(0)?.content?.parts) ||
-      getTextFromParts(res?.at(0)?.candidates?.at(0)?.content?.parts) ||
+      content || //getTextFromParts(res?.at(0)?.candidates?.at(0)?.content?.parts) ||
       res?.error?.message ||
       ""
     );
