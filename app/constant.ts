@@ -509,10 +509,14 @@ const googleModels = [
   "gemini-exp-1114",
   "gemini-exp-1121",
   "gemini-exp-1206",
+  "gemini-2.0-flash",
   "gemini-2.0-flash-exp",
+  "gemini-2.0-flash-lite-preview-02-05",
   "gemini-2.0-flash-thinking-exp",
   "gemini-2.0-flash-thinking-exp-1219",
   "gemini-2.0-flash-thinking-exp-01-21",
+  "gemini-2.0-pro-exp",
+  "gemini-2.0-pro-exp-02-05",
 ];
 
 const anthropicModels = [
