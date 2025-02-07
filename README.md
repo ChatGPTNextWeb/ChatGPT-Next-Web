@@ -352,6 +352,22 @@ For ByteDance: use `modelName@bytedance=deploymentName` to customize model name 
 配置所有模型都使用 OpenAI 路由，在使用类似 `one-api` 的中转项目时会很有用
 将此环境变量设置为 1 即可
 
+### `DEEPSEEK_API_KEY` (可选)
+
+DeepSeek Api Key.
+
+### `DEEPSEEK_URL` (可选)
+
+DeepSeek Api Url.
+
+### `SILICONFLOW_API_KEY` （可选）
+
+硅基流动 API Key.
+
+### `SILICONFLOW_URL` （可选）
+
+硅基流动 API URL.
+
 ## 部署
 
 ### 容器部署 （推荐）

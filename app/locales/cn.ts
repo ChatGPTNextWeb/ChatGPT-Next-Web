@@ -448,6 +448,17 @@ const cn = {
           SubTitle: "样例：",
         },
       },
+      DeepSeek: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义DeepSeek API Key",
+          Placeholder: "DeepSeek API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
       XAI: {
         ApiKey: {
           Title: "接口密钥",
@@ -464,6 +475,17 @@ const cn = {
           Title: "接口密钥",
           SubTitle: "使用自定义 ChatGLM API Key",
           Placeholder: "ChatGLM API Key",
+        },
+        Endpoint: {
+          Title: "接口地址",
+          SubTitle: "样例：",
+        },
+      },
+      SiliconFlow: {
+        ApiKey: {
+          Title: "接口密钥",
+          SubTitle: "使用自定义硅基流动 API Key",
+          Placeholder: "硅基流动 API Key",
         },
         Endpoint: {
           Title: "接口地址",

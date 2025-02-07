@@ -21,8 +21,10 @@ import { QwenApi } from "./platforms/alibaba";
 import { HunyuanApi } from "./platforms/tencent";
 import { MoonshotApi } from "./platforms/moonshot";
 import { SparkApi } from "./platforms/iflytek";
+import { DeepSeekApi } from "./platforms/deepseek";
 import { XAIApi } from "./platforms/xai";
 import { ChatGLMApi } from "./platforms/glm";
+import { SiliconflowApi } from "./platforms/siliconflow";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -204,11 +206,17 @@ export class ClientApi {
       case ModelProvider.Iflytek:
         this.llm = new SparkApi();
         break;
+      case ModelProvider.DeepSeek:
+        this.llm = new DeepSeekApi();
+        break;
       case ModelProvider.XAI:
         this.llm = new XAIApi();
         break;
       case ModelProvider.ChatGLM:
         this.llm = new ChatGLMApi();
+        break;
+      case ModelProvider.SiliconFlow:
+        this.llm = new SiliconflowApi();
         break;
       default:
         this.llm = new ChatGPTApi();
@@ -298,8 +306,11 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     const isAlibaba = modelConfig.providerName === ServiceProvider.Alibaba;
     const isMoonshot = modelConfig.providerName === ServiceProvider.Moonshot;
     const isIflytek = modelConfig.providerName === ServiceProvider.Iflytek;
+    const isDeepSeek = modelConfig.providerName === ServiceProvider.DeepSeek;
     const isXAI = modelConfig.providerName === ServiceProvider.XAI;
     const isChatGLM = modelConfig.providerName === ServiceProvider.ChatGLM;
+    const isSiliconFlow =
+      modelConfig.providerName === ServiceProvider.SiliconFlow;
     const isEnabledAccessControl = accessStore.enabledAccessControl();
     const apiKey = isGoogle
       ? accessStore.googleApiKey
@@ -315,16 +326,20 @@ export function getHeaders(ignoreHeaders: boolean = false) {
                 ? accessStore.moonshotApiKey
                 : isXAI
                   ? accessStore.xaiApiKey
-                  : isChatGLM
-                    ? accessStore.chatglmApiKey
-                    : isIflytek
-                      ? accessStore.iflytekApiKey &&
-                        accessStore.iflytekApiSecret
-                        ? accessStore.iflytekApiKey +
-                          ":" +
-                          accessStore.iflytekApiSecret
-                        : ""
-                      : accessStore.openaiApiKey;
+                  : isDeepSeek
+                    ? accessStore.deepseekApiKey
+                    : isChatGLM
+                      ? accessStore.chatglmApiKey
+                      : isSiliconFlow
+                        ? accessStore.siliconflowApiKey
+                        : isIflytek
+                          ? accessStore.iflytekApiKey &&
+                            accessStore.iflytekApiSecret
+                            ? accessStore.iflytekApiKey +
+                              ":" +
+                              accessStore.iflytekApiSecret
+                            : ""
+                          : accessStore.openaiApiKey;
     if (accessStore.isUseOpenAIEndpointForAllModels || ignoreHeaders) {
       return {
         isGoogle: false,
@@ -335,8 +350,10 @@ export function getHeaders(ignoreHeaders: boolean = false) {
         isAlibaba: false,
         isMoonshot: false,
         isIflytek: false,
+        isDeepSeek: false,
         isXAI: false,
         isChatGLM: false,
+        isSiliconFlow: false,
         apiKey: accessStore.openaiApiKey,
         isEnabledAccessControl,
       };
@@ -350,8 +367,10 @@ export function getHeaders(ignoreHeaders: boolean = false) {
       isAlibaba,
       isMoonshot,
       isIflytek,
+      isDeepSeek,
       isXAI,
       isChatGLM,
+      isSiliconFlow,
       apiKey,
       isEnabledAccessControl,
     };
@@ -418,10 +437,14 @@ export function getClientApi(provider: ServiceProvider): ClientApi {
       return new ClientApi(ModelProvider.Moonshot);
     case ServiceProvider.Iflytek:
       return new ClientApi(ModelProvider.Iflytek);
+    case ServiceProvider.DeepSeek:
+      return new ClientApi(ModelProvider.DeepSeek);
     case ServiceProvider.XAI:
       return new ClientApi(ModelProvider.XAI);
     case ServiceProvider.ChatGLM:
       return new ClientApi(ModelProvider.ChatGLM);
+    case ServiceProvider.SiliconFlow:
+      return new ClientApi(ModelProvider.SiliconFlow);
     default:
       return new ClientApi(ModelProvider.GPT);
   }

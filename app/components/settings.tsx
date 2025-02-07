@@ -71,6 +71,8 @@ import {
   Stability,
   Iflytek,
   ChatGLM,
+  SiliconFlow,
+  DeepSeek,
 } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
 import { ErrorBoundary } from "./error";
@@ -1172,6 +1174,47 @@ export function Settings() {
     </>
   );
 
+  const deepseekConfigComponent = accessStore.provider ===
+    ServiceProvider.DeepSeek && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.DeepSeek.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.DeepSeek.Endpoint.SubTitle +
+          DeepSeek.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.DeepSeek.Endpoint.Title}
+          type="text"
+          value={accessStore.deepseekUrl}
+          placeholder={DeepSeek.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.deepseekUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.DeepSeek.ApiKey.Title}
+        subTitle={Locale.Settings.Access.DeepSeek.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.DeepSeek.ApiKey.Title}
+          value={accessStore.deepseekApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.DeepSeek.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.deepseekApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
   const XAIConfigComponent = accessStore.provider === ServiceProvider.XAI && (
     <>
       <ListItem
@@ -1245,6 +1288,47 @@ export function Settings() {
           onChange={(e) => {
             accessStore.update(
               (access) => (access.chatglmApiKey = e.currentTarget.value),
+            );
+          }}
+        />
+      </ListItem>
+    </>
+  );
+
+  const siliconflowConfigComponent = accessStore.provider ===
+    ServiceProvider.SiliconFlow && (
+    <>
+      <ListItem
+        title={Locale.Settings.Access.SiliconFlow.Endpoint.Title}
+        subTitle={
+          Locale.Settings.Access.SiliconFlow.Endpoint.SubTitle +
+          SiliconFlow.ExampleEndpoint
+        }
+      >
+        <input
+          aria-label={Locale.Settings.Access.SiliconFlow.Endpoint.Title}
+          type="text"
+          value={accessStore.siliconflowUrl}
+          placeholder={SiliconFlow.ExampleEndpoint}
+          onChange={(e) =>
+            accessStore.update(
+              (access) => (access.siliconflowUrl = e.currentTarget.value),
+            )
+          }
+        ></input>
+      </ListItem>
+      <ListItem
+        title={Locale.Settings.Access.SiliconFlow.ApiKey.Title}
+        subTitle={Locale.Settings.Access.SiliconFlow.ApiKey.SubTitle}
+      >
+        <PasswordInput
+          aria-label={Locale.Settings.Access.SiliconFlow.ApiKey.Title}
+          value={accessStore.siliconflowApiKey}
+          type="text"
+          placeholder={Locale.Settings.Access.SiliconFlow.ApiKey.Placeholder}
+          onChange={(e) => {
+            accessStore.update(
+              (access) => (access.siliconflowApiKey = e.currentTarget.value),
             );
           }}
         />
@@ -1711,10 +1795,12 @@ export function Settings() {
                   {alibabaConfigComponent}
                   {tencentConfigComponent}
                   {moonshotConfigComponent}
+                  {deepseekConfigComponent}
                   {stabilityConfigComponent}
                   {lflytekConfigComponent}
                   {XAIConfigComponent}
                   {chatglmConfigComponent}
+                  {siliconflowConfigComponent}
                 </>
               )}
             </>
