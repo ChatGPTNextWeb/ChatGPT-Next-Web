@@ -1,4 +1,9 @@
-import { ApiPath, Google, REQUEST_TIMEOUT_MS } from "@/app/constant";
+import {
+  ApiPath,
+  Google,
+  REQUEST_TIMEOUT_MS,
+  REQUEST_TIMEOUT_MS_FOR_THINKING,
+} from "@/app/constant";
 import {
   ChatOptions,
   getHeaders,
@@ -197,10 +202,11 @@ export class GeminiProApi implements LLMApi {
         headers: getHeaders(),
       };
 
+      const isThinking = options.config.model.includes("-thinking");
       // make a fetch request
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
-        REQUEST_TIMEOUT_MS,
+        isThinking ? REQUEST_TIMEOUT_MS_FOR_THINKING : REQUEST_TIMEOUT_MS,
       );
 
       if (shouldStream) {
