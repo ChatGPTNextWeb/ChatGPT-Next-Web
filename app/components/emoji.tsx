@@ -80,9 +80,13 @@ export function Avatar(props: { model?: ModelType; avatar?: string }) {
       LlmIcon = BotIconGrok;
     } else if (modelName.startsWith("hunyuan")) {
       LlmIcon = BotIconHunyuan;
-    } else if (modelName.startsWith("doubao")) {
+    } else if (modelName.startsWith("doubao") || modelName.startsWith("ep-")) {
       LlmIcon = BotIconDoubao;
-    } else if (modelName.startsWith("glm")) {
+    } else if (
+      modelName.startsWith("glm") ||
+      modelName.startsWith("cogview-") ||
+      modelName.startsWith("cogvideox-")
+    ) {
       LlmIcon = BotIconChatglm;
     }
 
