@@ -1186,7 +1186,7 @@ function _Chat() {
     }
     setIsLoading(true);
     chatStore
-      .onUserInput(userInput, attachImages)
+      .onUserInput(userInput, attachImages, attachFiles)
       .then(() => setIsLoading(false));
     setAttachImages([]);
     setAttachFiles([]);
@@ -2192,7 +2192,7 @@ function _Chat() {
               <label
                 className={clsx(styles["chat-input-panel-inner"], {
                   [styles["chat-input-panel-inner-attach"]]:
-                    attachImages.length !== 0,
+                    attachImages.length !== 0 || attachFiles.length != 0,
                 })}
                 htmlFor="chat-input"
               >
@@ -2228,6 +2228,32 @@ function _Chat() {
                               deleteImage={() => {
                                 setAttachImages(
                                   attachImages.filter((_, i) => i !== index),
+                                );
+                              }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+                {attachFiles.length != 0 && (
+                  <div className={styles["attach-files"]}>
+                    {attachFiles.map((file, index) => {
+                      return (
+                        <div
+                          key={index}
+                          className={styles["attach-file"]}
+                          title={file.originalFilename}
+                        >
+                          <div className={styles["attach-file-info"]}>
+                            {file.originalFilename}
+                          </div>
+                          <div className={styles["attach-file-mask"]}>
+                            <DeleteFileButton
+                              deleteFile={() => {
+                                setAttachFiles(
+                                  attachFiles.filter((_, i) => i !== index),
                                 );
                               }}
                             />
