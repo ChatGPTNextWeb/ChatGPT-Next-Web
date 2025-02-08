@@ -121,10 +121,10 @@ export class SiliconflowApi implements LLMApi {
       // console.log(chatPayload);
 
       // make a fetch request
-      const requestTimeoutId = setTimeout(
-        () => controller.abort(),
-        REQUEST_TIMEOUT_MS,
-      );
+      const requestTimeoutId = setTimeout(() => {
+        console.error("[Request] SiliconFlow API timeout");
+        controller.abort();
+      }, 10 * REQUEST_TIMEOUT_MS);
 
       if (shouldStream) {
         const [tools, funcs] = usePluginStore
