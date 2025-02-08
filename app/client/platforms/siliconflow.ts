@@ -4,7 +4,7 @@ import {
   ApiPath,
   SILICONFLOW_BASE_URL,
   SiliconFlow,
-  REQUEST_TIMEOUT_MS,
+  REQUEST_TIMEOUT_MS_FOR_THINKING,
 } from "@/app/constant";
 import {
   useAccessStore,
@@ -123,7 +123,7 @@ export class SiliconflowApi implements LLMApi {
       // make a fetch request
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
-        REQUEST_TIMEOUT_MS,
+        REQUEST_TIMEOUT_MS_FOR_THINKING,
       );
 
       if (shouldStream) {
