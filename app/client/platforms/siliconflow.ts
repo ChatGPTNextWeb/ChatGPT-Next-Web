@@ -121,10 +121,10 @@ export class SiliconflowApi implements LLMApi {
       // console.log(chatPayload);
 
       // make a fetch request
-      const requestTimeoutId = setTimeout(
-        () => controller.abort(),
-        REQUEST_TIMEOUT_MS,
-      );
+      const requestTimeoutId = setTimeout(() => {
+        console.error("[Request] SiliconFlow API timeout");
+        controller.abort();
+      }, 10 * REQUEST_TIMEOUT_MS);
 
       if (shouldStream) {
         const [tools, funcs] = usePluginStore
@@ -174,8 +174,8 @@ export class SiliconflowApi implements LLMApi {
 
             // Skip if both content and reasoning_content are empty or null
             if (
-              (!reasoning || reasoning.trim().length === 0) &&
-              (!content || content.trim().length === 0)
+              (!reasoning || reasoning.length === 0) &&
+              (!content || content.length === 0)
             ) {
               return {
                 isThinking: false,
@@ -183,12 +183,12 @@ export class SiliconflowApi implements LLMApi {
               };
             }
 
-            if (reasoning && reasoning.trim().length > 0) {
+            if (reasoning && reasoning.length > 0) {
               return {
                 isThinking: true,
                 content: reasoning,
               };
-            } else if (content && content.trim().length > 0) {
+            } else if (content && content.length > 0) {
               return {
                 isThinking: false,
                 content: content,
