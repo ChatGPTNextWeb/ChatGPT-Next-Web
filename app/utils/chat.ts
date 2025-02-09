@@ -576,7 +576,7 @@ export function streamWithThink(
         try {
           const chunk = parseSSE(text, runTools);
           // Skip if content is empty
-          if (!chunk?.content || chunk.content.trim().length === 0) {
+          if (!chunk?.content || chunk.content.length === 0) {
             return;
           }
           // Check if thinking mode changed
