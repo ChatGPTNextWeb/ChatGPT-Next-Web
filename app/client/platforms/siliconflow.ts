@@ -4,7 +4,7 @@ import {
   ApiPath,
   SILICONFLOW_BASE_URL,
   SiliconFlow,
-  REQUEST_TIMEOUT_MS,
+  REQUEST_TIMEOUT_MS_FOR_THINKING,
 } from "@/app/constant";
 import {
   useAccessStore,
@@ -120,11 +120,11 @@ export class SiliconflowApi implements LLMApi {
 
       // console.log(chatPayload);
 
-      // make a fetch request
-      const requestTimeoutId = setTimeout(() => {
-        console.error("[Request] SiliconFlow API timeout");
-        controller.abort();
-      }, 10 * REQUEST_TIMEOUT_MS);
+      // Use extended timeout for thinking models as they typically require more processing time
+      const requestTimeoutId = setTimeout(
+        () => controller.abort(),
+        REQUEST_TIMEOUT_MS_FOR_THINKING,
+      );
 
       if (shouldStream) {
         const [tools, funcs] = usePluginStore
