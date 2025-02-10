@@ -258,6 +258,7 @@ export const ChatGLM = {
 export const SiliconFlow = {
   ExampleEndpoint: SILICONFLOW_BASE_URL,
   ChatPath: "v1/chat/completions",
+  ListModelPath: "v1/models?&sub_type=chat",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
