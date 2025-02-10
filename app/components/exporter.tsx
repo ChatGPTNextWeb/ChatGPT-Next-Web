@@ -23,7 +23,6 @@ import CopyIcon from "../icons/copy.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import ChatGptIcon from "../icons/chatgpt.png";
 import ShareIcon from "../icons/share.svg";
-import BotIcon from "../icons/bot.png";
 
 import DownloadIcon from "../icons/download.svg";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -407,22 +406,6 @@ export function PreviewActions(props: {
   );
 }
 
-function ExportAvatar(props: { avatar: string }) {
-  if (props.avatar === DEFAULT_MASK_AVATAR) {
-    return (
-      <img
-        src={BotIcon.src}
-        width={30}
-        height={30}
-        alt="bot"
-        className="user-avatar"
-      />
-    );
-  }
-
-  return <Avatar avatar={props.avatar} />;
-}
-
 export function ImagePreviewer(props: {
   messages: ChatMessage[];
   topic: string;
@@ -543,12 +526,16 @@ export function ImagePreviewer(props: {
           <div>
             <div className={styles["main-title"]}>NextChat</div>
             <div className={styles["sub-title"]}>
-              github.com/ChatGPTNextWeb/ChatGPT-Next-Web
+              github.com/ChatGPTNextWeb/NextChat
             </div>
             <div className={styles["icons"]}>
-              <ExportAvatar avatar={config.avatar} />
+              <Avatar avatar={config.avatar} />
               <span className={styles["icon-space"]}>&</span>
-              <ExportAvatar avatar={mask.avatar} />
+              {mask.avatar === DEFAULT_MASK_AVATAR ? (
+                <Avatar model={mask.modelConfig.model} />
+              ) : (
+                <Avatar avatar={mask.avatar} />
+              )}
             </div>
           </div>
           <div>
@@ -576,9 +563,13 @@ export function ImagePreviewer(props: {
               key={i}
             >
               <div className={styles["avatar"]}>
-                <ExportAvatar
-                  avatar={m.role === "user" ? config.avatar : mask.avatar}
-                />
+                {m.role === "user" ? (
+                  <Avatar avatar={config.avatar} />
+                ) : mask.avatar === DEFAULT_MASK_AVATAR ? (
+                  <Avatar model={m.model} />
+                ) : (
+                  <Avatar avatar={mask.avatar} />
+                )}
               </div>
 
               <div className={styles["body"]}>
