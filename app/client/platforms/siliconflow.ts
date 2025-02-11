@@ -5,6 +5,7 @@ import {
   SILICONFLOW_BASE_URL,
   SiliconFlow,
   REQUEST_TIMEOUT_MS_FOR_THINKING,
+  DEFAULT_MODELS,
 } from "@/app/constant";
 import {
   useAccessStore,
@@ -28,10 +29,19 @@ import {
   isVisionModel,
 } from "@/app/utils";
 import { RequestPayload } from "./openai";
+
 import { fetch } from "@/app/utils/stream";
+export interface SiliconFlowListModelResponse {
+  object: string;
+  data: Array<{
+    id: string;
+    object: string;
+    root: string;
+  }>;
+}
 
 export class SiliconflowApi implements LLMApi {
-  private disableListModels = true;
+  private disableListModels = false;
 
   path(path: string): string {
     const accessStore = useAccessStore.getState();
@@ -242,6 +252,36 @@ export class SiliconflowApi implements LLMApi {
   }
 
   async models(): Promise<LLMModel[]> {
-    return [];
+    if (this.disableListModels) {
+      return DEFAULT_MODELS.slice();
+    }
+
+    const res = await fetch(this.path(SiliconFlow.ListModelPath), {
+      method: "GET",
+      headers: {
+        ...getHeaders(),
+      },
+    });
+
+    const resJson = (await res.json()) as SiliconFlowListModelResponse;
+    const chatModels = resJson.data;
+    console.log("[Models]", chatModels);
+
+    if (!chatModels) {
+      return [];
+    }
+
+    let seq = 1000; //同 Constant.ts 中的排序保持一致
+    return chatModels.map((m) => ({
+      name: m.id,
+      available: true,
+      sorted: seq++,
+      provider: {
+        id: "siliconflow",
+        providerName: "SiliconFlow",
+        providerType: "siliconflow",
+        sorted: 14,
+      },
+    }));
   }
 }
