@@ -24,6 +24,7 @@ import React, {
   useRef,
 } from "react";
 import { IconButton } from "./button";
+import { Avatar } from "./emoji";
 import clsx from "clsx";
 
 export function Popover(props: {
@@ -539,6 +540,7 @@ export function Selector<T>(props: {
                 key={i}
                 title={item.title}
                 subTitle={item.subTitle}
+                icon={<Avatar model={item.value as string} />}
                 onClick={(e) => {
                   if (item.disable) {
                     e.stopPropagation();

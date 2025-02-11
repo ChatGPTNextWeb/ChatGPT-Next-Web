@@ -5,6 +5,7 @@ import {
   DEEPSEEK_BASE_URL,
   DeepSeek,
   REQUEST_TIMEOUT_MS,
+  REQUEST_TIMEOUT_MS_FOR_THINKING,
 } from "@/app/constant";
 import {
   useAccessStore,
@@ -117,10 +118,14 @@ export class DeepSeekApi implements LLMApi {
 
       // console.log(chatPayload);
 
+      const isR1 =
+        options.config.model.endsWith("-reasoner") ||
+        options.config.model.endsWith("-r1");
+
       // make a fetch request
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
-        REQUEST_TIMEOUT_MS,
+        isR1 ? REQUEST_TIMEOUT_MS_FOR_THINKING : REQUEST_TIMEOUT_MS,
       );
 
       if (shouldStream) {

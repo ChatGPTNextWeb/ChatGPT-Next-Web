@@ -111,6 +111,7 @@ export const UNFINISHED_INPUT = (id: string) => "unfinished-input-" + id;
 export const STORAGE_KEY = "chatgpt-next-web";
 
 export const REQUEST_TIMEOUT_MS = 60000;
+export const REQUEST_TIMEOUT_MS_FOR_THINKING = REQUEST_TIMEOUT_MS * 5;
 
 export const EXPORT_MESSAGE_CLASS_NAME = "export-markdown";
 
@@ -545,10 +546,14 @@ const googleModels = [
   "gemini-exp-1114",
   "gemini-exp-1121",
   "gemini-exp-1206",
+  "gemini-2.0-flash",
   "gemini-2.0-flash-exp",
+  "gemini-2.0-flash-lite-preview-02-05",
   "gemini-2.0-flash-thinking-exp",
   "gemini-2.0-flash-thinking-exp-1219",
   "gemini-2.0-flash-thinking-exp-01-21",
+  "gemini-2.0-pro-exp",
+  "gemini-2.0-pro-exp-02-05",
 ];
 
 const anthropicModels = [
@@ -621,7 +626,16 @@ const iflytekModels = [
 
 const deepseekModels = ["deepseek-chat", "deepseek-coder", "deepseek-reasoner"];
 
-const xAIModes = ["grok-beta"];
+const xAIModes = [
+  "grok-beta",
+  "grok-2",
+  "grok-2-1212",
+  "grok-2-latest",
+  "grok-vision-beta",
+  "grok-2-vision-1212",
+  "grok-2-vision",
+  "grok-2-vision-latest",
+];
 
 const chatglmModels = [
   "glm-4-plus",
@@ -656,6 +670,8 @@ const siliconflowModels = [
   "deepseek-ai/DeepSeek-V3",
   "meta-llama/Llama-3.3-70B-Instruct",
   "THUDM/glm-4-9b-chat",
+  "Pro/deepseek-ai/DeepSeek-R1",
+  "Pro/deepseek-ai/DeepSeek-V3",
 ];
 
 let seq = 1000; // 内置的模型序号生成器从1000开始

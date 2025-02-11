@@ -4,7 +4,7 @@ import {
   ApiPath,
   SILICONFLOW_BASE_URL,
   SiliconFlow,
-  REQUEST_TIMEOUT_MS,
+  REQUEST_TIMEOUT_MS_FOR_THINKING,
 } from "@/app/constant";
 import {
   useAccessStore,
@@ -120,10 +120,10 @@ export class SiliconflowApi implements LLMApi {
 
       // console.log(chatPayload);
 
-      // make a fetch request
+      // Use extended timeout for thinking models as they typically require more processing time
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
-        REQUEST_TIMEOUT_MS,
+        REQUEST_TIMEOUT_MS_FOR_THINKING,
       );
 
       if (shouldStream) {
@@ -174,8 +174,8 @@ export class SiliconflowApi implements LLMApi {
 
             // Skip if both content and reasoning_content are empty or null
             if (
-              (!reasoning || reasoning.trim().length === 0) &&
-              (!content || content.trim().length === 0)
+              (!reasoning || reasoning.length === 0) &&
+              (!content || content.length === 0)
             ) {
               return {
                 isThinking: false,
@@ -183,12 +183,12 @@ export class SiliconflowApi implements LLMApi {
               };
             }
 
-            if (reasoning && reasoning.trim().length > 0) {
+            if (reasoning && reasoning.length > 0) {
               return {
                 isThinking: true,
                 content: reasoning,
               };
-            } else if (content && content.trim().length > 0) {
+            } else if (content && content.length > 0) {
               return {
                 isThinking: false,
                 content: content,
