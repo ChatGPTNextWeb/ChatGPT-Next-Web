@@ -37,7 +37,7 @@ export interface OpenAIListModelResponse {
   }>;
 }
 
-interface RequestPayload {
+interface RequestPayloadForByteDance {
   messages: {
     role: "system" | "user" | "assistant";
     content: string | MultimodalContent[];
@@ -105,7 +105,7 @@ export class DoubaoApi implements LLMApi {
     };
 
     const shouldStream = !!options.config.stream;
-    const requestPayload: RequestPayload = {
+    const requestPayload: RequestPayloadForByteDance = {
       messages,
       stream: shouldStream,
       model: modelConfig.model,
@@ -157,6 +157,9 @@ export class DoubaoApi implements LLMApi {
                 reasoning_content: string | null;
               };
             }>;
+
+            if (!choices?.length) return { isThinking: false, content: "" };
+
             const tool_calls = choices[0]?.delta?.tool_calls;
             if (tool_calls?.length > 0) {
               const index = tool_calls[0]?.index;
@@ -209,13 +212,11 @@ export class DoubaoApi implements LLMApi {
           },
           // processToolMessage, include tool_calls message and tool call results
           (
-            requestPayload: RequestPayload,
+            requestPayload: RequestPayloadForByteDance,
             toolCallMessage: any,
             toolCallResult: any[],
           ) => {
-            // @ts-ignore
             requestPayload?.messages?.splice(
-              // @ts-ignore
               requestPayload?.messages?.length,
               0,
               toolCallMessage,

@@ -171,6 +171,9 @@ export class QwenApi implements LLMApi {
                 reasoning_content: string | null;
               };
             }>;
+
+            if (!choices?.length) return { isThinking: false, content: "" };
+
             const tool_calls = choices[0]?.message?.tool_calls;
             if (tool_calls?.length > 0) {
               const index = tool_calls[0]?.index;
@@ -190,6 +193,7 @@ export class QwenApi implements LLMApi {
                 runTools[index]["function"]["arguments"] += args;
               }
             }
+
             const reasoning = choices[0]?.message?.reasoning_content;
             const content = choices[0]?.message?.content;
 
@@ -227,10 +231,8 @@ export class QwenApi implements LLMApi {
             toolCallMessage: any,
             toolCallResult: any[],
           ) => {
-            // @ts-ignore
-            requestPayload?.messages?.splice(
-              // @ts-ignore
-              requestPayload?.messages?.length,
+            requestPayload?.input?.messages?.splice(
+              requestPayload?.input?.messages?.length,
               0,
               toolCallMessage,
               ...toolCallResult,
