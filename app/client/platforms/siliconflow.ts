@@ -13,7 +13,7 @@ import {
   ChatMessageTool,
   usePluginStore,
 } from "@/app/store";
-import { streamWithThink } from "@/app/utils/chat";
+import { preProcessImageContent, streamWithThink } from "@/app/utils/chat";
 import {
   ChatOptions,
   getHeaders,
@@ -25,6 +25,7 @@ import { getClientConfig } from "@/app/config/client";
 import {
   getMessageTextContent,
   getMessageTextContentWithoutThinking,
+  isVisionModel,
 } from "@/app/utils";
 import { RequestPayload } from "./openai";
 import { fetch } from "@/app/utils/stream";
@@ -71,13 +72,16 @@ export class SiliconflowApi implements LLMApi {
   }
 
   async chat(options: ChatOptions) {
+    const visionModel = isVisionModel(options.config.model);
     const messages: ChatOptions["messages"] = [];
     for (const v of options.messages) {
       if (v.role === "assistant") {
         const content = getMessageTextContentWithoutThinking(v);
         messages.push({ role: v.role, content });
       } else {
-        const content = getMessageTextContent(v);
+        const content = visionModel
+          ? await preProcessImageContent(v.content)
+          : getMessageTextContent(v);
         messages.push({ role: v.role, content });
       }
     }
