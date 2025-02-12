@@ -1,11 +1,6 @@
 "use client";
 // azure and openai, using same models. so using same LLMApi.
-import {
-  ApiPath,
-  SILICONFLOW_BASE_URL,
-  SiliconFlow,
-  REQUEST_TIMEOUT_MS_FOR_THINKING,
-} from "@/app/constant";
+import { ApiPath, SILICONFLOW_BASE_URL, SiliconFlow } from "@/app/constant";
 import {
   useAccessStore,
   useAppConfig,
@@ -25,6 +20,7 @@ import { getClientConfig } from "@/app/config/client";
 import {
   getMessageTextContent,
   getMessageTextContentWithoutThinking,
+  getTimeoutMSByModel,
 } from "@/app/utils";
 import { RequestPayload } from "./openai";
 import { fetch } from "@/app/utils/stream";
@@ -123,7 +119,7 @@ export class SiliconflowApi implements LLMApi {
       // Use extended timeout for thinking models as they typically require more processing time
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
-        REQUEST_TIMEOUT_MS_FOR_THINKING,
+        getTimeoutMSByModel(options.config.model),
       );
 
       if (shouldStream) {

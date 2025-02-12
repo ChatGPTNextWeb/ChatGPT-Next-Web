@@ -1,9 +1,4 @@
-import {
-  ApiPath,
-  Google,
-  REQUEST_TIMEOUT_MS,
-  REQUEST_TIMEOUT_MS_FOR_THINKING,
-} from "@/app/constant";
+import { ApiPath, Google } from "@/app/constant";
 import {
   ChatOptions,
   getHeaders,
@@ -27,6 +22,7 @@ import {
   getMessageTextContent,
   getMessageImages,
   isVisionModel,
+  getTimeoutMSByModel,
 } from "@/app/utils";
 import { preProcessImageContent } from "@/app/utils/chat";
 import { nanoid } from "nanoid";
@@ -206,7 +202,7 @@ export class GeminiProApi implements LLMApi {
       // make a fetch request
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
-        isThinking ? REQUEST_TIMEOUT_MS_FOR_THINKING : REQUEST_TIMEOUT_MS,
+        getTimeoutMSByModel(options.config.model),
       );
 
       if (shouldStream) {

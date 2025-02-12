@@ -8,7 +8,6 @@ import {
   Azure,
   REQUEST_TIMEOUT_MS,
   ServiceProvider,
-  REQUEST_TIMEOUT_MS_FOR_THINKING,
 } from "@/app/constant";
 import {
   ChatMessageTool,
@@ -42,6 +41,7 @@ import {
   getMessageTextContent,
   isVisionModel,
   isDalle3 as _isDalle3,
+  getTimeoutMSByModel,
 } from "@/app/utils";
 import { fetch } from "@/app/utils/stream";
 
@@ -340,8 +340,8 @@ export class ChatGPTApi implements LLMApi {
 
             // Skip if both content and reasoning_content are empty or null
             if (
-              (!reasoning || reasoning.trim().length === 0) &&
-              (!content || content.trim().length === 0)
+              (!reasoning || reasoning.length === 0) &&
+              (!content || content.length === 0)
             ) {
               return {
                 isThinking: false,
@@ -349,12 +349,12 @@ export class ChatGPTApi implements LLMApi {
               };
             }
 
-            if (reasoning && reasoning.trim().length > 0) {
+            if (reasoning && reasoning.length > 0) {
               return {
                 isThinking: true,
                 content: reasoning,
               };
-            } else if (content && content.trim().length > 0) {
+            } else if (content && content.length > 0) {
               return {
                 isThinking: false,
                 content: content,
@@ -396,9 +396,7 @@ export class ChatGPTApi implements LLMApi {
         // make a fetch request
         const requestTimeoutId = setTimeout(
           () => controller.abort(),
-          isDalle3 || isO1OrO3
-            ? REQUEST_TIMEOUT_MS_FOR_THINKING
-            : REQUEST_TIMEOUT_MS, // dalle3 using b64_json is slow.
+          getTimeoutMSByModel(options.config.model),
         );
 
         const res = await fetch(chatPath, chatPayload);

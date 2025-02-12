@@ -1,10 +1,5 @@
 "use client";
-import {
-  ApiPath,
-  Alibaba,
-  ALIBABA_BASE_URL,
-  REQUEST_TIMEOUT_MS,
-} from "@/app/constant";
+import { ApiPath, Alibaba, ALIBABA_BASE_URL } from "@/app/constant";
 import {
   useAccessStore,
   useAppConfig,
@@ -25,6 +20,7 @@ import { getClientConfig } from "@/app/config/client";
 import {
   getMessageTextContent,
   getMessageTextContentWithoutThinking,
+  getTimeoutMSByModel,
 } from "@/app/utils";
 import { fetch } from "@/app/utils/stream";
 
@@ -144,7 +140,7 @@ export class QwenApi implements LLMApi {
       // make a fetch request
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
-        REQUEST_TIMEOUT_MS,
+        getTimeoutMSByModel(options.config.model),
       );
 
       if (shouldStream) {
@@ -199,8 +195,8 @@ export class QwenApi implements LLMApi {
 
             // Skip if both content and reasoning_content are empty or null
             if (
-              (!reasoning || reasoning.trim().length === 0) &&
-              (!content || content.trim().length === 0)
+              (!reasoning || reasoning.length === 0) &&
+              (!content || content.length === 0)
             ) {
               return {
                 isThinking: false,
@@ -208,12 +204,12 @@ export class QwenApi implements LLMApi {
               };
             }
 
-            if (reasoning && reasoning.trim().length > 0) {
+            if (reasoning && reasoning.length > 0) {
               return {
                 isThinking: true,
                 content: reasoning,
               };
-            } else if (content && content.trim().length > 0) {
+            } else if (content && content.length > 0) {
               return {
                 isThinking: false,
                 content: content,
