@@ -91,7 +91,7 @@ async function request(req: NextRequest) {
         isModelNotavailableInServer(
           serverConfig.customModels,
           jsonBody?.model as string,
-          ServiceProvider.SiliconFlow as string,
+          ServiceProvider.PPIO as string,
         )
       ) {
         return NextResponse.json(
