@@ -286,13 +286,19 @@ export function isVisionModel(model: string) {
     "gpt-4o",
     "gpt-4o-mini",
   ];
+
+  var googleModels = DEFAULT_MODELS.filter(
+    (model) => model.provider.id === "google",
+  ).map((model) => model.name);
+
   const isGpt4Turbo =
     model.includes("gpt-4-turbo") && !model.includes("preview");
 
   return (
     visionKeywords.some((keyword) => model.includes(keyword)) ||
     isGpt4Turbo ||
-    isDalle3(model)
+    isDalle3(model) ||
+    googleModels.some((keyword) => model.includes(keyword))
   );
 }
 
