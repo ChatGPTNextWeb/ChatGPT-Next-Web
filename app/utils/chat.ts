@@ -400,6 +400,7 @@ export function streamWithThink(
   let responseRes: Response;
   let isInThinkingMode = false;
   let lastIsThinking = false;
+  let lastIsThinkingTagged = false; //between <think> and </think> tags
 
   // animate response to make it looks smooth
   function animateResponseText() {
@@ -579,6 +580,23 @@ export function streamWithThink(
           if (!chunk?.content || chunk.content.length === 0) {
             return;
           }
+
+          // deal with <think> and </think> tags start
+          if (!chunk.isThinking) {
+            if (chunk.content.startsWith("<think>")) {
+              chunk.isThinking = true;
+              chunk.content = chunk.content.slice(7).trim();
+              lastIsThinkingTagged = true;
+            } else if (chunk.content.endsWith("</think>")) {
+              chunk.isThinking = false;
+              chunk.content = chunk.content.slice(0, -8).trim();
+              lastIsThinkingTagged = false;
+            } else if (lastIsThinkingTagged) {
+              chunk.isThinking = true;
+            }
+          }
+          // deal with <think> and </think> tags start
+
           // Check if thinking mode changed
           const isThinkingChanged = lastIsThinking !== chunk.isThinking;
           lastIsThinking = chunk.isThinking;
