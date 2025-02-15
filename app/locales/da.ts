@@ -626,7 +626,7 @@ const da: PartialLocaleType = {
     Revert: "Fortryd",
   },
   Discovery: {
-    Name: "Oplev",
+    Name: "Søgning og plugins",
   },
   Mcp: {
     Name: "MCP",
