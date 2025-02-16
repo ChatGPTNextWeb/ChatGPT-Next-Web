@@ -1,4 +1,4 @@
-import { ApiPath, Google, REQUEST_TIMEOUT_MS } from "@/app/constant";
+import { ApiPath, Google } from "@/app/constant";
 import {
   ChatOptions,
   getHeaders,
@@ -22,6 +22,7 @@ import {
   getMessageTextContent,
   getMessageImages,
   isVisionModel,
+  getTimeoutMSByModel,
 } from "@/app/utils";
 import { preProcessImageContent } from "@/app/utils/chat";
 import { nanoid } from "nanoid";
@@ -69,9 +70,16 @@ export class GeminiProApi implements LLMApi {
         .join("\n\n");
     };
 
+    let content = "";
+    if (Array.isArray(res)) {
+      res.map((item) => {
+        content += getTextFromParts(item?.candidates?.at(0)?.content?.parts);
+      });
+    }
+
     return (
       getTextFromParts(res?.candidates?.at(0)?.content?.parts) ||
-      getTextFromParts(res?.at(0)?.candidates?.at(0)?.content?.parts) ||
+      content || //getTextFromParts(res?.at(0)?.candidates?.at(0)?.content?.parts) ||
       res?.error?.message ||
       ""
     );
@@ -190,10 +198,11 @@ export class GeminiProApi implements LLMApi {
         headers: getHeaders(),
       };
 
+      const isThinking = options.config.model.includes("-thinking");
       // make a fetch request
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
-        REQUEST_TIMEOUT_MS,
+        getTimeoutMSByModel(options.config.model),
       );
 
       if (shouldStream) {

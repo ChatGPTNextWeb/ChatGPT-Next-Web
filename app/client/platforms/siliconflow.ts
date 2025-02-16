@@ -1,6 +1,11 @@
 "use client";
 // azure and openai, using same models. so using same LLMApi.
-import { ApiPath, XAI_BASE_URL, XAI } from "@/app/constant";
+import {
+  ApiPath,
+  SILICONFLOW_BASE_URL,
+  SiliconFlow,
+  DEFAULT_MODELS,
+} from "@/app/constant";
 import {
   useAccessStore,
   useAppConfig,
@@ -8,7 +13,7 @@ import {
   ChatMessageTool,
   usePluginStore,
 } from "@/app/store";
-import { stream } from "@/app/utils/chat";
+import { preProcessImageContent, streamWithThink } from "@/app/utils/chat";
 import {
   ChatOptions,
   getHeaders,
@@ -17,13 +22,26 @@ import {
   SpeechOptions,
 } from "../api";
 import { getClientConfig } from "@/app/config/client";
-import { getTimeoutMSByModel } from "@/app/utils";
-import { preProcessImageContent } from "@/app/utils/chat";
+import {
+  getMessageTextContent,
+  getMessageTextContentWithoutThinking,
+  isVisionModel,
+  getTimeoutMSByModel,
+} from "@/app/utils";
 import { RequestPayload } from "./openai";
-import { fetch } from "@/app/utils/stream";
 
-export class XAIApi implements LLMApi {
-  private disableListModels = true;
+import { fetch } from "@/app/utils/stream";
+export interface SiliconFlowListModelResponse {
+  object: string;
+  data: Array<{
+    id: string;
+    object: string;
+    root: string;
+  }>;
+}
+
+export class SiliconflowApi implements LLMApi {
+  private disableListModels = false;
 
   path(path: string): string {
     const accessStore = useAccessStore.getState();
@@ -31,19 +49,22 @@ export class XAIApi implements LLMApi {
     let baseUrl = "";
 
     if (accessStore.useCustomConfig) {
-      baseUrl = accessStore.xaiUrl;
+      baseUrl = accessStore.siliconflowUrl;
     }
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
-      const apiPath = ApiPath.XAI;
-      baseUrl = isApp ? XAI_BASE_URL : apiPath;
+      const apiPath = ApiPath.SiliconFlow;
+      baseUrl = isApp ? SILICONFLOW_BASE_URL : apiPath;
     }
 
     if (baseUrl.endsWith("/")) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
     }
-    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.XAI)) {
+    if (
+      !baseUrl.startsWith("http") &&
+      !baseUrl.startsWith(ApiPath.SiliconFlow)
+    ) {
       baseUrl = "https://" + baseUrl;
     }
 
@@ -61,10 +82,18 @@ export class XAIApi implements LLMApi {
   }
 
   async chat(options: ChatOptions) {
+    const visionModel = isVisionModel(options.config.model);
     const messages: ChatOptions["messages"] = [];
     for (const v of options.messages) {
-      const content = await preProcessImageContent(v.content);
-      messages.push({ role: v.role, content });
+      if (v.role === "assistant") {
+        const content = getMessageTextContentWithoutThinking(v);
+        messages.push({ role: v.role, content });
+      } else {
+        const content = visionModel
+          ? await preProcessImageContent(v.content)
+          : getMessageTextContent(v);
+        messages.push({ role: v.role, content });
+      }
     }
 
     const modelConfig = {
@@ -84,16 +113,18 @@ export class XAIApi implements LLMApi {
       presence_penalty: modelConfig.presence_penalty,
       frequency_penalty: modelConfig.frequency_penalty,
       top_p: modelConfig.top_p,
+      // max_tokens: Math.max(modelConfig.max_tokens, 1024),
+      // Please do not ask me why not send max_tokens, no reason, this param is just shit, I dont want to explain anymore.
     };
 
-    console.log("[Request] xai payload: ", requestPayload);
+    console.log("[Request] openai payload: ", requestPayload);
 
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
 
     try {
-      const chatPath = this.path(XAI.ChatPath);
+      const chatPath = this.path(SiliconFlow.ChatPath);
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
@@ -101,7 +132,9 @@ export class XAIApi implements LLMApi {
         headers: getHeaders(),
       };
 
-      // make a fetch request
+      // console.log(chatPayload);
+
+      // Use extended timeout for thinking models as they typically require more processing time
       const requestTimeoutId = setTimeout(
         () => controller.abort(),
         getTimeoutMSByModel(options.config.model),
@@ -113,7 +146,7 @@ export class XAIApi implements LLMApi {
           .getAsTools(
             useChatStore.getState().currentSession().mask?.plugin || [],
           );
-        return stream(
+        return streamWithThink(
           chatPath,
           requestPayload,
           getHeaders(),
@@ -126,8 +159,9 @@ export class XAIApi implements LLMApi {
             const json = JSON.parse(text);
             const choices = json.choices as Array<{
               delta: {
-                content: string;
+                content: string | null;
                 tool_calls: ChatMessageTool[];
+                reasoning_content: string | null;
               };
             }>;
             const tool_calls = choices[0]?.delta?.tool_calls;
@@ -149,7 +183,36 @@ export class XAIApi implements LLMApi {
                 runTools[index]["function"]["arguments"] += args;
               }
             }
-            return choices[0]?.delta?.content;
+            const reasoning = choices[0]?.delta?.reasoning_content;
+            const content = choices[0]?.delta?.content;
+
+            // Skip if both content and reasoning_content are empty or null
+            if (
+              (!reasoning || reasoning.length === 0) &&
+              (!content || content.length === 0)
+            ) {
+              return {
+                isThinking: false,
+                content: "",
+              };
+            }
+
+            if (reasoning && reasoning.length > 0) {
+              return {
+                isThinking: true,
+                content: reasoning,
+              };
+            } else if (content && content.length > 0) {
+              return {
+                isThinking: false,
+                content: content,
+              };
+            }
+
+            return {
+              isThinking: false,
+              content: "",
+            };
           },
           // processToolMessage, include tool_calls message and tool call results
           (
@@ -189,6 +252,36 @@ export class XAIApi implements LLMApi {
   }
 
   async models(): Promise<LLMModel[]> {
-    return [];
+    if (this.disableListModels) {
+      return DEFAULT_MODELS.slice();
+    }
+
+    const res = await fetch(this.path(SiliconFlow.ListModelPath), {
+      method: "GET",
+      headers: {
+        ...getHeaders(),
+      },
+    });
+
+    const resJson = (await res.json()) as SiliconFlowListModelResponse;
+    const chatModels = resJson.data;
+    console.log("[Models]", chatModels);
+
+    if (!chatModels) {
+      return [];
+    }
+
+    let seq = 1000; //同 Constant.ts 中的排序保持一致
+    return chatModels.map((m) => ({
+      name: m.id,
+      available: true,
+      sorted: seq++,
+      provider: {
+        id: "siliconflow",
+        providerName: "SiliconFlow",
+        providerType: "siliconflow",
+        sorted: 14,
+      },
+    }));
   }
 }
