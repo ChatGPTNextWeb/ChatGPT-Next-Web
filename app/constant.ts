@@ -270,6 +270,7 @@ export const BEDROCK_BASE_URL = Bedrock.getEndpoint();
 export const SiliconFlow = {
   ExampleEndpoint: SILICONFLOW_BASE_URL,
   ChatPath: "v1/chat/completions",
+  ListModelPath: "v1/models?&sub_type=chat",
 };
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
@@ -476,6 +477,7 @@ export const VISION_MODEL_REGEXES = [
   /glm-4v/,
   /nova-lite/,
   /nova-pro/,
+  /vl/i,
 ];
 
 export const EXCLUDE_VISION_MODEL_REGEXES = [/claude-3-5-haiku-20241022/];
