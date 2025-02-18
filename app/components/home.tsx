@@ -30,6 +30,7 @@ import { type ClientApi, getClientApi } from "../client/api";
 import { useAccessStore } from "../store";
 import clsx from "clsx";
 import { initializeMcpSystem, isMcpEnabled } from "../mcp/actions";
+import { isEmpty } from "lodash-es";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -270,7 +271,7 @@ export function Home() {
       }
 
       // 处理消息
-      if (event?.data?.omeToken !== null || event?.data?.omeToken !== undefined)
+      if (!isEmpty(event?.data?.omeToken))
         appConfig.setOmeToken(event.data.omeToken);
     };
 
