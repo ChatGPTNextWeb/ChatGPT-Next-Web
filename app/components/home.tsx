@@ -273,10 +273,8 @@ export function Home() {
         appConfig.setOmeToken(event.data.omeToken);
     };
 
-    // 添加事件监听器
     window.addEventListener("message", handleMessage);
 
-    // 清理事件监听器：组件卸载时移除事件监听
     return () => {
       window.removeEventListener("message", handleMessage);
     };
