@@ -46,7 +46,8 @@ export const DEFAULT_CONFIG = {
   fontSize: 14,
   fontFamily: "",
   theme: Theme.Auto as Theme,
-  tightBorder: !!config?.isApp,
+  // tightBorder: !!config?.isApp,
+  tightBorder: true,
   sendPreviewBubble: true,
   enableAutoGenerateTitle: true,
   sidebarWidth: DEFAULT_SIDEBAR_WIDTH,
@@ -104,6 +105,7 @@ export const DEFAULT_CONFIG = {
     temperature: 0.9,
     voice: "alloy" as Voice,
   },
+  omeToken: "",
 };
 
 export type ChatConfig = typeof DEFAULT_CONFIG;
@@ -165,7 +167,13 @@ export const useAppConfig = createPersistStore(
   { ...DEFAULT_CONFIG },
   (set, get) => ({
     reset() {
-      set(() => ({ ...DEFAULT_CONFIG }));
+      const { omeToken } = get();
+
+      set(() => ({ ...DEFAULT_CONFIG, omeToken }));
+    },
+
+    setOmeToken(omeToken: string) {
+      set(() => ({ omeToken }));
     },
 
     mergeModels(newModels: LLMModel[]) {

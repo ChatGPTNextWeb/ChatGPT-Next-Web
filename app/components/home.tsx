@@ -239,6 +239,8 @@ export function Home() {
   useLoadData();
   useHtmlLang();
 
+  const appConfig = useAppConfig();
+
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());
     useAccessStore.getState().fetch();
@@ -256,6 +258,29 @@ export function Home() {
       }
     };
     initMcp();
+  }, []);
+
+  useEffect(() => {
+    window.parent.postMessage("omemetis is ready", "*");
+
+    const handleMessage = (event: any) => {
+      // 确保消息来自信任的源
+      if (!event.origin.includes("omeoffice")) {
+        return; // 如果不是信任的源，忽略消息
+      }
+
+      // 处理消息
+      if (event?.data?.omeToken !== null || event?.data?.omeToken !== undefined)
+        appConfig.setOmeToken(event.data.omeToken);
+    };
+
+    // 添加事件监听器
+    window.addEventListener("message", handleMessage);
+
+    // 清理事件监听器：组件卸载时移除事件监听
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
   }, []);
 
   if (!useHasHydrated()) {

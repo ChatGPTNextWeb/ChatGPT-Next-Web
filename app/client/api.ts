@@ -10,6 +10,7 @@ import {
   ModelType,
   useAccessStore,
   useChatStore,
+  useAppConfig,
 } from "../store";
 import { ChatGPTApi, DalleRequestPayload } from "./platforms/openai";
 import { GeminiProApi } from "./platforms/google";
@@ -233,6 +234,7 @@ export function validString(x: string): boolean {
 }
 
 export function getHeaders(ignoreHeaders: boolean = false) {
+  const appConfig = useAppConfig.getState();
   const accessStore = useAccessStore.getState();
   const chatStore = useChatStore.getState();
   let headers: Record<string, string> = {};
@@ -347,6 +349,8 @@ export function getHeaders(ignoreHeaders: boolean = false) {
       ACCESS_CODE_PREFIX + accessStore.accessCode,
     );
   }
+
+  headers["OME-METIS-Authorization"] = appConfig.omeToken || "";
 
   return headers;
 }
