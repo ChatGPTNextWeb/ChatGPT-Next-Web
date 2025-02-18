@@ -30,6 +30,7 @@ import { type ClientApi, getClientApi } from "../client/api";
 import { useAccessStore } from "../store";
 import clsx from "clsx";
 import { initializeMcpSystem, isMcpEnabled } from "../mcp/actions";
+import { isEmpty } from "lodash-es";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -239,6 +240,8 @@ export function Home() {
   useLoadData();
   useHtmlLang();
 
+  const appConfig = useAppConfig();
+
   useEffect(() => {
     console.log("[Config] got config from build time", getClientConfig());
     useAccessStore.getState().fetch();
@@ -256,6 +259,25 @@ export function Home() {
       }
     };
     initMcp();
+  }, []);
+
+  useEffect(() => {
+    window.parent.postMessage("omemetis is ready", "*");
+
+    const handleMessage = (event: any) => {
+      if (!event.origin.includes("omeoffice")) {
+        return; // 如果不是信任的源，忽略消息
+      }
+
+      if (!isEmpty(event?.data?.omeToken))
+        appConfig.setOmeToken(event.data.omeToken);
+    };
+
+    window.addEventListener("message", handleMessage);
+
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
   }, []);
 
   if (!useHasHydrated()) {
