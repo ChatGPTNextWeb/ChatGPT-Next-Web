@@ -265,7 +265,6 @@ export function Home() {
     window.parent.postMessage("omemetis is ready", "*");
 
     const handleMessage = (event: any) => {
-      // 确保消息来自信任的源
       if (!event.origin.includes("omeoffice")) {
         return; // 如果不是信任的源，忽略消息
       }
