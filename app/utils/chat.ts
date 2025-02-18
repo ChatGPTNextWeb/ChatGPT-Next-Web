@@ -1,7 +1,7 @@
 import {
   CACHE_URL_PREFIX,
-  UPLOAD_URL,
   REQUEST_TIMEOUT_MS,
+  UPLOAD_URL,
 } from "@/app/constant";
 import { RequestMessage } from "@/app/client/api";
 import Locale from "@/app/locales";
@@ -93,6 +93,7 @@ export async function preProcessImageContent(
 }
 
 const imageCaches: Record<string, string> = {};
+
 export function cacheImageToBase64Image(imageUrl: string) {
   if (imageUrl.includes(CACHE_URL_PREFIX)) {
     if (!imageCaches[imageUrl]) {
@@ -367,6 +368,7 @@ export function stream(
       openWhenHidden: true,
     });
   }
+
   console.debug("[ChatAPI] start");
   chatApi(chatPath, headers, requestPayload, tools); // call fetchEventSource
 }
@@ -609,16 +611,9 @@ export function streamWithThink(
               if (remainText.length > 0) {
                 remainText += "\n";
               }
-              remainText += "> " + chunk.content;
-            } else {
-              // Handle newlines in thinking content
-              if (chunk.content.includes("\n\n")) {
-                const lines = chunk.content.split("\n\n");
-                remainText += lines.join("\n\n> ");
-              } else {
-                remainText += chunk.content;
-              }
+              remainText += "> ";
             }
+            remainText += chunk.content.replaceAll("\n", "\n> ");
           } else {
             // If in normal mode
             if (isInThinkingMode || isThinkingChanged) {
@@ -644,6 +639,7 @@ export function streamWithThink(
       openWhenHidden: true,
     });
   }
+
   console.debug("[ChatAPI] start");
   chatApi(chatPath, headers, requestPayload, tools); // call fetchEventSource
 }
