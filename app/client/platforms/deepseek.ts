@@ -65,13 +65,24 @@ export class DeepSeekApi implements LLMApi {
 
   async chat(options: ChatOptions) {
     const messages: ChatOptions["messages"] = [];
-    for (const v of options.messages) {
-      if (v.role === "assistant") {
-        const content = getMessageTextContentWithoutThinking(v);
-        messages.push({ role: v.role, content });
-      } else {
-        const content = getMessageTextContent(v);
-        messages.push({ role: v.role, content });
+    if (options.config.model === "deepseek-reasoner") {
+      // Only take the last message
+      const lastMessage = options.messages[options.messages.length - 1];
+      const content =
+        lastMessage.role === "assistant"
+          ? getMessageTextContentWithoutThinking(lastMessage)
+          : getMessageTextContent(lastMessage);
+      messages.push({ role: lastMessage.role, content });
+    } else {
+      // Process all messages
+      for (const v of options.messages) {
+        if (v.role === "assistant") {
+          const content = getMessageTextContentWithoutThinking(v);
+          messages.push({ role: v.role, content });
+        } else {
+          const content = getMessageTextContent(v);
+          messages.push({ role: v.role, content });
+        }
       }
     }
 
