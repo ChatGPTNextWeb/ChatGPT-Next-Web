@@ -269,7 +269,6 @@ export function Home() {
         return; // 如果不是信任的源，忽略消息
       }
 
-      // 处理消息
       if (!isEmpty(event?.data?.omeToken))
         appConfig.setOmeToken(event.data.omeToken);
     };
