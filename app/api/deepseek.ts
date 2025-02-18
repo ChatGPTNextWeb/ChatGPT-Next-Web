@@ -85,7 +85,7 @@ async function request(req: NextRequest) {
       fetchOptions.body = clonedBody;
 
       const jsonBody = JSON.parse(clonedBody) as { model?: string };
-
+      console.log(jsonBody);
       // not undefined and is false
       if (
         isModelNotavailableInServer(
