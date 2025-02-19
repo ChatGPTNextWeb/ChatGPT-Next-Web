@@ -278,10 +278,7 @@ export function Home() {
     const handleMessage = (event: any) => {
       const data = event.data;
 
-      console.log(event, "event--");
-
       if (isString(data)) {
-        console.log("isString");
         try {
           const params = JSON.parse(data);
 
@@ -298,12 +295,6 @@ export function Home() {
       ) {
         return; // 如果不是信任的源，忽略消息
       }
-
-      console.log(
-        "handleMessage",
-        !isEmpty(event?.data?.ometoken),
-        event?.data?.ometoken,
-      );
 
       if (!isEmpty(event?.data?.ometoken))
         appConfig.setOmeToken(event.data.ometoken);
