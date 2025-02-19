@@ -278,6 +278,8 @@ export function Home() {
     const handleMessage = (event: any) => {
       const data = event.data;
 
+      console.log(event, "event--");
+
       if (isString(data)) {
         try {
           const params = JSON.parse(data);
