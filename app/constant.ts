@@ -816,5 +816,5 @@ export const internalAllowedWebDavEndpoints = [
 
 export const DEFAULT_GA_ID = "G-89WN60ZK2E";
 
-export const SAAS_CHAT_URL = `/#/?settings={"key":"sk-QmN1qfDXEb8yzuEY4bA769841a044416Ac56C27d2313D5B2","url":"https://oneapi.181918.xyz"}`;
-export const SAAS_CHAT_UTM_URL = `/#/?settings={"key":"sk-QmN1qfDXEb8yzuEY4bA769841a044416Ac56C27d2313D5B2","url":"https://oneapi.181918.xyz"}`;
+export const SAAS_CHAT_URL = `/#/?settings={"key":"${process.env.NEXT_PUBLIC_API_KEY}","url":"${process.env.NEXT_PUBLIC_API_URL}"}`;
+export const SAAS_CHAT_UTM_URL = `/#/?settings={"key":"${process.env.NEXT_PUBLIC_API_KEY}","url":"${process.env.NEXT_PUBLIC_API_URL}"}`;
