@@ -293,6 +293,7 @@ export function Home() {
       }
 
       console.log(
+        event.origin,
         !event.origin.includes("omeoffice"),
         '!event.origin.includes("omeoffice")',
       );
