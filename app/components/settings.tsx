@@ -67,7 +67,6 @@ import {
   RELEASE_URL,
   STORAGE_KEY,
   ServiceProvider,
-  SlotID,
   UPDATE_URL,
   Stability,
   Iflytek,
@@ -1774,8 +1773,8 @@ export function Settings() {
           </ListItem>
         </List>
 
-        <List id={SlotID.CustomModel}>
-          {/* {saasStartComponent} */}
+        {/* <List id={SlotID.CustomModel}>
+          {saasStartComponent}
           {accessCodeComponent}
 
           {!accessStore.hideUserApiKey && (
@@ -1871,7 +1870,7 @@ export function Settings() {
               }
             ></input>
           </ListItem>
-        </List>
+        </List> */}
 
         <List>
           <ModelConfigList
