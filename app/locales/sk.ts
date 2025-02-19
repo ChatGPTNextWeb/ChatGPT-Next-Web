@@ -1,8 +1,7 @@
 import { getClientConfig } from "../config/client";
 import { SubmitKey } from "../store/config";
-import { LocaleType } from "./index";
 import type { PartialLocaleType } from "./index";
-
+import { SAAS_CHAT_UTM_URL } from "@/app/constant";
 // if you are adding a new translation, please use PartialLocaleType instead of LocaleType
 
 const isApp = !!getClientConfig()?.isApp;
@@ -10,8 +9,14 @@ const sk: PartialLocaleType = {
   WIP: "Už čoskoro...",
   Error: {
     Unauthorized: isApp
-      ? "Neplatný API kľúč, prosím skontrolujte ho na stránke [Nastavenia](/#/settings)."
-      : "Neoprávnený prístup, prosím zadajte prístupový kód na stránke [auth](/#/auth), alebo zadajte váš OpenAI API kľúč.",
+      ? `😆 Rozhovor narazil na nejaké problémy, nebojte sa:
+    \\ 1️⃣ Ak chcete začať bez konfigurácie, [kliknite sem, aby ste okamžite začali chatovať 🚀](${SAAS_CHAT_UTM_URL})
+    \\ 2️⃣ Ak chcete používať svoje vlastné zdroje OpenAI, kliknite [sem](/#/settings), aby ste upravili nastavenia ⚙️`
+      : `😆 Rozhovor narazil na nejaké problémy, nebojte sa:
+    \ 1️⃣ Ak chcete začať bez konfigurácie, [kliknite sem, aby ste okamžite začali chatovať 🚀](${SAAS_CHAT_UTM_URL})
+    \ 2️⃣ Ak používate verziu súkromného nasadenia, kliknite [sem](/#/auth), aby ste zadali prístupový kľúč 🔑
+    \ 3️⃣ Ak chcete používať svoje vlastné zdroje OpenAI, kliknite [sem](/#/settings), aby ste upravili nastavenia ⚙️
+ `,
   },
   Auth: {
     Title: "Potrebný prístupový kód",
@@ -20,6 +25,10 @@ const sk: PartialLocaleType = {
     Input: "prístupový kód",
     Confirm: "Potvrdiť",
     Later: "Neskôr",
+    Return: "Návrat",
+    SaasTips: "Nastavenie je príliš zložité, chcem to okamžite použiť",
+    TopTips:
+      "🥳 Uvítacia ponuka NextChat AI, okamžite odomknite OpenAI o1, GPT-4o, Claude-3.5 a najnovšie veľké modely",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} správ`,
@@ -282,6 +291,14 @@ const sk: PartialLocaleType = {
       NoAccess: "Zadajte API kľúč na skontrolovanie zostatku",
     },
     Access: {
+      SaasStart: {
+        Title: "Použite NextChat AI",
+        Label: "(Najvýhodnejšie riešenie)",
+        SubTitle:
+          "Oficiálne udržiavané NextChat, pripravené na použitie bez konfigurácie, podporuje najnovšie veľké modely ako OpenAI o1, GPT-4o a Claude-3.5",
+        ChatNow: "Chatovať teraz",
+      },
+
       AccessCode: {
         Title: "Prístupový kód",
         SubTitle: "Povolený prístupový kód",
