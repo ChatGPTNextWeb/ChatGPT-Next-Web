@@ -290,12 +290,15 @@ export function Home() {
       }
 
       // 逻辑判断 是对象还是字符串
-      if (!event.origin.includes("omeoffice")) {
+      if (
+        !event.origin.includes("omeoffice") ||
+        !event.origin.includes("localhost")
+      ) {
         return; // 如果不是信任的源，忽略消息
       }
 
-      if (!isEmpty(event?.data?.omeToken))
-        appConfig.setOmeToken(event.data.omeToken);
+      if (!isEmpty(event?.data?.ometoken))
+        appConfig.setOmeToken(event.data.ometoken);
     };
 
     window.addEventListener("message", handleMessage);
