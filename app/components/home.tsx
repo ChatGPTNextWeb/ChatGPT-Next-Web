@@ -292,14 +292,8 @@ export function Home() {
         return;
       }
 
-      console.log(
-        event.origin,
-        !event.origin.includes("omeoffice"),
-        '!event.origin.includes("omeoffice")',
-      );
-
       if (
-        !event.origin.includes("omeoffice") ||
+        !event.origin.includes("omeoffice") &&
         !event.origin.includes("localhost")
       ) {
         return; // 如果不是信任的源，忽略消息
