@@ -281,6 +281,7 @@ export function Home() {
       console.log(event, "event--");
 
       if (isString(data)) {
+        console.log("isString");
         try {
           const params = JSON.parse(data);
 
@@ -291,13 +292,23 @@ export function Home() {
         return;
       }
 
-      // 逻辑判断 是对象还是字符串
+      console.log(
+        !event.origin.includes("omeoffice"),
+        '!event.origin.includes("omeoffice")',
+      );
+
       if (
         !event.origin.includes("omeoffice") ||
         !event.origin.includes("localhost")
       ) {
         return; // 如果不是信任的源，忽略消息
       }
+
+      console.log(
+        "handleMessage",
+        !isEmpty(event?.data?.ometoken),
+        event?.data?.ometoken,
+      );
 
       if (!isEmpty(event?.data?.ometoken))
         appConfig.setOmeToken(event.data.ometoken);
