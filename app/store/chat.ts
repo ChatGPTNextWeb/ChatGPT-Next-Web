@@ -460,7 +460,7 @@ export const useChatStore = createPersistStore(
         // make request
         api.llm.chat({
           messages: sendMessages,
-          config: { ...modelConfig, stream: true },
+          config: { ...modelConfig, stream: false },
           onUpdate(message) {
             botMessage.streaming = true;
             if (message) {
@@ -773,7 +773,7 @@ export const useChatStore = createPersistStore(
             ),
             config: {
               ...modelcfg,
-              stream: true,
+              stream: false,
               model,
               providerName,
             },
