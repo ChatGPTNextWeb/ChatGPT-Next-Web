@@ -30,7 +30,7 @@ import { type ClientApi, getClientApi } from "../client/api";
 import { useAccessStore } from "../store";
 import clsx from "clsx";
 import { initializeMcpSystem, isMcpEnabled } from "../mcp/actions";
-import { isEmpty } from "lodash-es";
+import { isEmpty, isString } from "lodash-es";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -264,7 +264,32 @@ export function Home() {
   useEffect(() => {
     window.parent.postMessage("omemetis is ready", "*");
 
+    try {
+      const message = {
+        data: "omemetis is ready",
+        url: location.origin,
+      };
+
+      window.ReactNativeWebView.postMessage(JSON.stringify(message));
+    } catch {
+      console.log("window.ReactNativeWebView Err");
+    }
+
     const handleMessage = (event: any) => {
+      const data = event.data;
+
+      if (isString(data)) {
+        try {
+          const params = JSON.parse(data);
+
+          if (!isEmpty(params?.omeToken) && params?.from === "OmeOfficeApp")
+            appConfig.setOmeToken(params?.omeToken ?? "");
+        } catch {}
+
+        return;
+      }
+
+      // 逻辑判断 是对象还是字符串
       if (!event.origin.includes("omeoffice")) {
         return; // 如果不是信任的源，忽略消息
       }
