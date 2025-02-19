@@ -1283,6 +1283,7 @@ function _Chat() {
     });
   };
 
+  const appstore = useAppConfig();
   const accessStore = useAccessStore();
   const [speechStatus, setSpeechStatus] = useState(false);
   const [speechLoading, setSpeechLoading] = useState(false);
@@ -1340,7 +1341,10 @@ function _Chat() {
   ) {
     const copiedHello = Object.assign({}, BOT_HELLO);
     if (!accessStore.isAuthorized()) {
-      copiedHello.content = Locale.Error.Unauthorized;
+      if (!isEmpty(appstore.omeToken)) {
+      } else {
+        copiedHello.content = Locale.Error.Unauthorized;
+      }
     }
     context.push(copiedHello);
   }
