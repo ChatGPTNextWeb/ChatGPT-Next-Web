@@ -282,8 +282,17 @@ export function Home() {
         try {
           const params = JSON.parse(data);
 
-          if (!isEmpty(params?.omeToken) && params?.from === "OmeOfficeApp")
+          if (!isEmpty(params?.omeToken) && params?.from === "OmeOfficeApp") {
             appConfig.setOmeToken(params?.omeToken ?? "");
+
+            try {
+              const message = "收到消息";
+
+              window.ReactNativeWebView.postMessage(message);
+            } catch {
+              console.log("window.ReactNativeWebView Err");
+            }
+          }
         } catch {}
 
         return;
