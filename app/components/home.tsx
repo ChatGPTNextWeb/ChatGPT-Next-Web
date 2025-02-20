@@ -262,20 +262,6 @@ export function Home() {
   }, []);
 
   useEffect(() => {
-    // window.parent.postMessage("omemetis is ready", "*");
-
-    // try {
-    //   const message = {
-    //     data: "omemetis is ready",
-    //     url: location.origin,
-    //   };
-
-    //   window.ReactNativeWebView.postMessage(JSON.stringify(message));
-    // } catch {
-    //   // window.ReactNativeWebView.postMessage("App 发送失败");
-    //   // console.log("window.ReactNativeWebView Err");
-    // }
-
     if (window.ReactNativeWebView) {
       try {
         const message = {
@@ -295,30 +281,12 @@ export function Home() {
 
       if (window.ReactNativeWebView) {
         try {
-          window.ReactNativeWebView.postMessage(`${data} 从App获取的数据`);
-
           const params = JSON.parse(data);
 
           if (!isEmpty(params?.ometoken) && params?.from === "OmeOfficeApp") {
             appConfig.setOmeToken(params?.ometoken ?? "");
-
-            try {
-              const message = "收到消息";
-
-              window.ReactNativeWebView.postMessage(message);
-            } catch {
-              window.ReactNativeWebView.postMessage("err 失败");
-
-              console.log("window.ReactNativeWebView Err");
-            }
           }
-        } catch (err) {
-          try {
-            window.ReactNativeWebView.postMessage(
-              `${(err as Error).message} -- try catch 失败`,
-            );
-          } catch {}
-        }
+        } catch {}
       } else {
         if (
           !event.origin.includes("omeoffice") &&
@@ -330,46 +298,6 @@ export function Home() {
         if (!isEmpty(event?.data?.ometoken))
           appConfig.setOmeToken(event.data.ometoken);
       }
-
-      // if (isString(data)) {
-      //   try {
-      //     window.ReactNativeWebView.postMessage(`${data} 从App获取的数据`);
-
-      //     const params = JSON.parse(data);
-
-      //     if (!isEmpty(params?.ometoken) && params?.from === "OmeOfficeApp") {
-      //       appConfig.setOmeToken(params?.ometoken ?? "");
-
-      //       try {
-      //         const message = "收到消息";
-
-      //         window.ReactNativeWebView.postMessage(message);
-      //       } catch {
-      //         window.ReactNativeWebView.postMessage("err 失败");
-
-      //         console.log("window.ReactNativeWebView Err");
-      //       }
-      //     }
-      //   } catch (err) {
-      //     try {
-      //       window.ReactNativeWebView.postMessage(
-      //         `${(err as Error).message} -- try catch 失败`,
-      //       );
-      //     } catch {}
-      //   }
-
-      //   return;
-      // }
-
-      // if (
-      //   !event.origin.includes("omeoffice") &&
-      //   !event.origin.includes("localhost")
-      // ) {
-      //   return; // 如果不是信任的源，忽略消息
-      // }
-
-      // if (!isEmpty(event?.data?.ometoken))
-      //   appConfig.setOmeToken(event.data.ometoken);
     };
 
     window.addEventListener("message", handleMessage);
