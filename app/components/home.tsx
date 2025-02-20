@@ -295,8 +295,10 @@ export function Home() {
               console.log("window.ReactNativeWebView Err");
             }
           }
-        } catch {
-          window.ReactNativeWebView.postMessage("try catch 失败");
+        } catch (err) {
+          window.ReactNativeWebView.postMessage(
+            `${(err as Error).message} try catch 失败`,
+          );
         }
 
         return;
