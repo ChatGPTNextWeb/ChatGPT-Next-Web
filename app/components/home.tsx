@@ -290,10 +290,14 @@ export function Home() {
 
               window.ReactNativeWebView.postMessage(message);
             } catch {
+              window.ReactNativeWebView.postMessage("err 失败");
+
               console.log("window.ReactNativeWebView Err");
             }
           }
-        } catch {}
+        } catch {
+          window.ReactNativeWebView.postMessage("try catch 失败");
+        }
 
         return;
       }
