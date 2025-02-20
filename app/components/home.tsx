@@ -282,19 +282,21 @@ export function Home() {
         try {
           const params = JSON.parse(data);
 
-          if (!isEmpty(params?.omeToken) && params?.from === "OmeOfficeApp") {
-            appConfig.setOmeToken(params?.omeToken ?? "");
+          window.ReactNativeWebView.postMessage(`${data} 从App获取的数据`);
 
-            try {
-              const message = "收到消息";
+          // if (!isEmpty(params?.omeToken) && params?.from === "OmeOfficeApp") {
+          //   appConfig.setOmeToken(params?.omeToken ?? "");
 
-              window.ReactNativeWebView.postMessage(message);
-            } catch {
-              window.ReactNativeWebView.postMessage("err 失败");
+          //   try {
+          //     const message = "收到消息";
 
-              console.log("window.ReactNativeWebView Err");
-            }
-          }
+          //     window.ReactNativeWebView.postMessage(message);
+          //   } catch {
+          //     window.ReactNativeWebView.postMessage("err 失败");
+
+          //     console.log("window.ReactNativeWebView Err");
+          //   }
+          // }
         } catch (err) {
           window.ReactNativeWebView.postMessage(
             `${(err as Error).message} try catch 失败`,
