@@ -350,6 +350,8 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     );
   }
 
+  console.log("[Headers] appConfig.omeToken", appConfig.omeToken);
+
   headers["OME-METIS-Authorization"] = appConfig.omeToken || "";
 
   return headers;
