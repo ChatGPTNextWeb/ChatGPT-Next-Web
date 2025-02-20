@@ -273,6 +273,8 @@ export function Home() {
 
         window.ReactNativeWebView.postMessage(JSON.stringify(message));
       } catch {
+        window.ReactNativeWebView.postMessage("App 发送失败");
+
         console.log("window.ReactNativeWebView Err");
       }
     } else window.parent.postMessage("omemetis is ready", "*");
