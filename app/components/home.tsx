@@ -280,7 +280,7 @@ export function Home() {
     const handleMessage = (event: any) => {
       const data = event.data;
 
-      if (isEmpty(data)) return;
+      if (isEmpty(data) || (typeof data === "string" && data === "")) return;
 
       if (isString(data)) {
         try {
@@ -288,33 +288,19 @@ export function Home() {
 
           const params = JSON.parse(data);
 
-          if (isEmpty(params?.omeToken)) {
-            window.ReactNativeWebView.postMessage("omeToken 有问题");
+          if (!isEmpty(params?.ometoken) && params?.from === "OmeOfficeApp") {
+            appConfig.setOmeToken(params?.ometoken ?? "");
 
-            return;
+            try {
+              const message = "收到消息";
+
+              window.ReactNativeWebView.postMessage(message);
+            } catch {
+              window.ReactNativeWebView.postMessage("err 失败");
+
+              console.log("window.ReactNativeWebView Err");
+            }
           }
-
-          if (params?.from !== "OmeOfficeApp") {
-            window.ReactNativeWebView.postMessage("from 有问题");
-
-            return;
-          }
-
-          window.ReactNativeWebView.postMessage(params?.omeToken);
-
-          // if (!isEmpty(params?.omeToken) && params?.from === "OmeOfficeApp") {
-          //   appConfig.setOmeToken(params?.omeToken ?? "");
-
-          //   try {
-          //     const message = "收到消息";
-
-          //     window.ReactNativeWebView.postMessage(message);
-          //   } catch {
-          //     window.ReactNativeWebView.postMessage("err 失败");
-
-          //     console.log("window.ReactNativeWebView Err");
-          //   }
-          // }
         } catch (err) {
           try {
             window.ReactNativeWebView.postMessage(
