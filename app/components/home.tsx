@@ -266,18 +266,27 @@ export function Home() {
   useEffect(() => {
     if (isApp) {
       try {
-        const message = {
-          data: "omemetis is ready",
-          url: location.origin,
-        };
+        window.ReactNativeWebView.postMessage("app true");
+      } catch {}
+    } else {
+      try {
+        window.ReactNativeWebView.postMessage("app false");
+      } catch {}
+    }
 
-        window.ReactNativeWebView.postMessage(JSON.stringify(message));
-      } catch {
-        window.ReactNativeWebView.postMessage("App 发送失败");
+    window.parent.postMessage("omemetis is ready", "*");
 
-        console.log("window.ReactNativeWebView Err");
-      }
-    } else window.parent.postMessage("omemetis is ready", "*");
+    try {
+      const message = {
+        data: "omemetis is ready",
+        url: location.origin,
+      };
+
+      window.ReactNativeWebView.postMessage(JSON.stringify(message));
+    } catch {
+      // window.ReactNativeWebView.postMessage("App 发送失败");
+      // console.log("window.ReactNativeWebView Err");
+    }
 
     const handleMessage = (event: any) => {
       const data = event.data;
