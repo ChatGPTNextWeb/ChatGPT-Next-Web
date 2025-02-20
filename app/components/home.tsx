@@ -261,22 +261,26 @@ export function Home() {
     initMcp();
   }, []);
 
+  const isApp = !!getClientConfig()?.isApp;
+
   useEffect(() => {
-    window.parent.postMessage("omemetis is ready", "*");
+    if (isApp) {
+      try {
+        const message = {
+          data: "omemetis is ready",
+          url: location.origin,
+        };
 
-    try {
-      const message = {
-        data: "omemetis is ready",
-        url: location.origin,
-      };
-
-      window.ReactNativeWebView.postMessage(JSON.stringify(message));
-    } catch {
-      console.log("window.ReactNativeWebView Err");
-    }
+        window.ReactNativeWebView.postMessage(JSON.stringify(message));
+      } catch {
+        console.log("window.ReactNativeWebView Err");
+      }
+    } else window.parent.postMessage("omemetis is ready", "*");
 
     const handleMessage = (event: any) => {
       const data = event.data;
+
+      if (isEmpty(data)) return;
 
       if (isString(data)) {
         try {
