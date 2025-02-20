@@ -30,7 +30,7 @@ import { type ClientApi, getClientApi } from "../client/api";
 import { useAccessStore } from "../store";
 import clsx from "clsx";
 import { initializeMcpSystem, isMcpEnabled } from "../mcp/actions";
-import { isEmpty, isString } from "lodash-es";
+import { isEmpty } from "lodash-es";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -293,7 +293,7 @@ export function Home() {
 
       if (isEmpty(data) || (typeof data === "string" && data === "")) return;
 
-      if (isString(data)) {
+      if (window.ReactNativeWebView) {
         try {
           window.ReactNativeWebView.postMessage(`${data} 从App获取的数据`);
 
@@ -319,19 +319,57 @@ export function Home() {
             );
           } catch {}
         }
+      } else {
+        if (
+          !event.origin.includes("omeoffice") &&
+          !event.origin.includes("localhost")
+        ) {
+          return; // 如果不是信任的源，忽略消息
+        }
 
-        return;
+        if (!isEmpty(event?.data?.ometoken))
+          appConfig.setOmeToken(event.data.ometoken);
       }
 
-      if (
-        !event.origin.includes("omeoffice") &&
-        !event.origin.includes("localhost")
-      ) {
-        return; // 如果不是信任的源，忽略消息
-      }
+      // if (isString(data)) {
+      //   try {
+      //     window.ReactNativeWebView.postMessage(`${data} 从App获取的数据`);
 
-      if (!isEmpty(event?.data?.ometoken))
-        appConfig.setOmeToken(event.data.ometoken);
+      //     const params = JSON.parse(data);
+
+      //     if (!isEmpty(params?.ometoken) && params?.from === "OmeOfficeApp") {
+      //       appConfig.setOmeToken(params?.ometoken ?? "");
+
+      //       try {
+      //         const message = "收到消息";
+
+      //         window.ReactNativeWebView.postMessage(message);
+      //       } catch {
+      //         window.ReactNativeWebView.postMessage("err 失败");
+
+      //         console.log("window.ReactNativeWebView Err");
+      //       }
+      //     }
+      //   } catch (err) {
+      //     try {
+      //       window.ReactNativeWebView.postMessage(
+      //         `${(err as Error).message} -- try catch 失败`,
+      //       );
+      //     } catch {}
+      //   }
+
+      //   return;
+      // }
+
+      // if (
+      //   !event.origin.includes("omeoffice") &&
+      //   !event.origin.includes("localhost")
+      // ) {
+      //   return; // 如果不是信任的源，忽略消息
+      // }
+
+      // if (!isEmpty(event?.data?.ometoken))
+      //   appConfig.setOmeToken(event.data.ometoken);
     };
 
     window.addEventListener("message", handleMessage);
