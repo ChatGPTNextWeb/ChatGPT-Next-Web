@@ -350,16 +350,6 @@ export function getHeaders(ignoreHeaders: boolean = false) {
     );
   }
 
-  try {
-    window.ReactNativeWebView.postMessage(appConfig.omeToken);
-  } catch {
-    try {
-      window.ReactNativeWebView.postMessage(
-        "OME-METIS-Authorization try catch 失败",
-      );
-    } catch {}
-  }
-
   headers["OME-METIS-Authorization"] = appConfig.omeToken || "";
 
   return headers;
