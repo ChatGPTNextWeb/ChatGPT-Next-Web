@@ -300,7 +300,7 @@ export function Home() {
         } catch (err) {
           try {
             window.ReactNativeWebView.postMessage(
-              `${err.message} -- try catch 失败`,
+              `${(err as Error).message} -- try catch 失败`,
             );
           } catch {}
         }
