@@ -286,12 +286,30 @@ export function Home() {
 
       if (isString(data)) {
         try {
+          window.ReactNativeWebView.postMessage(`${data} 从App获取的数据`);
+
           const params = JSON.parse(data);
 
           if (!isEmpty(params?.ometoken) && params?.from === "OmeOfficeApp") {
             appConfig.setOmeToken(params?.ometoken ?? "");
+
+            try {
+              const message = "收到消息";
+
+              window.ReactNativeWebView.postMessage(message);
+            } catch {
+              window.ReactNativeWebView.postMessage("err 失败");
+
+              console.log("window.ReactNativeWebView Err");
+            }
           }
-        } catch {}
+        } catch (err) {
+          try {
+            window.ReactNativeWebView.postMessage(
+              `${(err as Error).message} -- try catch 失败`,
+            );
+          } catch {}
+        }
 
         return;
       }
