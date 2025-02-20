@@ -10,7 +10,6 @@ import DeleteIcon from "../icons/delete.svg";
 import MaskIcon from "../icons/mask.svg";
 import McpIcon from "../icons/mcp.svg";
 import DragIcon from "../icons/drag.svg";
-import DiscoveryIcon from "../icons/discovery.svg";
 
 import Locale from "../locales";
 
@@ -278,13 +277,13 @@ export function SideBar(props: { className?: string }) {
               shadow
             />
           )}
-          <IconButton
+          {/* <IconButton
             icon={<DiscoveryIcon />}
             text={shouldNarrow ? undefined : Locale.Discovery.Name}
             className={styles["sidebar-bar-button"]}
             onClick={() => setshowDiscoverySelector(true)}
             shadow
-          />
+          /> */}
         </div>
         {showDiscoverySelector && (
           <Selector
