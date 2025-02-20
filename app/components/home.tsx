@@ -280,7 +280,7 @@ export function Home() {
 
       if (isString(data)) {
         try {
-          const params = JSON.parse(data);
+          // const params = JSON.parse(data);
 
           window.ReactNativeWebView.postMessage(`${data} 从App获取的数据`);
 
@@ -298,9 +298,7 @@ export function Home() {
           //   }
           // }
         } catch (err) {
-          window.ReactNativeWebView.postMessage(
-            `${(err as Error).message} try catch 失败`,
-          );
+          window.ReactNativeWebView.postMessage(`try catch 失败`);
         }
 
         return;
