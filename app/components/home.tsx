@@ -261,31 +261,31 @@ export function Home() {
     initMcp();
   }, []);
 
-  const isApp = !!getClientConfig()?.isApp;
-
   useEffect(() => {
-    if (isApp) {
+    // window.parent.postMessage("omemetis is ready", "*");
+
+    // try {
+    //   const message = {
+    //     data: "omemetis is ready",
+    //     url: location.origin,
+    //   };
+
+    //   window.ReactNativeWebView.postMessage(JSON.stringify(message));
+    // } catch {
+    //   // window.ReactNativeWebView.postMessage("App 发送失败");
+    //   // console.log("window.ReactNativeWebView Err");
+    // }
+
+    if (window.ReactNativeWebView) {
       try {
-        window.ReactNativeWebView.postMessage("app true");
+        const message = {
+          data: "omemetis is ready",
+          url: location.origin,
+        };
+        window.ReactNativeWebView.postMessage(JSON.stringify(message));
       } catch {}
     } else {
-      try {
-        window.ReactNativeWebView.postMessage("app false");
-      } catch {}
-    }
-
-    window.parent.postMessage("omemetis is ready", "*");
-
-    try {
-      const message = {
-        data: "omemetis is ready",
-        url: location.origin,
-      };
-
-      window.ReactNativeWebView.postMessage(JSON.stringify(message));
-    } catch {
-      // window.ReactNativeWebView.postMessage("App 发送失败");
-      // console.log("window.ReactNativeWebView Err");
+      window.parent.postMessage("omemetis is ready", "*");
     }
 
     const handleMessage = (event: any) => {
