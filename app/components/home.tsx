@@ -280,25 +280,29 @@ export function Home() {
 
       if (isString(data)) {
         try {
-          // const params = JSON.parse(data);
-
           window.ReactNativeWebView.postMessage(`${data} 从App获取的数据`);
 
-          // if (!isEmpty(params?.omeToken) && params?.from === "OmeOfficeApp") {
-          //   appConfig.setOmeToken(params?.omeToken ?? "");
+          const params = JSON.parse(data);
 
-          //   try {
-          //     const message = "收到消息";
+          if (!isEmpty(params?.omeToken) && params?.from === "OmeOfficeApp") {
+            appConfig.setOmeToken(params?.omeToken ?? "");
 
-          //     window.ReactNativeWebView.postMessage(message);
-          //   } catch {
-          //     window.ReactNativeWebView.postMessage("err 失败");
+            try {
+              const message = "收到消息";
 
-          //     console.log("window.ReactNativeWebView Err");
-          //   }
-          // }
+              window.ReactNativeWebView.postMessage(message);
+            } catch {
+              window.ReactNativeWebView.postMessage("err 失败");
+
+              console.log("window.ReactNativeWebView Err");
+            }
+          }
         } catch (err) {
-          window.ReactNativeWebView.postMessage(`try catch 失败`);
+          try {
+            window.ReactNativeWebView.postMessage(
+              `${err.message} -- try catch 失败`,
+            );
+          } catch {}
         }
 
         return;
