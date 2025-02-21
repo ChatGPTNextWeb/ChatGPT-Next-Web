@@ -1573,6 +1573,7 @@ function _Chat() {
           const imagesData: string[] = [];
           for (let i = 0; i < files.length; i++) {
             const file = event.target.files[i];
+            console.log("file", file);
             uploadImageRemote(file)
               .then((dataUrl) => {
                 imagesData.push(dataUrl);
