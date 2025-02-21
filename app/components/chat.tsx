@@ -13,7 +13,6 @@ import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
 import RenameIcon from "../icons/rename.svg";
 import EditIcon from "../icons/rename.svg";
-import ExportIcon from "../icons/share.svg";
 import ReturnIcon from "../icons/return.svg";
 import CopyIcon from "../icons/copy.svg";
 import SpeakIcon from "../icons/speak.svg";
@@ -1283,6 +1282,7 @@ function _Chat() {
     });
   };
 
+  const appstore = useAppConfig();
   const accessStore = useAccessStore();
   const [speechStatus, setSpeechStatus] = useState(false);
   const [speechLoading, setSpeechLoading] = useState(false);
@@ -1340,7 +1340,10 @@ function _Chat() {
   ) {
     const copiedHello = Object.assign({}, BOT_HELLO);
     if (!accessStore.isAuthorized()) {
-      copiedHello.content = Locale.Error.Unauthorized;
+      if (!isEmpty(appstore.omeToken)) {
+      } else {
+        copiedHello.content = Locale.Error.Unauthorized;
+      }
     }
     context.push(copiedHello);
   }
@@ -1569,6 +1572,7 @@ function _Chat() {
           const imagesData: string[] = [];
           for (let i = 0; i < files.length; i++) {
             const file = event.target.files[i];
+            console.log("file", file);
             uploadImageRemote(file)
               .then((dataUrl) => {
                 imagesData.push(dataUrl);
@@ -1735,7 +1739,7 @@ function _Chat() {
                 />
               </div>
             )}
-            <div className="window-action-button">
+            {/* <div className="window-action-button">
               <IconButton
                 icon={<ExportIcon />}
                 bordered
@@ -1744,7 +1748,7 @@ function _Chat() {
                   setShowExport(true);
                 }}
               />
-            </div>
+            </div> */}
             {showMaxIcon && (
               <div className="window-action-button">
                 <IconButton

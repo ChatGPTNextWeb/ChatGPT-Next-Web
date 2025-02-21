@@ -262,15 +262,42 @@ export function Home() {
   }, []);
 
   useEffect(() => {
-    window.parent.postMessage("omemetis is ready", "*");
+    if (window.ReactNativeWebView) {
+      try {
+        const message = {
+          data: "omemetis is ready",
+          url: location.origin,
+        };
+        window.ReactNativeWebView.postMessage(JSON.stringify(message));
+      } catch {}
+    } else {
+      window.parent.postMessage("omemetis is ready", "*");
+    }
 
     const handleMessage = (event: any) => {
-      if (!event.origin.includes("omeoffice")) {
-        return; // 如果不是信任的源，忽略消息
-      }
+      const data = event.data;
 
-      if (!isEmpty(event?.data?.omeToken))
-        appConfig.setOmeToken(event.data.omeToken);
+      if (isEmpty(data) || (typeof data === "string" && data === "")) return;
+
+      if (window.ReactNativeWebView) {
+        try {
+          const params = JSON.parse(data);
+
+          if (!isEmpty(params?.ometoken) && params?.from === "OmeOfficeApp") {
+            appConfig.setOmeToken(params?.ometoken ?? "");
+          }
+        } catch {}
+      } else {
+        if (
+          !event.origin.includes("omeoffice") &&
+          !event.origin.includes("localhost")
+        ) {
+          return; // 如果不是信任的源，忽略消息
+        }
+
+        if (!isEmpty(event?.data?.ometoken))
+          appConfig.setOmeToken(event.data.ometoken);
+      }
     };
 
     window.addEventListener("message", handleMessage);
