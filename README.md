@@ -56,7 +56,7 @@ Will you come and do something together? 😎
 
 https://github.com/ChatGPTNextWeb/NextChat/issues/6269
 
-#Seeking for talents is thirsty #lack of people"
+#Seeking for talents is thirsty #lack of people
 
 
 ## 🥳 Cheer for DeepSeek, China's AI star!
