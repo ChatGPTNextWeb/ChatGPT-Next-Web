@@ -41,6 +41,24 @@ English / [简体中文](./README_CN.md)
 
 </div>
 
+## 👋 Hey, NextChat is going to develop a native app!
+
+> This week we are going to start working on iOS and Android APP, and we want to find some reliable friends to do it together!
+
+
+✨ Several key points:
+
+- Starting from 0, you are a veteran
+- Completely open source, not hidden
+- Native development, pursuing the ultimate experience
+
+Will you come and do something together? 😎
+
+https://github.com/ChatGPTNextWeb/NextChat/issues/6269
+
+#Seeking for talents is thirsty #lack of people
+
+
 ## 🥳 Cheer for DeepSeek, China's AI star!
  > Purpose-Built UI for DeepSeek Reasoner Model
  
