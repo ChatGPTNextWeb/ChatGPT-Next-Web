@@ -98,6 +98,8 @@ export async function requestOpenai(req: NextRequest) {
       ...(serverConfig.openaiOrgId && {
         "OpenAI-Organization": serverConfig.openaiOrgId,
       }),
+      "OME-METIS-Authorization":
+        req.headers.get("ome-metis-authorization") || "",
     },
     method: req.method,
     body: req.body,
