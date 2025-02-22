@@ -99,7 +99,7 @@ export async function requestOpenai(req: NextRequest) {
         "OpenAI-Organization": serverConfig.openaiOrgId,
       }),
       "OME-METIS-Authorization":
-        req.headers.get("ome-metis-authorization") || "",
+        req.headers.get("OME-METIS-Authorization") || "",
     },
     method: req.method,
     body: req.body,
