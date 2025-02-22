@@ -69,6 +69,8 @@ async function request(req: NextRequest) {
     headers: {
       "Content-Type": "application/json",
       Authorization: req.headers.get("Authorization") ?? "",
+      "OME-METIS-Authorization":
+        req.headers.get("OME-METIS-Authorization") || "",
     },
     method: req.method,
     body: req.body,
