@@ -1,7 +1,8 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { combine, persist, createJSONStorage } from "zustand/middleware";
 import { Updater } from "../typing";
 import { deepClone } from "./clone";
+import { indexedDBStorage } from "@/app/utils/indexedDB-storage";
 
 type SecondParam<T> = T extends (
   _f: infer _F,
@@ -13,9 +14,11 @@ type SecondParam<T> = T extends (
 
 type MakeUpdater<T> = {
   lastUpdateTime: number;
+  _hasHydrated: boolean;
 
   markUpdate: () => void;
   update: Updater<T>;
+  setHasHydrated: (state: boolean) => void;
 };
 
 type SetStoreState<T> = (
@@ -23,33 +26,53 @@ type SetStoreState<T> = (
   replace?: boolean | undefined,
 ) => void;
 
-export function createPersistStore<T, M>(
-  defaultState: T,
+export function createPersistStore<T extends object, M>(
+  state: T,
   methods: (
     set: SetStoreState<T & MakeUpdater<T>>,
     get: () => T & MakeUpdater<T>,
   ) => M,
   persistOptions: SecondParam<typeof persist<T & M & MakeUpdater<T>>>,
 ) {
-  return create<T & M & MakeUpdater<T>>()(
-    persist((set, get) => {
-      return {
-        ...defaultState,
-        ...methods(set as any, get),
+  persistOptions.storage = createJSONStorage(() => indexedDBStorage);
+  const oldOonRehydrateStorage = persistOptions?.onRehydrateStorage;
+  persistOptions.onRehydrateStorage = (state) => {
+    oldOonRehydrateStorage?.(state);
+    return () => state.setHasHydrated(true);
+  };
 
-        lastUpdateTime: 0,
-        markUpdate() {
-          set({ lastUpdateTime: Date.now() } as Partial<
-            T & M & MakeUpdater<T>
-          >);
+  return create(
+    persist(
+      combine(
+        {
+          ...state,
+          lastUpdateTime: 0,
+          _hasHydrated: false,
         },
-        update(updater) {
-          const state = deepClone(get());
-          updater(state);
-          get().markUpdate();
-          set(state);
+        (set, get) => {
+          return {
+            ...methods(set, get as any),
+
+            markUpdate() {
+              set({ lastUpdateTime: Date.now() } as Partial<
+                T & M & MakeUpdater<T>
+              >);
+            },
+            update(updater) {
+              const state = deepClone(get());
+              updater(state);
+              set({
+                ...state,
+                lastUpdateTime: Date.now(),
+              });
+            },
+            setHasHydrated: (state: boolean) => {
+              set({ _hasHydrated: state } as Partial<T & M & MakeUpdater<T>>);
+            },
+          } as M & MakeUpdater<T>;
         },
-      };
-    }, persistOptions),
+      ),
+      persistOptions as any,
+    ),
   );
 }

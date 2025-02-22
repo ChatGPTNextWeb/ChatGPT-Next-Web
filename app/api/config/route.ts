@@ -11,6 +11,10 @@ const DANGER_CONFIG = {
   hideUserApiKey: serverConfig.hideUserApiKey,
   disableGPT4: serverConfig.disableGPT4,
   hideBalanceQuery: serverConfig.hideBalanceQuery,
+  disableFastLink: serverConfig.disableFastLink,
+  customModels: serverConfig.customModels,
+  defaultModel: serverConfig.defaultModel,
+  visionModels: serverConfig.visionModels,
 };
 
 declare global {
