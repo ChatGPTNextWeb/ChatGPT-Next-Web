@@ -5,7 +5,7 @@
 
 ワンクリックで無料であなた専用の ChatGPT ウェブアプリをデプロイ。GPT3、GPT4 & Gemini Pro モデルをサポート。
 
-[NextChatAI](https://nextchat.dev/chat?utm_source=readme) / [企業版](#企業版) / [デモ](https://chat-gpt-next-web.vercel.app/) / [フィードバック](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [Discordに参加](https://discord.gg/zrhvHCr79N)
+[NextChatAI](https://nextchat.club?utm_source=readme) / [企業版](#企業版) / [デモ](https://chat-gpt-next-web.vercel.app/) / [フィードバック](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [Discordに参加](https://discord.gg/zrhvHCr79N)
 
 [<img src="https://vercel.com/button" alt="Zeaburでデプロイ" height="30">](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FChatGPTNextWeb%2FChatGPT-Next-Web&env=OPENAI_API_KEY&env=CODE&project-name=nextchat&repository-name=NextChat) [<img src="https://zeabur.com/button.svg" alt="Zeaburでデプロイ" height="30">](https://zeabur.com/templates/ZBUEFA)  [<img src="https://gitpod.io/button/open-in-gitpod.svg" alt="Gitpodで開く" height="30">](https://gitpod.io/#https://github.com/Yidadaa/ChatGPT-Next-Web)
 
@@ -216,6 +216,13 @@ ByteDance モードでは、`modelName@bytedance=deploymentName` 形式でモデ
 ### `DEFAULT_MODEL` （オプション）
 
 デフォルトのモデルを変更します。
+
+### `VISION_MODELS` (オプション)
+
+> デフォルト：空
+> 例：`gpt-4-vision,claude-3-opus,my-custom-model` は、これらのモデルにビジョン機能を追加します。これはデフォルトのパターンマッチング（"vision"、"claude-3"、"gemini-1.5"などのキーワードを含むモデルを検出）に加えて適用されます。
+
+デフォルトのパターンマッチングに加えて、追加のモデルにビジョン機能を付与します。複数のモデルはカンマで区切ります。
 
 ### `DEFAULT_INPUT_TEMPLATE` （オプション）
 
