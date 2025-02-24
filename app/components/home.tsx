@@ -30,7 +30,7 @@ import { type ClientApi, getClientApi } from "../client/api";
 import { useAccessStore } from "../store";
 import clsx from "clsx";
 import { initializeMcpSystem, isMcpEnabled } from "../mcp/actions";
-import { isEmpty } from "lodash-es";
+import isEmpty from "lodash-es/isEmpty";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -262,18 +262,6 @@ export function Home() {
   }, []);
 
   useEffect(() => {
-    if (window.ReactNativeWebView) {
-      try {
-        const message = {
-          data: "omemetis is ready",
-          url: location.origin,
-        };
-        window.ReactNativeWebView.postMessage(JSON.stringify(message));
-      } catch {}
-    } else {
-      window.parent.postMessage("omemetis is ready", "*");
-    }
-
     const handleMessage = (event: any) => {
       const data = event.data;
 
@@ -296,10 +284,10 @@ export function Home() {
         }
 
         if (!isEmpty(event?.data?.ometoken)) {
-          console.log(
-            "[OmeToken] got ometoken from iframe",
-            event.data.ometoken,
-          );
+          // console.log(
+          //   "[OmeToken] got ometoken from iframe",
+          //   event.data.ometoken,
+          // );
           appConfig.setOmeToken(event.data.ometoken);
         }
       }
@@ -311,6 +299,26 @@ export function Home() {
       window.removeEventListener("message", handleMessage);
     };
   }, []);
+
+  useEffect(() => {
+    if (appConfig._hasHydrated) {
+      if (window.ReactNativeWebView) {
+        try {
+          const message = {
+            data: "omemetis is ready",
+            url: location.origin,
+          };
+          window.ReactNativeWebView.postMessage(JSON.stringify(message));
+        } catch {}
+      } else {
+        window.parent.postMessage("omemetis is ready", "*");
+      }
+    }
+  }, [appConfig._hasHydrated]);
+
+  useEffect(() => {
+    console.log(appConfig.omeToken, "appConfig.omeToken");
+  }, [appConfig.omeToken]);
 
   if (!useHasHydrated()) {
     return <Loading />;
