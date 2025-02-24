@@ -284,10 +284,10 @@ export function Home() {
         }
 
         if (!isEmpty(event?.data?.ometoken)) {
-          // console.log(
-          //   "[OmeToken] got ometoken from iframe",
-          //   event.data.ometoken,
-          // );
+          console.log(
+            "[OmeToken] got ometoken from iframe",
+            event.data.ometoken,
+          );
           appConfig.setOmeToken(event.data.ometoken);
         }
       }
@@ -315,10 +315,6 @@ export function Home() {
       }
     }
   }, [appConfig._hasHydrated]);
-
-  useEffect(() => {
-    console.log(appConfig.omeToken, "appConfig.omeToken");
-  }, [appConfig.omeToken]);
 
   if (!useHasHydrated()) {
     return <Loading />;
