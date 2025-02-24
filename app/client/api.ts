@@ -349,6 +349,7 @@ export function getHeaders(ignoreHeaders: boolean = false) {
       ACCESS_CODE_PREFIX + accessStore.accessCode,
     );
   }
+  console.log("Headers.[`OME-METIS-Authorization`]", appConfig.omeToken);
 
   headers["OME-METIS-Authorization"] = appConfig.omeToken || "";
 

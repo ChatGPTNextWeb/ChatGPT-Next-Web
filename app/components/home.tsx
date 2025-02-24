@@ -295,8 +295,13 @@ export function Home() {
           return; // 如果不是信任的源，忽略消息
         }
 
-        if (!isEmpty(event?.data?.ometoken))
+        if (!isEmpty(event?.data?.ometoken)) {
+          console.log(
+            "[OmeToken] got ometoken from iframe",
+            event.data.ometoken,
+          );
           appConfig.setOmeToken(event.data.ometoken);
+        }
       }
     };
 
