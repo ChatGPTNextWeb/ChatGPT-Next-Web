@@ -92,6 +92,28 @@ export async function preProcessImageContent(
   return result;
 }
 
+export async function preProcessImageContentForAlibabaDashScope(
+  content: RequestMessage["content"],
+) {
+  if (typeof content === "string") {
+    return content;
+  }
+  const result = [];
+  for (const part of content) {
+    if (part?.type == "image_url" && part?.image_url?.url) {
+      try {
+        const url = await cacheImageToBase64Image(part?.image_url?.url);
+        result.push({ image: url });
+      } catch (error) {
+        console.error("Error processing image URL:", error);
+      }
+    } else {
+      result.push({ ...part });
+    }
+  }
+  return result;
+}
+
 const imageCaches: Record<string, string> = {};
 export function cacheImageToBase64Image(imageUrl: string) {
   if (imageUrl.includes(CACHE_URL_PREFIX)) {
