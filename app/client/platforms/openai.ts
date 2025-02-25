@@ -296,8 +296,7 @@ export class ChatGPTApi implements LLMApi {
         // console.log("getAsTools", tools, funcs);
 
         // Add "include_reasoning" for OpenRouter: https://openrouter.ai/announcements/reasoning-tokens-for-thinking-models
-        const isOpenRouter = chatPath.includes("openrouter.ai");
-        if (isOpenRouter) {
+        if (chatPath.includes("openrouter.ai")) {
           // @ts-ignore
           requestPayload["include_reasoning"] = true;
         }
@@ -344,9 +343,9 @@ export class ChatGPTApi implements LLMApi {
               }
             }
 
-            const reasoning = isOpenRouter
-              ? choices[0]?.delta?.reasoning
-              : choices[0]?.delta?.reasoning_content;
+            const reasoning =
+              choices[0]?.delta?.reasoning_content ||
+              choices[0]?.delta?.reasoning;
             const content = choices[0]?.delta?.content;
 
             // Skip if both content and reasoning_content are empty or null
