@@ -19,6 +19,7 @@ export type Mask = {
   builtin: boolean;
   usePlugins?: boolean;
   webSearch?: boolean;
+  claudeThinking?: boolean;
   // 上游插件业务参数
   plugin?: string[];
   enableArtifacts?: boolean;

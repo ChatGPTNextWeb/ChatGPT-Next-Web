@@ -110,6 +110,29 @@ export function ModelConfigList(props: {
         ></input>
       </ListItem>
 
+      {props.modelConfig?.providerName === ServiceProvider.Anthropic && (
+        <ListItem
+          title={Locale.Settings.BudgetTokens.Title}
+          subTitle={Locale.Settings.BudgetTokens.SubTitle}
+        >
+          <input
+            aria-label={Locale.Settings.BudgetTokens.Title}
+            type="number"
+            min={1024}
+            max={32000}
+            value={props.modelConfig.budget_tokens}
+            onChange={(e) =>
+              props.updateConfig(
+                (config) =>
+                  (config.budget_tokens = ModalConfigValidator.budget_tokens(
+                    e.currentTarget.valueAsNumber,
+                  )),
+              )
+            }
+          ></input>
+        </ListItem>
+      )}
+
       {props.modelConfig?.providerName == ServiceProvider.Google ? null : (
         <>
           <ListItem

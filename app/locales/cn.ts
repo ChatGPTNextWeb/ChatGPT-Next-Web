@@ -75,6 +75,8 @@ const cn = {
       UploadFle: "上传文件",
       OpenWebSearch: "开启联网",
       CloseWebSearch: "关闭联网",
+      EnableThinking: "开启思考",
+      DisableThinking: "关闭思考",
     },
     Rename: "重命名对话",
     Typing: "正在输入…",
@@ -544,6 +546,11 @@ const cn = {
     MaxTokens: {
       Title: "单次回复限制 (max_tokens)",
       SubTitle: "单次交互所用的最大 Token 数",
+    },
+    BudgetTokens: {
+      Title: "扩展思考预算限制 (budget_tokens)",
+      SubTitle:
+        "内部推理过程中允许使用的最大令牌数，budget_tokens 必须始终小于 max_tokens。",
     },
     PresencePenalty: {
       Title: "话题新鲜度 (presence_penalty)",

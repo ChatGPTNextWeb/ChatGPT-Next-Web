@@ -54,6 +54,8 @@ import ReloadIcon from "../icons/reload.svg";
 import HeadphoneIcon from "../icons/headphone.svg";
 import SearchCloseIcon from "../icons/search_close.svg";
 import SearchOpenIcon from "../icons/search_open.svg";
+import EnableThinkingIcon from "../icons/thinking_enable.svg";
+import DisableThinkingIcon from "../icons/thinking_disable.svg";
 import {
   ChatMessage,
   SubmitKey,
@@ -82,6 +84,7 @@ import {
   isSupportRAGModel,
   isFunctionCallModel,
   isFirefox,
+  isClaudeThinkingModel,
 } from "../utils";
 
 import { uploadImage as uploadImageRemote } from "@/app/utils/chat";
@@ -511,6 +514,14 @@ export function ChatActions(props: {
   const pluginStore = usePluginStore();
   const session = chatStore.currentSession();
 
+  // switch thinking mode
+  const claudeThinking = chatStore.currentSession().mask.claudeThinking;
+  function switchClaudeThinking() {
+    chatStore.updateTargetSession(session, (session) => {
+      session.mask.claudeThinking = !session.mask.claudeThinking;
+    });
+  }
+
   // switch web search
   const webSearch = chatStore.currentSession().mask.webSearch;
   function switchWebSearch() {
@@ -741,6 +752,7 @@ export function ChatActions(props: {
           text={currentModelName}
           icon={<RobotIcon />}
         />
+
         {!isFunctionCallModel(currentModel) && isEnableWebSearch && (
           <ChatAction
             onClick={switchWebSearch}
@@ -750,6 +762,20 @@ export function ChatActions(props: {
                 : Locale.Chat.InputActions.OpenWebSearch
             }
             icon={webSearch ? <SearchOpenIcon /> : <SearchCloseIcon />}
+          />
+        )}
+
+        {isClaudeThinkingModel(currentModel) && (
+          <ChatAction
+            onClick={switchClaudeThinking}
+            text={
+              claudeThinking
+                ? Locale.Chat.InputActions.DisableThinking
+                : Locale.Chat.InputActions.EnableThinking
+            }
+            icon={
+              claudeThinking ? <EnableThinkingIcon /> : <DisableThinkingIcon />
+            }
           />
         )}
 

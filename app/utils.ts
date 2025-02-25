@@ -401,11 +401,21 @@ export function isFunctionCallModel(modelName: string) {
     "claude-3-5-sonnet-20241022",
     "claude-3-5-sonnet-latest",
     "claude-3-5-haiku-latest",
+    "claude-3-7-sonnet-20250219",
+    "claude-3-7-sonnet-latest",
   ];
   if (specialModels.some((keyword) => modelName === keyword)) return true;
   return DEFAULT_MODELS.filter(
     (model) => model.provider.id === "openai" && !model.name.includes("o1"),
   ).some((model) => model.name === modelName);
+}
+
+export function isClaudeThinkingModel(modelName: string) {
+  const specialModels = [
+    "claude-3-7-sonnet-20250219",
+    "claude-3-7-sonnet-latest",
+  ];
+  return specialModels.some((keyword) => modelName === keyword);
 }
 
 export function fetch(
