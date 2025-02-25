@@ -2,7 +2,6 @@ import { getServerSideConfig } from "@/app/config/server";
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "../auth";
 import { ModelProvider } from "@/app/constant";
-import { tavily } from "@tavily/core";
 
 const serverConfig = getServerSideConfig();
 
@@ -46,12 +45,26 @@ async function handle(req: NextRequest) {
         },
       );
     }
-    const tvly = tavily({ apiKey: tavilyApiKey });
-    const response = await tvly.search(query, {
-      maxResults: maxReturns,
+    const response = await fetch("https://api.tavily.com/search", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${tavilyApiKey}`,
+      },
+      body: JSON.stringify({
+        query: query,
+        max_results: maxReturns,
+      }),
     });
 
-    return NextResponse.json(response);
+    if (!response.ok) {
+      throw new Error(
+        `Tavily API request failed with status ${response.status}`,
+      );
+    }
+
+    const data = await response.json();
+    return NextResponse.json(data);
   } catch (error) {
     console.error("[Tavily] search error:", error);
     return NextResponse.json(
