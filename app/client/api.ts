@@ -25,6 +25,7 @@ import { DeepSeekApi } from "./platforms/deepseek";
 import { XAIApi } from "./platforms/xai";
 import { ChatGLMApi } from "./platforms/glm";
 import { SiliconflowApi } from "./platforms/siliconflow";
+import { TavilySearchResponse } from "@tavily/core";
 
 export const ROLES = ["system", "user", "assistant"] as const;
 export type MessageRole = (typeof ROLES)[number];
@@ -45,6 +46,7 @@ export interface RequestMessage {
   role: MessageRole;
   content: string | MultimodalContent[];
   fileInfos?: FileInfo[];
+  webSearchReferences?: TavilySearchResponse;
 }
 
 export interface LLMConfig {

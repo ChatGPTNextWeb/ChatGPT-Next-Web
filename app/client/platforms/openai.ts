@@ -44,6 +44,7 @@ import {
   getMessageTextContent,
   isVisionModel,
   isDalle3 as _isDalle3,
+  getWebReferenceMessageTextContent,
 } from "@/app/utils";
 
 export interface OpenAIListModelResponse {
@@ -239,7 +240,7 @@ export class ChatGPTApi implements LLMApi {
       for (const v of options.messages) {
         const content = visionModel
           ? await preProcessImageContent(v.content)
-          : getMessageTextContent(v);
+          : getWebReferenceMessageTextContent(v);
         if (!(isO1 && v.role === "system"))
           messages.push({ role: v.role, content });
       }

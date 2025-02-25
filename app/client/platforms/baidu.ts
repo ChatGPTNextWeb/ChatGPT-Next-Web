@@ -26,7 +26,10 @@ import {
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
-import { getMessageTextContent } from "@/app/utils";
+import {
+  getMessageTextContent,
+  getWebReferenceMessageTextContent,
+} from "@/app/utils";
 import { fetch } from "@/app/utils/stream";
 
 export interface OpenAIListModelResponse {
@@ -97,7 +100,7 @@ export class ErnieApi implements LLMApi {
     const messages = options.messages.map((v) => ({
       // "error_code": 336006, "error_msg": "the role of message with even index in the messages must be user or function",
       role: v.role === "system" ? "user" : v.role,
-      content: getMessageTextContent(v),
+      content: getWebReferenceMessageTextContent(v),
     }));
 
     // "error_code": 336006, "error_msg": "the length of messages must be an odd number",

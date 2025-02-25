@@ -354,19 +354,28 @@ For ByteDance: use `modelName@bytedance=deploymentName` to customize model name 
 
 ### `DEEPSEEK_API_KEY` (可选)
 
-DeepSeek Api Key.
+DeepSeek Api Key
 
 ### `DEEPSEEK_URL` (可选)
 
-DeepSeek Api Url.
+DeepSeek Api Url
 
 ### `SILICONFLOW_API_KEY` （可选）
 
-硅基流动 API Key.
+硅基流动 API Key
 
 ### `SILICONFLOW_URL` （可选）
 
-硅基流动 API URL.
+硅基流动 API URL
+
+### `TAVILY_API_KEY`
+
+Tavily API Key 用于通用搜索功能
+获取地址：https://tavily.com
+
+### `TAVILY_MAX_RETURNS` （可选）
+
+通用搜索功能返回的最大结果数，默认为 10
 
 ## 部署
 

@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import { showToast } from "./components/ui-lib";
-import Locale from "./locales";
+import Locale, { getLang } from "./locales";
 import { RequestMessage } from "./client/api";
 import { DEFAULT_MODELS } from "./constant";
 import { ServiceProvider } from "./constant";
 // import { fetch as tauriFetch, ResponseType } from "@tauri-apps/api/http";
 import { fetch as tauriStreamFetch } from "./utils/stream";
+import {
+  WEB_SEARCH_ANSWER_EN_PROMPT,
+  WEB_SEARCH_ANSWER_ZH_PROMPT,
+} from "./prompt";
 
 export function trimTopic(topic: string) {
   // Fix an issue where double quotes still show in the Indonesian language
@@ -225,6 +229,36 @@ export function isMacOS(): boolean {
     return !!macintosh;
   }
   return false;
+}
+
+export function getWebReferenceMessageTextContent(message: RequestMessage) {
+  let prompt = getMessageTextContent(message);
+  if (
+    message.webSearchReferences &&
+    message.webSearchReferences.results.length > 0
+  ) {
+    const searchResults = message.webSearchReferences.results
+      .map((result, index) => {
+        return `[webpage ${index + 1} begin]
+[webpage title]${result.title}
+[webpage url]${result.url}
+[webpage content begin]
+${result.content}
+[webpage content end]
+[webpage ${index + 1} end]
+`;
+      })
+      .join("\n");
+    const isZh = getLang() == "cn";
+    const promptTemplate = isZh
+      ? WEB_SEARCH_ANSWER_ZH_PROMPT
+      : WEB_SEARCH_ANSWER_EN_PROMPT;
+    prompt = promptTemplate
+      .replace("{cur_date}", new Date().toLocaleString())
+      .replace("{search_results}", searchResults)
+      .replace("{question}", prompt);
+  }
+  return prompt;
 }
 
 export function getMessageTextContent(message: RequestMessage) {

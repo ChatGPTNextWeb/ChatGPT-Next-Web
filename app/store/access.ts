@@ -142,6 +142,7 @@ const DEFAULT_ACCESS_STATE = {
   defaultModel: "",
   visionModels: "",
   isEnableRAG: false,
+  isEnableWebSearch: false,
 
   // tts config
   edgeTTSVoiceName: "zh-CN-YunxiNeural",
@@ -189,6 +190,12 @@ export const useAccessStore = createPersistStore(
       this.fetch();
 
       return get().isEnableRAG;
+    },
+
+    enableWebSearch() {
+      this.fetch();
+
+      return get().isEnableWebSearch;
     },
 
     isValidOpenAI() {

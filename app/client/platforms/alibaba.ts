@@ -25,7 +25,10 @@ import {
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
-import { getMessageTextContent } from "@/app/utils";
+import {
+  getMessageTextContent,
+  getWebReferenceMessageTextContent,
+} from "@/app/utils";
 import { fetch } from "@/app/utils/stream";
 
 export interface OpenAIListModelResponse {
@@ -104,7 +107,7 @@ export class QwenApi implements LLMApi {
   async chat(options: ChatOptions) {
     const messages = options.messages.map((v) => ({
       role: v.role,
-      content: getMessageTextContent(v),
+      content: getWebReferenceMessageTextContent(v),
     }));
 
     const modelConfig = {

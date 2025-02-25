@@ -191,11 +191,11 @@ export function RealtimeChat({
           });
         }
         if (hasAudio) {
-          // upload audio get audio_url
+          // upload audio get audioUrl
           const blob = audioHandlerRef.current?.savePlayFile();
-          uploadImage(blob!).then((audio_url) => {
-            botMessage.audio_url = audio_url;
-            // update text and audio_url
+          uploadImage(blob!).then((audioUrl) => {
+            botMessage.audioUrl = audioUrl;
+            // update text and audioUrl
             chatStore.updateTargetSession(session, (session) => {
               session.messages = session.messages.concat();
             });
@@ -215,15 +215,15 @@ export function RealtimeChat({
       chatStore.updateTargetSession(session, (session) => {
         session.messages = session.messages.concat([userMessage]);
       });
-      // save input audio_url, and update session
+      // save input audioUrl, and update session
       const { audioStartMillis, audioEndMillis } = item;
-      // upload audio get audio_url
+      // upload audio get audioUrl
       const blob = audioHandlerRef.current?.saveRecordFile(
         audioStartMillis,
         audioEndMillis,
       );
-      uploadImage(blob!).then((audio_url) => {
-        userMessage.audio_url = audio_url;
+      uploadImage(blob!).then((audioUrl) => {
+        userMessage.audioUrl = audioUrl;
         chatStore.updateTargetSession(session, (session) => {
           session.messages = session.messages.concat();
         });

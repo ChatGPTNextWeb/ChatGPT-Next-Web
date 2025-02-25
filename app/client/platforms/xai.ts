@@ -20,7 +20,10 @@ import {
   TranscriptionOptions,
 } from "../api";
 import { getClientConfig } from "@/app/config/client";
-import { getMessageTextContent } from "@/app/utils";
+import {
+  getMessageTextContent,
+  getWebReferenceMessageTextContent,
+} from "@/app/utils";
 import { RequestPayload } from "./openai";
 import { fetch } from "@/app/utils/stream";
 
@@ -74,7 +77,7 @@ export class XAIApi implements LLMApi {
   async chat(options: ChatOptions) {
     const messages: ChatOptions["messages"] = [];
     for (const v of options.messages) {
-      const content = getMessageTextContent(v);
+      const content = getWebReferenceMessageTextContent(v);
       messages.push({ role: v.role, content });
     }
 

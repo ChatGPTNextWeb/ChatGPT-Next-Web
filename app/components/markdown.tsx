@@ -23,6 +23,7 @@ import { useChatStore } from "../store";
 import { IconButton } from "./button";
 
 import { useAppConfig } from "../store/config";
+import { TavilySearchResponse } from "@tavily/core";
 
 export function Mermaid(props: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -273,10 +274,20 @@ function tryWrapHtmlCode(text: string) {
     );
 }
 
-function _MarkDownContent(props: { content: string }) {
+function _MarkDownContent(props: {
+  content: string;
+  webSearchReferences?: TavilySearchResponse;
+}) {
   const escapedContent = useMemo(() => {
-    return tryWrapHtmlCode(escapeBrackets(props.content));
-  }, [props.content]);
+    let content = tryWrapHtmlCode(escapeBrackets(props.content));
+    if (props.webSearchReferences?.results) {
+      content = content.replace(/\[citation:(\d+)\]/g, (match, index) => {
+        const result = props.webSearchReferences?.results[parseInt(index) - 1];
+        return result ? `[\[${index}\]](${result.url})` : match;
+      });
+    }
+    return content;
+  }, [props.content, props.webSearchReferences]);
 
   return (
     <ReactMarkdown
@@ -332,6 +343,7 @@ export function Markdown(
     fontFamily?: string;
     parentRef?: RefObject<HTMLDivElement>;
     defaultShow?: boolean;
+    webSearchReferences?: TavilySearchResponse;
   } & React.DOMAttributes<HTMLDivElement>,
 ) {
   const mdRef = useRef<HTMLDivElement>(null);
@@ -351,7 +363,10 @@ export function Markdown(
       {props.loading ? (
         <LoadingIcon />
       ) : (
-        <MarkdownContent content={props.content} />
+        <MarkdownContent
+          content={props.content}
+          webSearchReferences={props.webSearchReferences}
+        />
       )}
     </div>
   );

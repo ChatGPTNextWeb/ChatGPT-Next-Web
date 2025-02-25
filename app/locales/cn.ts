@@ -73,9 +73,12 @@ const cn = {
       DisablePlugins: "关闭插件",
       UploadImage: "上传图片",
       UploadFle: "上传文件",
+      OpenWebSearch: "开启联网",
+      CloseWebSearch: "关闭联网",
     },
     Rename: "重命名对话",
     Typing: "正在输入…",
+    Searching: "联网搜索中…",
     Input: (submitKey: string) => {
       var inputHints = `${submitKey} 发送`;
       if (submitKey === String(SubmitKey.Enter)) {

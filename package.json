@@ -34,6 +34,7 @@
     "@qdrant/js-client-rest": "^1.8.2",
     "@supabase/supabase-js": "^2.44.2",
     "@svgr/webpack": "^6.5.1",
+    "@tavily/core": "^0.3.1",
     "@vercel/analytics": "^0.1.11",
     "@vercel/speed-insights": "^1.0.2",
     "axios": "^1.7.5",
@@ -109,12 +110,12 @@
     "jest-environment-jsdom": "^29.7.0",
     "lint-staged": "^13.2.2",
     "prettier": "^3.0.2",
+    "raw-loader": "^4.0.2",
     "ts-node": "^10.9.2",
     "tsx": "^4.16.0",
     "typescript": "5.2.2",
     "watch": "^1.0.2",
-    "webpack": "^5.88.1",
-    "raw-loader": "^4.0.2"
+    "webpack": "^5.88.1"
   },
   "resolutions": {
     "lint-staged/yaml": "^2.2.2",

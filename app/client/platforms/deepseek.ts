@@ -28,6 +28,7 @@ import { getClientConfig } from "@/app/config/client";
 import {
   getMessageTextContent,
   getMessageTextContentWithoutThinking,
+  getWebReferenceMessageTextContent,
 } from "@/app/utils";
 import { RequestPayload } from "./openai";
 import { fetch } from "@/app/utils/stream";
@@ -86,7 +87,7 @@ export class DeepSeekApi implements LLMApi {
         const content = getMessageTextContentWithoutThinking(v);
         messages.push({ role: v.role, content });
       } else {
-        const content = getMessageTextContent(v);
+        const content = getWebReferenceMessageTextContent(v);
         messages.push({ role: v.role, content });
       }
     }

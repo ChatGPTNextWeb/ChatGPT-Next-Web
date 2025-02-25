@@ -19,6 +19,7 @@ const DANGER_CONFIG = {
   isUseOpenAIEndpointForAllModels: serverConfig.isUseOpenAIEndpointForAllModels,
   disableModelProviderDisplay: serverConfig.disableModelProviderDisplay,
   isUseRemoteModels: serverConfig.isUseRemoteModels,
+  isEnableWebSearch: serverConfig.isEnableWebSearch,
 };
 
 declare global {

@@ -75,9 +75,12 @@ const en: LocaleType = {
       DisablePlugins: "Disable Plugins",
       UploadImage: "Upload Images",
       UploadFle: "Upload Files",
+      OpenWebSearch: "Enable Web Search",
+      CloseWebSearch: "Disable Web Search",
     },
     Rename: "Rename Chat",
     Typing: "Typing…",
+    Searching: "Searching…",
     Input: (submitKey: string) => {
       var inputHints = `${submitKey} to send`;
       if (submitKey === String(SubmitKey.Enter)) {
