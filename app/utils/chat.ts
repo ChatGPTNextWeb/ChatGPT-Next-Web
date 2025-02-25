@@ -70,8 +70,9 @@ export function compressImage(file: Blob, maxSize: number): Promise<string> {
   });
 }
 
-export async function preProcessImageContent(
+export async function preProcessImageContentBase(
   content: RequestMessage["content"],
+  transformImageUrl: (url: string) => Promise<{ [key: string]: any }>,
 ) {
   if (typeof content === "string") {
     return content;
@@ -81,7 +82,7 @@ export async function preProcessImageContent(
     if (part?.type == "image_url" && part?.image_url?.url) {
       try {
         const url = await cacheImageToBase64Image(part?.image_url?.url);
-        result.push({ type: part.type, image_url: { url } });
+        result.push(await transformImageUrl(url));
       } catch (error) {
         console.error("Error processing image URL:", error);
       }
@@ -92,26 +93,21 @@ export async function preProcessImageContent(
   return result;
 }
 
+export async function preProcessImageContent(
+  content: RequestMessage["content"],
+) {
+  return preProcessImageContentBase(content, async (url) => ({
+    type: "image_url",
+    image_url: { url },
+  }));
+}
+
 export async function preProcessImageContentForAlibabaDashScope(
   content: RequestMessage["content"],
 ) {
-  if (typeof content === "string") {
-    return content;
-  }
-  const result = [];
-  for (const part of content) {
-    if (part?.type == "image_url" && part?.image_url?.url) {
-      try {
-        const url = await cacheImageToBase64Image(part?.image_url?.url);
-        result.push({ image: url });
-      } catch (error) {
-        console.error("Error processing image URL:", error);
-      }
-    } else {
-      result.push({ ...part });
-    }
-  }
-  return result;
+  return preProcessImageContentBase(content, async (url) => ({
+    image: url,
+  }));
 }
 
 const imageCaches: Record<string, string> = {};
