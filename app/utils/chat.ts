@@ -3,7 +3,7 @@ import {
   UPLOAD_URL,
   REQUEST_TIMEOUT_MS,
 } from "@/app/constant";
-import { RequestMessage } from "@/app/client/api";
+import { MultimodalContent, RequestMessage } from "@/app/client/api";
 import Locale from "@/app/locales";
 import {
   EventStreamContentType,
@@ -99,7 +99,7 @@ export async function preProcessImageContent(
   return preProcessImageContentBase(content, async (url) => ({
     type: "image_url",
     image_url: { url },
-  }));
+  })) as Promise<MultimodalContent[] | string>;
 }
 
 export async function preProcessImageContentForAlibabaDashScope(
