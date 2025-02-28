@@ -104,7 +104,7 @@ export class DeepSeekApi implements LLMApi {
     };
 
     const requestPayload: RequestPayload = {
-      messages,
+      messages: filteredMessages,
       stream: options.config.stream,
       model: modelConfig.model,
       temperature: modelConfig.temperature,
