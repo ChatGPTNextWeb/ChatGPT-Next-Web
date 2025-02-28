@@ -433,18 +433,18 @@ const ru: PartialLocaleType = {
       },
       Huawei: {
         ApiKey: {
-          Title: "API Key",
-          SubTitle: "使用自定义华为API Key",
-          Placeholder: "HUAWEI Key",
+          Title: "API Ключ",
+          SubTitle: "Используйте свой HUAWEI API ключ",
+          Placeholder: "HUAWEI Ключ",
         },
         SecretKey: {
-          Title: "Secret Key",
-          SubTitle: "使用自定义HUAWEI Secret Key",
-          Placeholder: "HUAWEI Secret Key",
+          Title: "Секретный Ключ",
+          SubTitle: "Используйте свой HUAWEI Секретный ключ",
+          Placeholder: "HUAWEI Секретный Ключ",
         },
         Endpoint: {
-          Title: "接口地址",
-          SubTitle: "不支持自定义前往.env配置",
+          Title: "Адрес интерфейса",
+          SubTitle: "Не поддерживает собственную конфигурацию .env",
         },
       },
     },

@@ -429,18 +429,18 @@ const vi: PartialLocaleType = {
       },
       Huawei: {
         ApiKey: {
-          Title: "API Key",
-          SubTitle: "使用自定义华为API Key",
-          Placeholder: "HUAWEI Key",
+          Title: "Khóa API",
+          SubTitle: "Sử dụng khóa API HUAWEI của bạn",
+          Placeholder: "Khóa HUAWEI",
         },
         SecretKey: {
-          Title: "Secret Key",
-          SubTitle: "使用自定义HUAWEI Secret Key",
-          Placeholder: "HUAWEI Secret Key",
+          Title: "Khóa bí mật",
+          SubTitle: "Sử dụng khóa bí mật HUAWEI của bạn",
+          Placeholder: "Khóa bí mật HUAWEI",
         },
         Endpoint: {
-          Title: "接口地址",
-          SubTitle: "不支持自定义前往.env配置",
+          Title: "Địa chỉ điểm cuối",
+          SubTitle: "Không hỗ trợ cấu hình .env tùy chỉnh",
         },
       },
     },

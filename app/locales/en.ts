@@ -525,17 +525,17 @@ const en: LocaleType = {
       Huawei: {
         ApiKey: {
           Title: "API Key",
-          SubTitle: "使用自定义华为API Key",
+          SubTitle: "Use your own HUAWEI API key",
           Placeholder: "HUAWEI Key",
         },
         SecretKey: {
           Title: "Secret Key",
-          SubTitle: "使用自定义HUAWEI Secret Key",
+          SubTitle: "Use your own HUAWEI Secret key",
           Placeholder: "HUAWEI Secret Key",
         },
         Endpoint: {
-          Title: "接口地址",
-          SubTitle: "不支持自定义前往.env配置",
+          Title: "Endpoint Address",
+          SubTitle: "Does not support custom .env configuration",
         },
       },
       Google: {

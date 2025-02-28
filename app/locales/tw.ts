@@ -388,18 +388,18 @@ const tw = {
       },
       Huawei: {
         ApiKey: {
-          Title: "API Key",
-          SubTitle: "使用自定义华为API Key",
-          Placeholder: "HUAWEI Key",
+          Title: "API金鑰",
+          SubTitle: "使用您的HUAWEI API金鑰",
+          Placeholder: "HUAWEI金鑰",
         },
         SecretKey: {
-          Title: "Secret Key",
-          SubTitle: "使用自定义HUAWEI Secret Key",
-          Placeholder: "HUAWEI Secret Key",
+          Title: "密鑰",
+          SubTitle: "使用您的HUAWEI密鑰",
+          Placeholder: "HUAWEI密鑰",
         },
         Endpoint: {
-          Title: "接口地址",
-          SubTitle: "不支持自定义前往.env配置",
+          Title: "端點地址",
+          SubTitle: "不支援自訂的.env配置",
         },
       },
     },

@@ -423,18 +423,18 @@ const ko: PartialLocaleType = {
       },
       Huawei: {
         ApiKey: {
-          Title: "API Key",
-          SubTitle: "使用自定义华为API Key",
-          Placeholder: "HUAWEI Key",
+          Title: "API 키",
+          SubTitle: "자신의 HUAWEI API 키를 사용하세요",
+          Placeholder: "HUAWEI 키",
         },
         SecretKey: {
-          Title: "Secret Key",
-          SubTitle: "使用自定义HUAWEI Secret Key",
-          Placeholder: "HUAWEI Secret Key",
+          Title: "비밀 키",
+          SubTitle: "자신의 HUAWEI 비밀 키를 사용하세요",
+          Placeholder: "HUAWEI 비밀 키",
         },
         Endpoint: {
-          Title: "接口地址",
-          SubTitle: "不支持自定义前往.env配置",
+          Title: "엔드포인트 주소",
+          SubTitle: "사용자 정의 .env 구성을 지원하지 않습니다",
         },
       },
     },

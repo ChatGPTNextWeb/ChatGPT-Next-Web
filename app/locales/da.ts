@@ -500,18 +500,18 @@ const da: PartialLocaleType = {
       },
       Huawei: {
         ApiKey: {
-          Title: "API Key",
-          SubTitle: "使用自定义华为API Key",
-          Placeholder: "HUAWEI Key",
+          Title: "API-nøgle",
+          SubTitle: "Brug din egen HUAWEI API-nøgle",
+          Placeholder: "HUAWEI-nøgle",
         },
         SecretKey: {
-          Title: "Secret Key",
-          SubTitle: "使用自定义HUAWEI Secret Key",
-          Placeholder: "HUAWEI Secret Key",
+          Title: "Hemmelig nøgle",
+          SubTitle: "Brug din egen HUAWEI hemmelige nøgle",
+          Placeholder: "HUAWEI hemmelig nøgle",
         },
         Endpoint: {
-          Title: "接口地址",
-          SubTitle: "不支持自定义前往.env配置",
+          Title: "Grænsefladeadresse",
+          SubTitle: "Understøtter ikke tilpasset .env-konfiguration",
         },
       },
       Google: {

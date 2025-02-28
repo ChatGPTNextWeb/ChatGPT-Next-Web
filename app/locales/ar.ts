@@ -422,18 +422,18 @@ const ar: PartialLocaleType = {
       },
       Huawei: {
         ApiKey: {
-          Title: "API Key",
-          SubTitle: "使用自定义华为API Key",
-          Placeholder: "HUAWEI Key",
+          Title: "مفتاح API",
+          SubTitle: "استخدم مفتاح API الخاص بـ HUAWEI",
+          Placeholder: "مفتاح HUAWEI",
         },
         SecretKey: {
-          Title: "Secret Key",
-          SubTitle: "使用自定义HUAWEI Secret Key",
-          Placeholder: "HUAWEI Secret Key",
+          Title: "المفتاح السري",
+          SubTitle: "استخدم مفتاح HUAWEI السري الخاص بك",
+          Placeholder: "المفتاح السري HUAWEI",
         },
         Endpoint: {
-          Title: "接口地址",
-          SubTitle: "不支持自定义前往.env配置",
+          Title: "عنوان الواجهة",
+          SubTitle: "لا يدعم التكوين المخصص .env",
         },
       },
     },

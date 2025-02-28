@@ -430,18 +430,18 @@ const bn: PartialLocaleType = {
       },
       Huawei: {
         ApiKey: {
-          Title: "API Key",
-          SubTitle: "使用自定义华为API Key",
-          Placeholder: "HUAWEI Key",
+          Title: "এপিআই কী",
+          SubTitle: "আপনার HUAWEI এপিআই কী ব্যবহার করুন",
+          Placeholder: "HUAWEI কী",
         },
         SecretKey: {
-          Title: "Secret Key",
-          SubTitle: "使用自定义HUAWEI Secret Key",
-          Placeholder: "HUAWEI Secret Key",
+          Title: "গোপন কী",
+          SubTitle: "আপনার HUAWEI গোপন কী ব্যবহার করুন",
+          Placeholder: "HUAWEI গোপন কী",
         },
         Endpoint: {
-          Title: "接口地址",
-          SubTitle: "不支持自定义前往.env配置",
+          Title: "এন্ডপয়েন্ট ঠিকানা",
+          SubTitle: "কাস্টম কনফিগারেশনের জন্য .env-এ যান",
         },
       },
     },

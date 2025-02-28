@@ -365,18 +365,18 @@ const pt: PartialLocaleType = {
       },
       Huawei: {
         ApiKey: {
-          Title: "API Key",
-          SubTitle: "使用自定义华为API Key",
-          Placeholder: "HUAWEI Key",
+          Title: "Chave API",
+          SubTitle: "Use sua própria chave API HUAWEI",
+          Placeholder: "Chave HUAWEI",
         },
         SecretKey: {
-          Title: "Secret Key",
-          SubTitle: "使用自定义HUAWEI Secret Key",
-          Placeholder: "HUAWEI Secret Key",
+          Title: "Chave Secreta",
+          SubTitle: "Use sua própria chave secreta HUAWEI",
+          Placeholder: "Chave Secreta HUAWEI",
         },
         Endpoint: {
-          Title: "接口地址",
-          SubTitle: "不支持自定义前往.env配置",
+          Title: "Endereço do Endpoint",
+          SubTitle: "Não suporta configuração personalizada .env",
         },
       },
     },
