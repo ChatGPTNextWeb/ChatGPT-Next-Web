@@ -319,6 +319,8 @@ export function isVisionModel(model: string) {
     "gemini-exp-1114",
     "gpt-4o",
     "gpt-4o-mini",
+    "gpt-4.5-preview",
+    "gpt-4.5-preview-2025-02-27",
   ];
 
   var googleModels = DEFAULT_MODELS.filter(
@@ -366,6 +368,8 @@ export function isSupportRAGModel(modelName: string) {
     "gpt-4o-2024-05-13",
     "gpt-4o-mini",
     "gpt-4o-mini-2024-07-18",
+    "gpt-4.5-preview",
+    "gpt-4.5-preview-2025-02-27",
   ];
   if (specialModels.some((keyword) => modelName === keyword)) return true;
   if (isVisionModel(modelName)) return false;
@@ -394,6 +398,8 @@ export function isFunctionCallModel(modelName: string) {
     "gpt-4o-mini-2024-07-18",
     "gpt-4-turbo-2024-04-09",
     "gpt-4-1106-preview",
+    "gpt-4.5-preview",
+    "gpt-4.5-preview-2025-02-27",
     "claude-3-sonnet-20240229",
     "claude-3-opus-20240229",
     "claude-3-haiku-20240307",
