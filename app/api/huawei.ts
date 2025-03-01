@@ -129,7 +129,7 @@ async function request(req: NextRequest) {
     "User-Agent": req.headers.get("User-Agent") ?? "",
   };
   console.debug(`headers.Authorization:${headers.Authorization}`);
-  console.debug(`serverConfig.huaweiApiKey:${serverConfig.huaweiApiKey}`);
+  console.debug("serverConfig.huaweiApiKey: *****");
   // 如果没有 Authorization header，使用系统配置的 API key
 
   headers.Authorization = `Bearer ${serverConfig.huaweiApiKey}`;

@@ -1486,7 +1486,7 @@ export function Settings() {
       >
         <PasswordInput
           aria-label={Locale.Settings.Access.Huawei.ApiKey.Title}
-          value={accessStore.deepseekApiKey}
+          value={accessStore.huaweiApiKey}
           type="text"
           placeholder={Locale.Settings.Access.Huawei.ApiKey.Placeholder}
           onChange={(e) => {
