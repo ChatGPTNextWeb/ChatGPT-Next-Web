@@ -526,6 +526,7 @@ const bedrockModels = [
   "anthropic.claude-3-sonnet-20240229-v1:0",
   "anthropic.claude-3-5-sonnet-20241022-v2:0",
   "anthropic.claude-3-opus-20240229-v1:0",
+  "us.anthropic.claude-3-7-sonnet-20250219-v1:0",
   // Meta Llama Models
   "us.meta.llama3-1-8b-instruct-v1:0",
   "us.meta.llama3-1-70b-instruct-v1:0",
@@ -844,15 +845,15 @@ export const DEFAULT_MODELS = [
     },
   })),
   ...bedrockModels.map((name) => ({
-     name,
-     available: true,
-     sorted: seq++,
-     provider: {
+    name,
+    available: true,
+    sorted: seq++,
+    provider: {
       id: "bedrock",
       providerName: "Bedrock",
       providerType: "bedrock",
       sorted: 15,
-         },
+    },
   })),
 ] as const;
 
