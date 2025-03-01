@@ -8,6 +8,7 @@ import { ListItem, Select } from "./ui-lib";
 import { useAllModels } from "../utils/hooks";
 import styles from "./model-config.module.scss";
 import { getModelProvider } from "../utils/model";
+import { useEffect } from "react";
 
 export function ModelConfigList(props: {
   modelConfig: ModelConfig;
@@ -15,6 +16,50 @@ export function ModelConfigList(props: {
 }) {
   const allModels = useAllModels();
   const accessStore = useAccessStore();
+
+  // 确保初始化时providerName和模型匹配
+  useEffect(() => {
+    // 确保allModels已加载
+    if (!allModels || allModels.length === 0) return;
+
+    // 检查当前选中的模型是否确实属于当前选中的服务商
+    const modelBelongsToProvider = allModels.some(
+      (m) =>
+        m.available &&
+        m.name === props.modelConfig.model &&
+        m.provider?.providerName === props.modelConfig.providerName,
+    );
+
+    // 如果不匹配，则强制更新为当前服务商的第一个可用模型
+    if (!modelBelongsToProvider) {
+      console.log(
+        `模型不匹配修复: 当前模型 ${props.modelConfig.model} 不属于 ${props.modelConfig.providerName}`,
+      );
+
+      // 找到当前服务商的第一个可用模型
+      const firstModelForProvider = allModels.find(
+        (m) =>
+          m.available &&
+          m.provider?.providerName === props.modelConfig.providerName,
+      );
+
+      if (firstModelForProvider) {
+        console.log(`模型不匹配修复: 更新为 ${firstModelForProvider.name}`);
+        props.updateConfig((config) => {
+          config.model = ModalConfigValidator.model(firstModelForProvider.name);
+        });
+      } else if (props.modelConfig.providerName === ServiceProvider.OpenAI) {
+        // 如果是OpenAI但没找到模型，强制设置为一个OpenAI常见模型
+        const openAIModel = "gpt-4o-mini";
+        console.log(
+          `模型不匹配修复: 未找到OpenAI模型，默认设置为 ${openAIModel}`,
+        );
+        props.updateConfig((config) => {
+          config.model = ModalConfigValidator.model(openAIModel);
+        });
+      }
+    }
+  }, [props.modelConfig.providerName, props.modelConfig.model, allModels]);
 
   // 过滤未配置API密钥的服务提供商
   const validProviders = Object.entries(ServiceProvider).filter(([_, v]) => {
@@ -54,11 +99,19 @@ export function ModelConfigList(props: {
     }
   });
 
+  // 确保有可用的模型供当前服务商使用
   const filteredModels = allModels.filter(
     (v) =>
       v.available &&
       v.provider?.providerName === props.modelConfig.providerName,
   );
+
+  // 如果没有找到当前服务商的模型，显示所有模型（防止下拉列表为空）
+  const modelsToShow =
+    filteredModels.length > 0
+      ? filteredModels
+      : allModels.filter((v) => v.available);
+
   const value = `${props.modelConfig.model}@${props.modelConfig?.providerName}`;
   const compressModelValue = `${props.modelConfig.compressModel}@${props.modelConfig?.compressProviderName}`;
 
@@ -106,9 +159,12 @@ export function ModelConfigList(props: {
             });
           }}
         >
-          {filteredModels.map((v, i) => (
+          {modelsToShow.map((v, i) => (
             <option value={`${v.name}@${v.provider?.providerName}`} key={i}>
               {v.displayName}
+              {filteredModels.length === 0
+                ? ` (${v.provider?.providerName})`
+                : ""}
             </option>
           ))}
         </Select>
