@@ -1,5 +1,6 @@
 import { ServiceProvider } from "@/app/constant";
 import { ModalConfigValidator, ModelConfig } from "../store";
+import { useAccessStore } from "../store";
 
 import Locale from "../locales";
 import { InputRange } from "./input-range";
@@ -13,6 +14,46 @@ export function ModelConfigList(props: {
   updateConfig: (updater: (config: ModelConfig) => void) => void;
 }) {
   const allModels = useAllModels();
+  const accessStore = useAccessStore();
+
+  // 过滤未配置API密钥的服务提供商
+  const validProviders = Object.entries(ServiceProvider).filter(([_, v]) => {
+    switch (v) {
+      case ServiceProvider.OpenAI:
+        return true; // 始终保留OpenAI选项，即使没有配置API密钥
+      case ServiceProvider.Azure:
+        return accessStore.isValidAzure();
+      case ServiceProvider.Google:
+        return accessStore.isValidGoogle();
+      case ServiceProvider.Anthropic:
+        return accessStore.isValidAnthropic();
+      case ServiceProvider.Baidu:
+        return accessStore.isValidBaidu();
+      case ServiceProvider.ByteDance:
+        return accessStore.isValidByteDance();
+      case ServiceProvider.Alibaba:
+        return accessStore.isValidAlibaba();
+      case ServiceProvider.Tencent:
+        return accessStore.isValidTencent();
+      case ServiceProvider.Moonshot:
+        return accessStore.isValidMoonshot();
+      case ServiceProvider.Iflytek:
+        return accessStore.isValidIflytek();
+      case ServiceProvider.DeepSeek:
+        return accessStore.isValidDeepSeek();
+      case ServiceProvider.XAI:
+        return accessStore.isValidXAI();
+      case ServiceProvider.ChatGLM:
+        return accessStore.isValidChatGLM();
+      case ServiceProvider.SiliconFlow:
+        return accessStore.isValidSiliconFlow();
+      case ServiceProvider.Stability:
+        return true; // 假设不需要验证或其他处理
+      default:
+        return false;
+    }
+  });
+
   const filteredModels = allModels.filter(
     (v) =>
       v.available &&
@@ -42,7 +83,7 @@ export function ModelConfigList(props: {
             });
           }}
         >
-          {Object.entries(ServiceProvider).map(([k, v]) => (
+          {validProviders.map(([k, v]) => (
             <option value={v} key={k}>
               {k}
             </option>
@@ -288,7 +329,7 @@ export function ModelConfigList(props: {
             });
           }}
         >
-          {Object.entries(ServiceProvider).map(([k, v]) => (
+          {validProviders.map(([k, v]) => (
             <option value={v} key={k}>
               {k}
             </option>

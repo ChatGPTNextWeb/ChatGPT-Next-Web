@@ -688,10 +688,48 @@ export function ChatActions(props: {
         {showProviderSelector && (
           <Selector
             defaultSelectedValue={currentProviderName}
-            items={Object.entries(ServiceProvider).map(([name, value]) => ({
-              title: name,
-              value: value,
-            }))}
+            items={Object.entries(ServiceProvider)
+              .filter(([_, value]) => {
+                const accessStore = useAccessStore.getState();
+                switch (value) {
+                  case ServiceProvider.OpenAI:
+                    return true; // 始终保留OpenAI选项，即使没有配置API密钥
+                  case ServiceProvider.Azure:
+                    return accessStore.isValidAzure();
+                  case ServiceProvider.Google:
+                    return accessStore.isValidGoogle();
+                  case ServiceProvider.Anthropic:
+                    return accessStore.isValidAnthropic();
+                  case ServiceProvider.Baidu:
+                    return accessStore.isValidBaidu();
+                  case ServiceProvider.ByteDance:
+                    return accessStore.isValidByteDance();
+                  case ServiceProvider.Alibaba:
+                    return accessStore.isValidAlibaba();
+                  case ServiceProvider.Tencent:
+                    return accessStore.isValidTencent();
+                  case ServiceProvider.Moonshot:
+                    return accessStore.isValidMoonshot();
+                  case ServiceProvider.Iflytek:
+                    return accessStore.isValidIflytek();
+                  case ServiceProvider.DeepSeek:
+                    return accessStore.isValidDeepSeek();
+                  case ServiceProvider.XAI:
+                    return accessStore.isValidXAI();
+                  case ServiceProvider.ChatGLM:
+                    return accessStore.isValidChatGLM();
+                  case ServiceProvider.SiliconFlow:
+                    return accessStore.isValidSiliconFlow();
+                  case ServiceProvider.Stability:
+                    return true; // 假设不需要验证
+                  default:
+                    return false;
+                }
+              })
+              .map(([name, value]) => ({
+                title: name,
+                value: value,
+              }))}
             onClose={() => setShowProviderSelector(false)}
             onSelection={(s) => {
               if (s.length === 0) return;
@@ -717,7 +755,11 @@ export function ChatActions(props: {
           <Selector
             defaultSelectedValue={`${currentModel}@${currentProviderName}`}
             items={models
-              .filter((m) => m.provider?.providerName === currentProviderName)
+              .filter(
+                (m) =>
+                  m.available &&
+                  m.provider?.providerName === currentProviderName,
+              )
               .map((m) => ({
                 title: m.displayName,
                 value: `${m.name}@${m?.provider?.providerName}`,

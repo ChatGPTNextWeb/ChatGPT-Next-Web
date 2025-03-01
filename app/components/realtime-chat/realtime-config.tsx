@@ -6,8 +6,10 @@ import { ListItem, Select, PasswordInput } from "@/app/components/ui-lib";
 import { InputRange } from "@/app/components/input-range";
 import { Voice } from "rt-client";
 import { ServiceProvider } from "@/app/constant";
+import { useAccessStore } from "@/app/store";
 
-const providers = [ServiceProvider.OpenAI, ServiceProvider.Azure];
+// 只支持OpenAI和Azure
+const allProviders = [ServiceProvider.OpenAI, ServiceProvider.Azure];
 
 const models = ["gpt-4o-realtime-preview-2024-10-01"];
 
@@ -17,6 +19,20 @@ export function RealtimeConfigList(props: {
   realtimeConfig: RealtimeConfig;
   updateConfig: (updater: (config: RealtimeConfig) => void) => void;
 }) {
+  const accessStore = useAccessStore();
+
+  // 根据API密钥配置过滤服务提供商
+  const providers = allProviders.filter((provider) => {
+    switch (provider) {
+      case ServiceProvider.OpenAI:
+        return true; // 始终保留OpenAI选项，即使没有配置API密钥
+      case ServiceProvider.Azure:
+        return accessStore.isValidAzure();
+      default:
+        return false;
+    }
+  });
+
   const azureConfigComponent = props.realtimeConfig.provider ===
     ServiceProvider.Azure && (
     <>
