@@ -25,9 +25,9 @@ const cn = {
     Input: "在此处填写访问码",
     Confirm: "确认",
     Later: "稍后再说",
-    SaasTips: "配置太麻烦，想要立即使用",
-    TopTips:
-      "🥳 NextChat AI 首发优惠，立刻解锁 OpenAI o1, GPT-4o, Claude-3.5 等最新大模型",
+    // SaasTips: "配置太麻烦，想要立即使用",
+    // TopTips:
+    //   "🥳 NextChat AI 首发优惠，立刻解锁 OpenAI o1, GPT-4o, Claude-3.5 等最新大模型",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
@@ -539,6 +539,9 @@ const cn = {
         SubTitle: "增加自定义模型可选项，使用英文逗号隔开",
       },
     },
+
+    // 增加厂商选项
+    ServiceProvider: "服务提供商",
 
     Model: "模型 (model)",
     CompressModel: {
