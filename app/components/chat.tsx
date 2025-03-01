@@ -1411,6 +1411,7 @@ function _Chat() {
         const payload = JSON.parse(text) as {
           key?: string;
           url?: string;
+          code?: string;
         };
 
         console.log("[Command] got settings from url: ", payload);
@@ -1431,6 +1432,10 @@ function _Chat() {
             }
             accessStore.update((access) => (access.useCustomConfig = true));
           });
+        }
+
+        if (payload.code) {
+          accessStore.update((access) => (access.accessCode = payload.code!));
         }
       } catch {
         console.error("[Command] failed to get settings from url: ", text);
