@@ -1436,6 +1436,12 @@ function _Chat() {
 
         if (payload.code) {
           accessStore.update((access) => (access.accessCode = payload.code!));
+          if (accessStore.isAuthorized()) {
+            context.pop();
+            const copiedHello = Object.assign({}, BOT_HELLO);
+            context.push(copiedHello);
+            setUserInput(" ");
+          }
         }
       } catch {
         console.error("[Command] failed to get settings from url: ", text);
