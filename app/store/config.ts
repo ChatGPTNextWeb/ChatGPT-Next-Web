@@ -4,7 +4,6 @@ import { getClientConfig } from "../config/client";
 import {
   DEFAULT_INPUT_TEMPLATE,
   DEFAULT_MODELS,
-  DEFAULT_SIDEBAR_WIDTH,
   DEFAULT_TTS_ENGINE,
   DEFAULT_TTS_ENGINES,
   DEFAULT_TTS_MODEL,
@@ -46,18 +45,20 @@ export const DEFAULT_CONFIG = {
   fontSize: 14,
   fontFamily: "",
   theme: Theme.Auto as Theme,
-  tightBorder: !!config?.isApp,
-  sendPreviewBubble: true,
+  // tightBorder: !!config?.isApp,
+  tightBorder: true,
+  sendPreviewBubble: false,
   enableAutoGenerateTitle: true,
-  sidebarWidth: DEFAULT_SIDEBAR_WIDTH,
+  // sidebarWidth: DEFAULT_SIDEBAR_WIDTH,
+  sidebarWidth: 100,
 
   enableArtifacts: true, // show artifacts config
 
   enableCodeFold: true, // code fold config
 
-  disablePromptHint: false,
+  disablePromptHint: true,
 
-  dontShowMaskSplashScreen: false, // dont show splash screen when create chat
+  dontShowMaskSplashScreen: true, // dont show splash screen when create chat
   hideBuiltinMasks: false, // dont add builtin masks
 
   customModels: "",
@@ -68,12 +69,12 @@ export const DEFAULT_CONFIG = {
     providerName: "OpenAI" as ServiceProvider,
     temperature: 0.5,
     top_p: 1,
-    max_tokens: 4000,
+    max_tokens: 8000,
     presence_penalty: 0,
     frequency_penalty: 0,
     sendMemory: true,
-    historyMessageCount: 4,
-    compressMessageLengthThreshold: 1000,
+    historyMessageCount: 16,
+    compressMessageLengthThreshold: 1000000,
     compressModel: "",
     compressProviderName: "",
     enableInjectSystemPrompts: true,
