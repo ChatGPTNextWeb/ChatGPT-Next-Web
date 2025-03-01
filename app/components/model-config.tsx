@@ -5,7 +5,6 @@ import Locale from "../locales";
 import { InputRange } from "./input-range";
 import { ListItem, Select } from "./ui-lib";
 import { useAllModels } from "../utils/hooks";
-import { groupBy } from "lodash-es";
 import styles from "./model-config.module.scss";
 import { getModelProvider } from "../utils/model";
 
@@ -14,15 +13,43 @@ export function ModelConfigList(props: {
   updateConfig: (updater: (config: ModelConfig) => void) => void;
 }) {
   const allModels = useAllModels();
-  const groupModels = groupBy(
-    allModels.filter((v) => v.available),
-    "provider.providerName",
+  const filteredModels = allModels.filter(
+    (v) =>
+      v.available &&
+      v.provider?.providerName === props.modelConfig.providerName,
   );
   const value = `${props.modelConfig.model}@${props.modelConfig?.providerName}`;
   const compressModelValue = `${props.modelConfig.compressModel}@${props.modelConfig?.compressProviderName}`;
 
   return (
     <>
+      <ListItem title={Locale.Settings.Access.Provider.Title}>
+        <Select
+          aria-label={Locale.Settings.Access.Provider.Title}
+          value={props.modelConfig.providerName}
+          onChange={(e) => {
+            const provider = e.currentTarget.value as ServiceProvider;
+            props.updateConfig((config) => {
+              config.providerName = provider;
+              const firstModelForProvider = allModels.find(
+                (m) => m.available && m.provider?.providerName === provider,
+              );
+              if (firstModelForProvider) {
+                config.model = ModalConfigValidator.model(
+                  firstModelForProvider.name,
+                );
+              }
+            });
+          }}
+        >
+          {Object.entries(ServiceProvider).map(([k, v]) => (
+            <option value={v} key={k}>
+              {k}
+            </option>
+          ))}
+        </Select>
+      </ListItem>
+
       <ListItem title={Locale.Settings.Model}>
         <Select
           aria-label={Locale.Settings.Model}
@@ -38,14 +65,10 @@ export function ModelConfigList(props: {
             });
           }}
         >
-          {Object.keys(groupModels).map((providerName, index) => (
-            <optgroup label={providerName} key={index}>
-              {groupModels[providerName].map((v, i) => (
-                <option value={`${v.name}@${v.provider?.providerName}`} key={i}>
-                  {v.displayName}
-                </option>
-              ))}
-            </optgroup>
+          {filteredModels.map((v, i) => (
+            <option value={`${v.name}@${v.provider?.providerName}`} key={i}>
+              {v.displayName}
+            </option>
           ))}
         </Select>
       </ListItem>
@@ -241,6 +264,37 @@ export function ModelConfigList(props: {
           }
         ></input>
       </ListItem>
+      <ListItem title={Locale.Settings.CompressProvider.Title}>
+        <Select
+          aria-label={Locale.Settings.CompressProvider.Title}
+          value={
+            props.modelConfig.compressProviderName || ServiceProvider.OpenAI
+          }
+          onChange={(e) => {
+            const provider = e.currentTarget.value as ServiceProvider;
+            props.updateConfig((config) => {
+              config.compressProviderName = provider;
+              // 如果选择了新的提供商，自动选择该提供商的第一个可用模型
+              if (provider) {
+                const firstModelForProvider = allModels.find(
+                  (m) => m.available && m.provider?.providerName === provider,
+                );
+                if (firstModelForProvider) {
+                  config.compressModel = ModalConfigValidator.model(
+                    firstModelForProvider.name,
+                  );
+                }
+              }
+            });
+          }}
+        >
+          {Object.entries(ServiceProvider).map(([k, v]) => (
+            <option value={v} key={k}>
+              {k}
+            </option>
+          ))}
+        </Select>
+      </ListItem>
       <ListItem
         title={Locale.Settings.CompressModel.Title}
         subTitle={Locale.Settings.CompressModel.SubTitle}
@@ -260,10 +314,19 @@ export function ModelConfigList(props: {
           }}
         >
           {allModels
-            .filter((v) => v.available)
+            .filter(
+              (v) =>
+                v.available &&
+                (!props.modelConfig.compressProviderName ||
+                  v.provider?.providerName ===
+                    props.modelConfig.compressProviderName),
+            )
             .map((v, i) => (
               <option value={`${v.name}@${v.provider?.providerName}`} key={i}>
-                {v.displayName}({v.provider?.providerName})
+                {v.displayName}
+                {!props.modelConfig.compressProviderName
+                  ? `(${v.provider?.providerName})`
+                  : ""}
               </option>
             ))}
         </Select>

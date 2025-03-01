@@ -25,9 +25,6 @@ const cn = {
     Input: "在此处填写访问码",
     Confirm: "确认",
     Later: "稍后再说",
-    // SaasTips: "配置太麻烦，想要立即使用",
-    // TopTips:
-    //   "🥳 NextChat AI 首发优惠，立刻解锁 OpenAI o1, GPT-4o, Claude-3.5 等最新大模型",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
@@ -540,13 +537,14 @@ const cn = {
       },
     },
 
-    // 增加厂商选项
-    ServiceProvider: "服务提供商",
-
     Model: "模型 (model)",
     CompressModel: {
       Title: "对话摘要模型",
       SubTitle: "用于压缩历史记录、生成对话标题的模型",
+    },
+    CompressProvider: {
+      Title: "摘要模型服务商",
+      SubTitle: "选择生成摘要的模型服务商",
     },
     Temperature: {
       Title: "随机性 (temperature)",
@@ -629,7 +627,7 @@ const cn = {
     Prompt: {
       History: (content: string) => "这是历史聊天总结作为前情提要：" + content,
       Topic:
-        "使用四到五个字直接返回这句话的简要主题，不要解释、不要标点、不要语气词、不要多余文本，不要加粗，如果没有主题，请直接返回“闲聊”",
+        '使用四到五个字直接返回这句话的简要主题，不要解释、不要标点、不要语气词、不要多余文本，不要加粗，如果没有主题，请直接返回"闲聊"',
       Summarize:
         "简要总结一下对话内容，用作后续的上下文提示 prompt，控制在 200 字以内",
     },
