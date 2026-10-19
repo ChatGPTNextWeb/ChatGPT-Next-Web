@@ -9,7 +9,7 @@ import Delete from "../icons/close.svg";
 import Arrow from "../icons/arrow.svg";
 import Logo from "../icons/logo.svg";
 import { useMobileScreen } from "@/app/utils";
-import BotIcon from "../icons/bot.svg";
+import BotIcon from "../icons/nextchat-bot.svg";
 import { getClientConfig } from "../config/client";
 import { PasswordInput } from "./ui-lib";
 import LeftIcon from "@/app/icons/left.svg";

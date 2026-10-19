@@ -27,7 +27,7 @@ const pt: PartialLocaleType = {
     Return: "Voltar",
     SaasTips: "A configuração é muito complicada, quero usá-la imediatamente",
     TopTips:
-      "🥳 Oferta de Lançamento do NextChat AI, desbloqueie o OpenAI o1, GPT-4o, Claude-3.5 e os mais recentes grandes modelos agora",
+      "🥳 Oferta de Lançamento do NextChat AI, desbloqueie os mais recentes grandes modelos agora",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} mensagens`,
@@ -98,7 +98,7 @@ const pt: PartialLocaleType = {
     Copy: "Copiar Tudo",
     Download: "Baixar",
     MessageFromYou: "Mensagem De Você",
-    MessageFromChatGPT: "Mensagem De ChatGPT",
+    MessageFromChatGPT: "Mensagem Do Assistente de IA",
     Share: "Compartilhar para ShareGPT",
     Format: {
       Title: "Formato de Exportação",
@@ -295,7 +295,7 @@ const pt: PartialLocaleType = {
         Title: "Usar NextChat AI",
         Label: "(A solução mais econômica)",
         SubTitle:
-          "Mantido oficialmente pelo NextChat, pronto para uso sem configuração, suporta os mais recentes grandes modelos como OpenAI o1, GPT-4o e Claude-3.5",
+          "Mantido oficialmente pelo NextChat, pronto para uso sem configuração, suporta os mais recentes grandes modelos",
         ChatNow: "Conversar agora",
       },
 

@@ -291,7 +291,7 @@ export const Mizumi = {
 
 export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lang
 // export const DEFAULT_SYSTEM_TEMPLATE = `
-// You are ChatGPT, a large language model trained by {{ServiceProvider}}.
+// You are a helpful AI assistant powered by a large language model from {{ServiceProvider}}.
 // Knowledge cutoff: {{cutoff}}
 // Current model: {{model}}
 // Current time: {{time}}
@@ -299,7 +299,7 @@ export const DEFAULT_INPUT_TEMPLATE = `{{input}}`; // input / time / model / lan
 // Latex block: $$e=mc^2$$
 // `;
 export const DEFAULT_SYSTEM_TEMPLATE = `
-You are ChatGPT, a large language model trained by {{ServiceProvider}}.
+You are a helpful AI assistant powered by a large language model from {{ServiceProvider}}.
 Knowledge cutoff: {{cutoff}}
 Current model: {{model}}
 Current time: {{time}}

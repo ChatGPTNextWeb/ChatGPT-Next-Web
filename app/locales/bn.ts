@@ -27,7 +27,7 @@ const bn: PartialLocaleType = {
     Return: "ফিরে আসা",
     SaasTips: "কনফিগারেশন খুব কঠিন, আমি অবিলম্বে ব্যবহার করতে চাই",
     TopTips:
-      "🥳 NextChat AI প্রথম প্রকাশের অফার, এখনই OpenAI o1, GPT-4o, Claude-3.5 এবং সর্বশেষ বড় মডেলগুলি আনলক করুন",
+      "🥳 NextChat AI প্রথম প্রকাশের অফার, এখনই সর্বশেষ বড় মডেলগুলি আনলক করুন",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} টি চ্যাট`,
@@ -100,7 +100,7 @@ const bn: PartialLocaleType = {
     Download: "ফাইল ডাউনলোড করুন",
     Share: "ShareGPT তে শেয়ার করুন",
     MessageFromYou: "ব্যবহারকারী",
-    MessageFromChatGPT: "ChatGPT",
+    MessageFromChatGPT: "এআই সহকারী",
     Format: {
       Title: "রপ্তানির ফর্ম্যাট",
       SubTitle: "Markdown টেক্সট বা PNG চিত্র রপ্তানি করা যাবে",
@@ -174,7 +174,7 @@ const bn: PartialLocaleType = {
     InjectSystemPrompts: {
       Title: "সিস্টেম-লেভেল প্রম্পট যোগ করুন",
       SubTitle:
-        "প্রত্যেক বার্তায় একটি সিস্টেম প্রম্পট যোগ করুন যা ChatGPT এর অনুকরণ করবে",
+        "প্রত্যেক বার্তায় একটি সিস্টেম প্রম্পট যোগ করুন যা এআই সহকারীর অনুকরণ করবে",
     },
     InputTemplate: {
       Title: "ব্যবহারকারীর ইনপুট প্রিপ্রসেসিং",
@@ -298,7 +298,7 @@ const bn: PartialLocaleType = {
         Title: "NextChat AI ব্যবহার করুন",
         Label: "(সেরা মূল্যসাশ্রয়ী সমাধান)",
         SubTitle:
-          "NextChat কর্তৃক অফিসিয়াল রক্ষণাবেক্ষণ, শূন্য কনফিগারেশন ব্যবহার শুরু করুন, OpenAI o1, GPT-4o, Claude-3.5 সহ সর্বশেষ বড় মডেলগুলি সমর্থন করে",
+          "NextChat কর্তৃক অফিসিয়াল রক্ষণাবেক্ষণ, শূন্য কনফিগারেশন ব্যবহার শুরু করুন, সর্বশেষ বড় মডেলগুলি সমর্থন করে",
         ChatNow: "এখনই চ্যাট করুন",
       },
 

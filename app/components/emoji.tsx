@@ -6,8 +6,7 @@ import EmojiPicker, {
 
 import { ModelType } from "../store";
 
-import BotIconDefault from "../icons/llm-icons/default.svg";
-import BotIconOpenAI from "../icons/llm-icons/openai.svg";
+import BotIconDefault from "../icons/nextchat-bot.svg";
 import BotIconGemini from "../icons/llm-icons/gemini.svg";
 import BotIconGemma from "../icons/llm-icons/gemma.svg";
 import BotIconClaude from "../icons/llm-icons/claude.svg";
@@ -51,16 +50,7 @@ export function Avatar(props: { model?: ModelType; avatar?: string }) {
   if (props.model) {
     const modelName = props.model.toLowerCase();
 
-    if (
-      modelName.startsWith("gpt") ||
-      modelName.startsWith("chatgpt") ||
-      modelName.startsWith("dall-e") ||
-      modelName.startsWith("dalle") ||
-      modelName.startsWith("o1") ||
-      modelName.startsWith("o3")
-    ) {
-      LlmIcon = BotIconOpenAI;
-    } else if (modelName.startsWith("gemini")) {
+    if (modelName.startsWith("gemini")) {
       LlmIcon = BotIconGemini;
     } else if (modelName.startsWith("gemma")) {
       LlmIcon = BotIconGemma;
@@ -68,7 +58,10 @@ export function Avatar(props: { model?: ModelType; avatar?: string }) {
       LlmIcon = BotIconClaude;
     } else if (modelName.includes("llama")) {
       LlmIcon = BotIconMeta;
-    } else if (modelName.startsWith("mixtral") || modelName.startsWith("codestral")) {
+    } else if (
+      modelName.startsWith("mixtral") ||
+      modelName.startsWith("codestral")
+    ) {
       LlmIcon = BotIconMistral;
     } else if (modelName.includes("deepseek")) {
       LlmIcon = BotIconDeepseek;

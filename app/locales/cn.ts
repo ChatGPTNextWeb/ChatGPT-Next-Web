@@ -26,8 +26,7 @@ const cn = {
     Confirm: "确认",
     Later: "稍后再说",
     SaasTips: "配置太麻烦，想要立即使用",
-    TopTips:
-      "🥳 NextChat AI 首发优惠，立刻解锁 OpenAI o1, GPT-4o, Claude-3.5 等最新大模型",
+    TopTips: "🥳 NextChat AI 首发优惠，立刻解锁最新大模型",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
@@ -115,7 +114,7 @@ const cn = {
     Download: "下载文件",
     Share: "分享到 ShareGPT",
     MessageFromYou: "用户",
-    MessageFromChatGPT: "ChatGPT",
+    MessageFromChatGPT: "AI 助手",
     Format: {
       Title: "导出格式",
       SubTitle: "可以导出 Markdown 文本或者 PNG 图片",
@@ -192,7 +191,7 @@ const cn = {
     },
     InjectSystemPrompts: {
       Title: "注入系统级提示信息",
-      SubTitle: "强制给每次请求的消息列表开头添加一个模拟 ChatGPT 的系统提示",
+      SubTitle: "强制给每次请求的消息列表开头添加一个模拟 AI 助手的系统提示",
     },
     InputTemplate: {
       Title: "用户输入预处理",
@@ -314,8 +313,7 @@ const cn = {
       SaasStart: {
         Title: "使用 NextChat AI",
         Label: "（性价比最高的方案）",
-        SubTitle:
-          "由 NextChat 官方维护, 零配置开箱即用，支持 OpenAI o1, GPT-4o, Claude-3.5 等最新大模型",
+        SubTitle: "由 NextChat 官方维护, 零配置开箱即用，支持最新大模型",
         ChatNow: "立刻对话",
       },
       AccessCode: {

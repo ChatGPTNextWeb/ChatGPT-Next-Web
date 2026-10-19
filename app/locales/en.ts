@@ -28,7 +28,7 @@ const en: LocaleType = {
     Later: "Later",
     SaasTips: "Too Complex, Use Immediately Now",
     TopTips:
-      "🥳 NextChat AI launch promotion: Instantly unlock the latest models like OpenAI o1, GPT-4o, Claude-3.5!",
+      "🥳 NextChat AI launch promotion: Instantly unlock the latest models!",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} messages`,
@@ -115,7 +115,7 @@ const en: LocaleType = {
     Copy: "Copy All",
     Download: "Download",
     MessageFromYou: "Message From You",
-    MessageFromChatGPT: "Message From ChatGPT",
+    MessageFromChatGPT: "Message From AI Assistant",
     Share: "Share to ShareGPT",
     Format: {
       Title: "Export Format",
@@ -318,8 +318,7 @@ const en: LocaleType = {
         Title: "Use NextChat AI",
         Label: " (Most Cost-Effective Option)",
         SubTitle:
-          "Maintained by NextChat, zero setup needed, unlock OpenAI o1, GPT-4o," +
-          " Claude-3.5 and more",
+          "Maintained by NextChat, zero setup needed, unlock the latest models",
         ChatNow: "Start Now",
       },
       AccessCode: {

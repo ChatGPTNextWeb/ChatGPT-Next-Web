@@ -57,7 +57,7 @@
 
 > 빌드 전 환경 변수(env) `ENABLE_MCP=true` 설정 필요
 
-<img src="https://github.com/user-attachments/assets/d8851f40-4e36-4335-b1a4-ec1e11488c7e" />
+<img src="./docs/images/mcp-market.png" alt="NextChat MCP Market" />
 
 ## 엔터프라이즈 버전
 

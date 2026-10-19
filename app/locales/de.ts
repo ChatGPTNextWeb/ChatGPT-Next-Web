@@ -28,7 +28,7 @@ const de: PartialLocaleType = {
     SaasTips:
       "Die Konfiguration ist zu kompliziert, ich möchte es sofort nutzen",
     TopTips:
-      "🥳 NextChat AI Einführungsangebot, schalte jetzt OpenAI o1, GPT-4o, Claude-3.5 und die neuesten großen Modelle frei",
+      "🥳 NextChat AI Einführungsangebot, schalte jetzt die neuesten großen Modelle frei",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} Gespräche`,
@@ -101,7 +101,7 @@ const de: PartialLocaleType = {
     Download: "Datei herunterladen",
     Share: "Auf ShareGPT teilen",
     MessageFromYou: "Benutzer",
-    MessageFromChatGPT: "ChatGPT",
+    MessageFromChatGPT: "KI-Assistent",
     Format: {
       Title: "Exportformat",
       SubTitle: "Kann als Markdown-Text oder PNG-Bild exportiert werden",
@@ -177,7 +177,7 @@ const de: PartialLocaleType = {
     InjectSystemPrompts: {
       Title: "Systemweite Eingabeaufforderungen einfügen",
       SubTitle:
-        "Fügt jeder Nachricht am Anfang der Nachrichtenliste eine simulierte ChatGPT-Systemaufforderung hinzu",
+        "Fügt jeder Nachricht am Anfang der Nachrichtenliste eine simulierte KI-Assistenten-Systemaufforderung hinzu",
     },
     InputTemplate: {
       Title: "Benutzer-Eingabeverarbeitung",
@@ -306,7 +306,7 @@ const de: PartialLocaleType = {
         Title: "NextChat AI verwenden",
         Label: "(Die kosteneffektivste Lösung)",
         SubTitle:
-          "Offiziell von NextChat verwaltet, sofort einsatzbereit ohne Konfiguration, unterstützt die neuesten großen Modelle wie OpenAI o1, GPT-4o und Claude-3.5",
+          "Offiziell von NextChat verwaltet, sofort einsatzbereit ohne Konfiguration, unterstützt die neuesten großen Modelle",
         ChatNow: "Jetzt chatten",
       },
 
@@ -437,7 +437,8 @@ const de: PartialLocaleType = {
       AI302: {
         ApiKey: {
           Title: "Schnittstellenschlüssel",
-          SubTitle: "Verwenden Sie einen benutzerdefinierten 302.AI API-Schlüssel",
+          SubTitle:
+            "Verwenden Sie einen benutzerdefinierten 302.AI API-Schlüssel",
           Placeholder: "302.AI API-Schlüssel",
         },
         Endpoint: {

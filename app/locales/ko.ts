@@ -27,7 +27,7 @@ const ko: PartialLocaleType = {
     Return: "돌아가기",
     SaasTips: "설정이 너무 복잡합니다. 즉시 사용하고 싶습니다.",
     TopTips:
-      "🥳 NextChat AI 출시 기념 할인: 지금 OpenAI o1, GPT-4o, Claude-3.5 및 최신 대형 모델을 사용해보세요!",
+      "🥳 NextChat AI 출시 기념 할인: 지금 최신 대형 모델을 사용해보세요!",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 개의 대화`,
@@ -115,7 +115,7 @@ const ko: PartialLocaleType = {
     Download: "파일 다운로드",
     Share: "ShareGPT에 공유",
     MessageFromYou: "사용자",
-    MessageFromChatGPT: "ChatGPT",
+    MessageFromChatGPT: "AI 어시스턴트",
     Format: {
       Title: "내보내기 형식",
       SubTitle: "Markdown 텍스트 또는 PNG 이미지로 내보낼 수 있습니다.",
@@ -192,7 +192,7 @@ const ko: PartialLocaleType = {
     InjectSystemPrompts: {
       Title: "시스템 수준 프롬프트 삽입",
       SubTitle:
-        "각 요청 메시지 목록의 시작 부분에 ChatGPT 시스템 프롬프트를 강제로 추가",
+        "각 요청 메시지 목록의 시작 부분에 AI 어시스턴트 시스템 프롬프트를 강제로 추가",
     },
     InputTemplate: {
       Title: "사용자 입력 전처리",
@@ -316,7 +316,7 @@ const ko: PartialLocaleType = {
         Title: "NextChat AI 사용하기",
         Label: "(가장 비용 효율적인 솔루션)",
         SubTitle:
-          "NextChat에 의해 공식적으로 유지 관리되며, 설정 없이 즉시 사용할 수 있으며, OpenAI o1, GPT-4o, Claude-3.5와 같은 최신 대형 모델을 지원합니다",
+          "NextChat에 의해 공식적으로 유지 관리되며, 설정 없이 즉시 사용할 수 있으며, 최신 대형 모델을 지원합니다",
         ChatNow: "지금 채팅하기",
       },
 

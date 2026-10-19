@@ -28,7 +28,7 @@ const no: PartialLocaleType = {
     SaasTips:
       "Konfigurasjonen er for komplisert, jeg vil bruke det med en gang",
     TopTips:
-      "🥳 NextChat AI lanseringstilbud, lås opp OpenAI o1, GPT-4o, Claude-3.5 og de nyeste store modellene nå",
+      "🥳 NextChat AI lanseringstilbud, lås opp de nyeste store modellene nå",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} samtaler`,
@@ -104,7 +104,7 @@ const no: PartialLocaleType = {
     Download: "Last ned fil",
     Share: "Del til ShareGPT",
     MessageFromYou: "Bruker",
-    MessageFromChatGPT: "ChatGPT",
+    MessageFromChatGPT: "AI-assistent",
     Format: {
       Title: "Eksporterformat",
       SubTitle: "Kan eksporteres som Markdown-tekst eller PNG-bilde",
@@ -179,7 +179,7 @@ const no: PartialLocaleType = {
     InjectSystemPrompts: {
       Title: "Injiser systemprompter",
       SubTitle:
-        "Tving inn et systemprompt som simulerer ChatGPT i starten av hver forespørsel",
+        "Tving inn et systemprompt som simulerer en AI-assistent i starten av hver forespørsel",
     },
     InputTemplate: {
       Title: "Forhåndsbehandling av brukerinput",
@@ -303,7 +303,7 @@ const no: PartialLocaleType = {
         Title: "Bruk NextChat AI",
         Label: "(Den mest kostnadseffektive løsningen)",
         SubTitle:
-          "Offisielt vedlikeholdt av NextChat, klar til bruk uten konfigurasjon, støtter de nyeste store modellene som OpenAI o1, GPT-4o og Claude-3.5",
+          "Offisielt vedlikeholdt av NextChat, klar til bruk uten konfigurasjon, støtter de nyeste store modellene",
         ChatNow: "Chat nå",
       },
 

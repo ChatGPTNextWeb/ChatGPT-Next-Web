@@ -27,7 +27,7 @@ const vi: PartialLocaleType = {
     Return: "Trở lại",
     SaasTips: "Cấu hình quá phức tạp, tôi muốn sử dụng ngay lập tức",
     TopTips:
-      "🥳 Ưu đãi ra mắt NextChat AI, mở khóa OpenAI o1, GPT-4o, Claude-3.5 và các mô hình lớn mới nhất ngay bây giờ",
+      "🥳 Ưu đãi ra mắt NextChat AI, mở khóa các mô hình lớn mới nhất ngay bây giờ",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} cuộc trò chuyện`,
@@ -100,7 +100,7 @@ const vi: PartialLocaleType = {
     Download: "Tải xuống tệp",
     Share: "Chia sẻ lên ShareGPT",
     MessageFromYou: "Người dùng",
-    MessageFromChatGPT: "ChatGPT",
+    MessageFromChatGPT: "Trợ lý AI",
     Format: {
       Title: "Định dạng xuất khẩu",
       SubTitle: "Có thể xuất khẩu dưới dạng văn bản Markdown hoặc hình ảnh PNG",
@@ -174,7 +174,7 @@ const vi: PartialLocaleType = {
     InjectSystemPrompts: {
       Title: "Tiêm thông báo hệ thống",
       SubTitle:
-        "Buộc thêm một thông báo hệ thống giả ChatGPT vào đầu danh sách tin nhắn mỗi lần yêu cầu",
+        "Buộc thêm một thông báo hệ thống giả lập trợ lý AI vào đầu danh sách tin nhắn mỗi lần yêu cầu",
     },
     InputTemplate: {
       Title: "Xử lý đầu vào của người dùng",
@@ -297,7 +297,7 @@ const vi: PartialLocaleType = {
         Title: "Sử dụng NextChat AI",
         Label: "(Giải pháp tiết kiệm chi phí nhất)",
         SubTitle:
-          "Được NextChat chính thức duy trì, sẵn sàng sử dụng mà không cần cấu hình, hỗ trợ các mô hình lớn mới nhất như OpenAI o1, GPT-4o và Claude-3.5",
+          "Được NextChat chính thức duy trì, sẵn sàng sử dụng mà không cần cấu hình, hỗ trợ các mô hình lớn mới nhất",
         ChatNow: "Chat ngay",
       },
 

@@ -3,7 +3,7 @@
 
 <h1 align="center">NextChat</h1>
 
-ワンクリックで無料であなた専用の ChatGPT ウェブアプリをデプロイ。GPT3、GPT4 & Gemini Pro モデルをサポート。
+ワンクリックで無料であなた専用の AI チャットウェブアプリをデプロイ。GPT3、GPT4 & Gemini Pro モデルをサポート。
 
 [NextChatAI](https://nextchat.club?utm_source=readme) / [企業版](#企業版) / [デモ](https://chat-gpt-next-web.vercel.app/) / [フィードバック](https://github.com/Yidadaa/ChatGPT-Next-Web/issues) / [Discordに参加](https://discord.gg/zrhvHCr79N)
 

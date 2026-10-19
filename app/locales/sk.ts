@@ -28,7 +28,7 @@ const sk: PartialLocaleType = {
     Return: "Návrat",
     SaasTips: "Nastavenie je príliš zložité, chcem to okamžite použiť",
     TopTips:
-      "🥳 Uvítacia ponuka NextChat AI, okamžite odomknite OpenAI o1, GPT-4o, Claude-3.5 a najnovšie veľké modely",
+      "🥳 Uvítacia ponuka NextChat AI, okamžite odomknite najnovšie veľké modely",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} správ`,
@@ -99,7 +99,7 @@ const sk: PartialLocaleType = {
     Copy: "Kopírovať všetko",
     Download: "Stiahnuť",
     MessageFromYou: "Správa od vás",
-    MessageFromChatGPT: "Správa od ChatGPT",
+    MessageFromChatGPT: "Správa od AI asistenta",
     Share: "Zdieľať na ShareGPT",
     Format: {
       Title: "Formát exportu",
@@ -295,7 +295,7 @@ const sk: PartialLocaleType = {
         Title: "Použite NextChat AI",
         Label: "(Najvýhodnejšie riešenie)",
         SubTitle:
-          "Oficiálne udržiavané NextChat, pripravené na použitie bez konfigurácie, podporuje najnovšie veľké modely ako OpenAI o1, GPT-4o a Claude-3.5",
+          "Oficiálne udržiavané NextChat, pripravené na použitie bez konfigurácie, podporuje najnovšie veľké modely",
         ChatNow: "Chatovať teraz",
       },
 

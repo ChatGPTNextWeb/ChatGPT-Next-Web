@@ -21,7 +21,7 @@ import {
 
 import CopyIcon from "../icons/copy.svg";
 import LoadingIcon from "../icons/three-dots.svg";
-import ChatGptIcon from "../icons/chatgpt.png";
+import NextChatIcon from "../icons/nextchat-bot.png";
 import ShareIcon from "../icons/share.svg";
 
 import DownloadIcon from "../icons/download.svg";
@@ -516,7 +516,7 @@ export function ImagePreviewer(props: {
         <div className={styles["chat-info"]}>
           <div className={clsx(styles["logo"], "no-dark")}>
             <NextImage
-              src={ChatGptIcon.src}
+              src={NextChatIcon.src}
               alt="logo"
               width={50}
               height={50}
@@ -526,7 +526,7 @@ export function ImagePreviewer(props: {
           <div>
             <div className={styles["main-title"]}>NextChat</div>
             <div className={styles["sub-title"]}>
-              github.com/ChatGPTNextWeb/ChatGPT-Next-Web
+              github.com/ChatGPTNextWeb/NextChat
             </div>
             <div className={styles["icons"]}>
               <MaskAvatar avatar={config.avatar} />

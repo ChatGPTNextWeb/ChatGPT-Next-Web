@@ -26,14 +26,13 @@ const tw = {
     Later: "稍候再說",
     Return: "返回",
     SaasTips: "設定太麻煩，想要立即使用",
-    TopTips:
-      "🥳 NextChat AI 首發優惠，立刻解鎖 OpenAI o1, GPT-4o, Claude-3.5 等最新的大型語言模型",
+    TopTips: "🥳 NextChat AI 首發優惠，立刻解鎖最新的大型語言模型",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 則對話`,
   },
   Chat: {
-    SubTitle: (count: number) => `您已經與 ChatGPT 進行了 ${count} 則對話`,
+    SubTitle: (count: number) => `您已經與 AI 助手進行了 ${count} 則對話`,
     EditMessage: {
       Title: "編輯訊息記錄",
       Topic: {
@@ -109,7 +108,7 @@ const tw = {
     Download: "下載檔案",
     Share: "分享到 ShareGPT",
     MessageFromYou: "來自您的訊息",
-    MessageFromChatGPT: "來自 ChatGPT 的訊息",
+    MessageFromChatGPT: "來自 AI 助手的訊息",
     Format: {
       Title: "匯出格式",
       SubTitle: "可以匯出 Markdown 文字檔或者 PNG 圖片",
@@ -181,7 +180,7 @@ const tw = {
     },
     InjectSystemPrompts: {
       Title: "匯入系統提示",
-      SubTitle: "強制在每個請求的訊息列表開頭新增一個模擬 ChatGPT 的系統提示",
+      SubTitle: "強制在每個請求的訊息列表開頭新增一個模擬 AI 助手的系統提示",
     },
     InputTemplate: {
       Title: "使用者輸入預處理",
@@ -302,7 +301,7 @@ const tw = {
         Title: "使用 NextChat AI",
         Label: "(性價比最高的方案)",
         SubTitle:
-          "由 NextChat 官方維護，無須設定開箱即用，支援 OpenAI o1、GPT-4o、Claude-3.5 等最新的大型語言模型",
+          "由 NextChat 官方維護，無須設定開箱即用，支援最新的大型語言模型",
         ChatNow: "立刻開始對話",
       },
 

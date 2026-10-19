@@ -27,7 +27,7 @@ const tr: PartialLocaleType = {
     Return: "Geri",
     SaasTips: "Ayarlar çok karmaşık, hemen kullanmak istiyorum",
     TopTips:
-      "🥳 NextChat AI lansman teklifi, OpenAI o1, GPT-4o, Claude-3.5 ve en son büyük modelleri şimdi açın",
+      "🥳 NextChat AI lansman teklifi, en son büyük modelleri şimdi açın",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} konuşma`,
@@ -100,7 +100,7 @@ const tr: PartialLocaleType = {
     Download: "Dosyayı indir",
     Share: "ShareGPT'ye paylaş",
     MessageFromYou: "Kullanıcı",
-    MessageFromChatGPT: "ChatGPT",
+    MessageFromChatGPT: "Yapay Zeka Asistanı",
     Format: {
       Title: "Dışa aktarma formatı",
       SubTitle: "Markdown metni veya PNG resmi olarak dışa aktarabilirsiniz",
@@ -174,7 +174,8 @@ const tr: PartialLocaleType = {
     },
     InjectSystemPrompts: {
       Title: "Sistem Seviyesi İpucu Enjeksiyonu",
-      SubTitle: "Her isteğin başına ChatGPT benzeri bir sistem ipucu ekle",
+      SubTitle:
+        "Her isteğin başına yapay zeka asistanı benzeri bir sistem ipucu ekle",
     },
     InputTemplate: {
       Title: "Kullanıcı Girdisi Ön İşleme",
@@ -300,7 +301,7 @@ const tr: PartialLocaleType = {
         Title: "NextChat AI kullanın",
         Label: "(En maliyet etkin çözüm)",
         SubTitle:
-          "NextChat tarafından resmi olarak yönetilmektedir, yapılandırma olmadan hemen kullanıma hazırdır, OpenAI o1, GPT-4o, Claude-3.5 gibi en son büyük modelleri destekler",
+          "NextChat tarafından resmi olarak yönetilmektedir, yapılandırma olmadan hemen kullanıma hazırdır, en son büyük modelleri destekler",
         ChatNow: "Şimdi sohbet et",
       },
 

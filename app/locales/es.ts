@@ -28,7 +28,7 @@ const es: PartialLocaleType = {
     SaasTips:
       "La configuración es demasiado complicada, quiero usarlo de inmediato",
     TopTips:
-      "🥳 Oferta de lanzamiento de NextChat AI, desbloquea OpenAI o1, GPT-4o, Claude-3.5 y los últimos grandes modelos",
+      "🥳 Oferta de lanzamiento de NextChat AI, desbloquea los últimos grandes modelos",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} conversaciones`,
@@ -104,7 +104,7 @@ const es: PartialLocaleType = {
     Download: "Descargar archivo",
     Share: "Compartir en ShareGPT",
     MessageFromYou: "Usuario",
-    MessageFromChatGPT: "ChatGPT",
+    MessageFromChatGPT: "Asistente de IA",
     Format: {
       Title: "Formato de exportación",
       SubTitle: "Puedes exportar como texto Markdown o imagen PNG",
@@ -181,7 +181,7 @@ const es: PartialLocaleType = {
     InjectSystemPrompts: {
       Title: "Inyectar mensajes del sistema",
       SubTitle:
-        "Forzar la adición de un mensaje del sistema simulado de ChatGPT al principio de cada lista de mensajes",
+        "Forzar la adición de un mensaje del sistema simulado de asistente de IA al principio de cada lista de mensajes",
     },
     InputTemplate: {
       Title: "Preprocesamiento de entrada del usuario",
@@ -309,7 +309,7 @@ const es: PartialLocaleType = {
         Title: "Use NextChat AI",
         Label: "(The most cost-effective solution)",
         SubTitle:
-          "Officially maintained by NextChat, zero configuration ready to use, supports the latest large models like OpenAI o1, GPT-4o, and Claude-3.5",
+          "Officially maintained by NextChat, zero configuration ready to use, supports the latest large models",
         ChatNow: "Chat Now",
       },
 

@@ -27,7 +27,7 @@ const cs: PartialLocaleType = {
     Return: "Návrat",
     SaasTips: "Konfigurace je příliš složitá, chci okamžitě začít používat",
     TopTips:
-      "🥳 Uvítací nabídka NextChat AI, okamžitě odemkněte OpenAI o1, GPT-4o, Claude-3.5 a nejnovější velké modely",
+      "🥳 Uvítací nabídka NextChat AI, okamžitě odemkněte nejnovější velké modely",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} konverzací`,
@@ -100,7 +100,7 @@ const cs: PartialLocaleType = {
     Download: "Stáhnout soubor",
     Share: "Sdílet na ShareGPT",
     MessageFromYou: "Uživatel",
-    MessageFromChatGPT: "ChatGPT",
+    MessageFromChatGPT: "AI asistent",
     Format: {
       Title: "Formát exportu",
       SubTitle: "Lze exportovat jako Markdown text nebo PNG obrázek",
@@ -174,7 +174,7 @@ const cs: PartialLocaleType = {
     InjectSystemPrompts: {
       Title: "Vložit systémové výzvy",
       SubTitle:
-        "Automaticky přidat systémovou výzvu simulující ChatGPT na začátek seznamu zpráv pro každý požadavek",
+        "Automaticky přidat systémovou výzvu simulující AI asistenta na začátek seznamu zpráv pro každý požadavek",
     },
     InputTemplate: {
       Title: "Předzpracování uživatelského vstupu",
@@ -298,7 +298,7 @@ const cs: PartialLocaleType = {
         Title: "Použití NextChat AI",
         Label: "(Nejlepší nákladově efektivní řešení)",
         SubTitle:
-          "Oficiálně udržováno NextChat, připraveno k použití bez konfigurace, podporuje nejnovější velké modely jako OpenAI o1, GPT-4o, Claude-3.5",
+          "Oficiálně udržováno NextChat, připraveno k použití bez konfigurace, podporuje nejnovější velké modely",
         ChatNow: "Začněte chatovat nyní",
       },
 

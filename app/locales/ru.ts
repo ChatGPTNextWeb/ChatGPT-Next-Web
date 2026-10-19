@@ -27,7 +27,7 @@ const ru: PartialLocaleType = {
     Return: "Назад",
     SaasTips: "Настройка слишком сложна, я хочу использовать это немедленно",
     TopTips:
-      "🥳 Предложение по запуску NextChat AI: разблокируйте OpenAI o1, GPT-4o, Claude-3.5 и новейшие большие модели прямо сейчас",
+      "🥳 Предложение по запуску NextChat AI: разблокируйте новейшие большие модели прямо сейчас",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} бесед`,
@@ -100,7 +100,7 @@ const ru: PartialLocaleType = {
     Download: "Скачать файл",
     Share: "Поделиться в ShareGPT",
     MessageFromYou: "Пользователь",
-    MessageFromChatGPT: "ChatGPT",
+    MessageFromChatGPT: "ИИ-ассистент",
     Format: {
       Title: "Формат экспорта",
       SubTitle: "Можно экспортировать как Markdown текст или PNG изображение",
@@ -174,7 +174,7 @@ const ru: PartialLocaleType = {
     InjectSystemPrompts: {
       Title: "Вставить системные подсказки",
       SubTitle:
-        "Принудительно добавлять системную подсказку, имитирующую ChatGPT, в начале каждого запроса",
+        "Принудительно добавлять системную подсказку, имитирующую ИИ-ассистента, в начале каждого запроса",
     },
     InputTemplate: {
       Title: "Предварительная обработка пользовательского ввода",
@@ -300,7 +300,7 @@ const ru: PartialLocaleType = {
         Title: "Используйте NextChat AI",
         Label: "(Самое экономичное решение)",
         SubTitle:
-          "Официально поддерживается NextChat, готов к использованию без настройки, поддерживает последние крупные модели, такие как OpenAI o1, GPT-4o и Claude-3.5",
+          "Официально поддерживается NextChat, готов к использованию без настройки, поддерживает последние крупные модели",
         ChatNow: "Начать чат",
       },
 

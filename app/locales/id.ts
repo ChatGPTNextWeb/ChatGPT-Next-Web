@@ -27,7 +27,7 @@ const id: PartialLocaleType = {
     Return: "Kembali",
     SaasTips: "Konfigurasi terlalu rumit, saya ingin menggunakannya segera",
     TopTips:
-      "🥳 Penawaran Peluncuran NextChat AI, buka OpenAI o1, GPT-4o, Claude-3.5 dan model besar terbaru sekarang",
+      "🥳 Penawaran Peluncuran NextChat AI, buka model besar terbaru sekarang",
   },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} percakapan`,
@@ -100,7 +100,7 @@ const id: PartialLocaleType = {
     Download: "Unduh File",
     Share: "Bagikan ke ShareGPT",
     MessageFromYou: "Pengguna",
-    MessageFromChatGPT: "ChatGPT",
+    MessageFromChatGPT: "Asisten AI",
     Format: {
       Title: "Format Ekspor",
       SubTitle: "Dapat mengekspor teks Markdown atau gambar PNG",
@@ -175,7 +175,7 @@ const id: PartialLocaleType = {
     InjectSystemPrompts: {
       Title: "Suntikkan Pesan Sistem",
       SubTitle:
-        "Memaksa menambahkan pesan sistem simulasi ChatGPT di awal daftar pesan setiap permintaan",
+        "Memaksa menambahkan pesan sistem simulasi asisten AI di awal daftar pesan setiap permintaan",
     },
     InputTemplate: {
       Title: "Pra-pemrosesan Input Pengguna",
@@ -299,7 +299,7 @@ const id: PartialLocaleType = {
         Title: "Gunakan NextChat AI",
         Label: "(Solusi paling hemat biaya)",
         SubTitle:
-          "Dikelola secara resmi oleh NextChat, siap digunakan tanpa konfigurasi, mendukung model besar terbaru seperti OpenAI o1, GPT-4o, dan Claude-3.5",
+          "Dikelola secara resmi oleh NextChat, siap digunakan tanpa konfigurasi, mendukung model besar terbaru",
         ChatNow: "Chat Sekarang",
       },
 
