@@ -729,12 +729,14 @@ const siliconflowModels = [
 ];
 
 const mizumiModels = [
+  "gpt-6.1-sol",
+  "gpt-6-sol",
+  "gpt-6-astra",
+  "gpt-6-luna",
+  "gpt-chat-latest",
   "gpt-5.6-sol",
-  "gpt-5.6-terra",
-  "gpt-5.6-luna",
-  "gpt-5.5",
-  "gpt-5.4",
   "gpt-4.1-mini",
+  "gemini-3.1-pro-preview",
 ];
 
 const ai302Models = [
