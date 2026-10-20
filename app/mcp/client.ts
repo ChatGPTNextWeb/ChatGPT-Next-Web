@@ -1,10 +1,22 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import {
+  getDefaultEnvironment,
+  StdioClientTransport,
+} from "@modelcontextprotocol/sdk/client/stdio.js";
 import { MCPClientLogger } from "./logger";
 import { ListToolsResponse, McpRequestMessage, ServerConfig } from "./types";
 import { z } from "zod";
 
 const logger = new MCPClientLogger();
+
+export function getMcpChildEnvironment(
+  configEnv?: Record<string, string>,
+): Record<string, string> {
+  return {
+    ...getDefaultEnvironment(),
+    ...(configEnv ?? {}),
+  };
+}
 
 export async function createClient(
   id: string,
@@ -15,14 +27,7 @@ export async function createClient(
   const transport = new StdioClientTransport({
     command: config.command,
     args: config.args,
-    env: {
-      ...Object.fromEntries(
-        Object.entries(process.env)
-          .filter(([_, v]) => v !== undefined)
-          .map(([k, v]) => [k, v as string]),
-      ),
-      ...(config.env || {}),
-    },
+    env: getMcpChildEnvironment(config.env),
   });
 
   const client = new Client(

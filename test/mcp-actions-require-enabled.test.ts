@@ -22,12 +22,19 @@ import {
 // which is the default, is exactly the case exercised below).
 describe("MCP server actions require MCP to be enabled", () => {
   const ORIGINAL_ENABLE_MCP = process.env.ENABLE_MCP;
+  const ORIGINAL_CODE = process.env.CODE;
 
   afterEach(() => {
     if (ORIGINAL_ENABLE_MCP === undefined) {
       delete process.env.ENABLE_MCP;
     } else {
       process.env.ENABLE_MCP = ORIGINAL_ENABLE_MCP;
+    }
+
+    if (ORIGINAL_CODE === undefined) {
+      delete process.env.CODE;
+    } else {
+      process.env.CODE = ORIGINAL_CODE;
     }
   });
 
@@ -37,25 +44,29 @@ describe("MCP server actions require MCP to be enabled", () => {
     });
 
     test.each<[string, () => Promise<unknown>]>([
-      ["getClientsStatus", () => getClientsStatus()],
-      ["getClientTools", () => getClientTools("x")],
-      ["getAvailableClientsCount", () => getAvailableClientsCount()],
-      ["getAllTools", () => getAllTools()],
-      ["initializeMcpSystem", () => initializeMcpSystem()],
+      ["getClientsStatus", () => getClientsStatus("")],
+      ["getClientTools", () => getClientTools("x", "")],
+      ["getAvailableClientsCount", () => getAvailableClientsCount("")],
+      ["getAllTools", () => getAllTools("")],
+      ["initializeMcpSystem", () => initializeMcpSystem("")],
       [
         "addMcpServer",
         () =>
-          addMcpServer("attack", {
-            command: "touch",
-            args: ["/tmp/pwned"],
-          } as any),
+          addMcpServer(
+            "attack",
+            {
+              command: "touch",
+              args: ["/tmp/pwned"],
+            } as any,
+            "",
+          ),
       ],
-      ["pauseMcpServer", () => pauseMcpServer("x")],
-      ["resumeMcpServer", () => resumeMcpServer("x")],
-      ["removeMcpServer", () => removeMcpServer("x")],
-      ["restartAllClients", () => restartAllClients()],
-      ["executeMcpAction", () => executeMcpAction("x", {} as any)],
-      ["getMcpConfigFromFile", () => getMcpConfigFromFile()],
+      ["pauseMcpServer", () => pauseMcpServer("x", "")],
+      ["resumeMcpServer", () => resumeMcpServer("x", "")],
+      ["removeMcpServer", () => removeMcpServer("x", "")],
+      ["restartAllClients", () => restartAllClients("")],
+      ["executeMcpAction", () => executeMcpAction("x", {} as any, "")],
+      ["getMcpConfigFromFile", () => getMcpConfigFromFile("")],
     ])("%s rejects instead of running", async (_name, callAction) => {
       await expect(callAction()).rejects.toThrow("MCP is not enabled");
     });
@@ -64,6 +75,7 @@ describe("MCP server actions require MCP to be enabled", () => {
   describe("when ENABLE_MCP=true", () => {
     beforeEach(() => {
       process.env.ENABLE_MCP = "true";
+      process.env.CODE = "test-code";
     });
 
     test("isMcpEnabled reports enabled", async () => {
@@ -71,7 +83,20 @@ describe("MCP server actions require MCP to be enabled", () => {
     });
 
     test("getMcpConfigFromFile proceeds instead of rejecting", async () => {
-      await expect(getMcpConfigFromFile()).resolves.toBeDefined();
+      await expect(getMcpConfigFromFile("test-code")).resolves.toBeDefined();
+    });
+
+    test("getMcpConfigFromFile rejects an invalid access code", async () => {
+      await expect(getMcpConfigFromFile("wrong-code")).rejects.toThrow(
+        "Unauthorized MCP request",
+      );
+    });
+
+    test("MCP fails closed when CODE is not configured", async () => {
+      delete process.env.CODE;
+      await expect(getMcpConfigFromFile("")).rejects.toThrow(
+        "MCP requires CODE to be configured",
+      );
     });
   });
 });

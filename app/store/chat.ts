@@ -202,8 +202,8 @@ function fillTemplateWith(input: string, modelConfig: ModelConfig) {
   return output;
 }
 
-async function getMcpSystemPrompt(): Promise<string> {
-  const tools = await getAllTools();
+async function getMcpSystemPrompt(accessCode: string): Promise<string> {
+  const tools = await getAllTools(accessCode);
 
   let toolsStr = "";
 
@@ -556,7 +556,9 @@ export const useChatStore = createPersistStore(
             session.mask.modelConfig.model.startsWith("chatgpt-"));
 
         const mcpEnabled = await isMcpEnabled();
-        const mcpSystemPrompt = mcpEnabled ? await getMcpSystemPrompt() : "";
+        const mcpSystemPrompt = mcpEnabled
+          ? await getMcpSystemPrompt(useAccessStore.getState().accessCode)
+          : "";
 
         var systemPrompts: ChatMessage[] = [];
 
@@ -834,7 +836,11 @@ export const useChatStore = createPersistStore(
             if (mcpRequest) {
               console.debug("[MCP Request]", mcpRequest);
 
-              executeMcpAction(mcpRequest.clientId, mcpRequest.mcp)
+              executeMcpAction(
+                mcpRequest.clientId,
+                mcpRequest.mcp,
+                useAccessStore.getState().accessCode,
+              )
                 .then((result) => {
                   console.log("[MCP Response]", result);
                   const mcpResponse =
