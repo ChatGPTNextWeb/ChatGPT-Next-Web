@@ -28,6 +28,7 @@ import { preProcessImageContent } from "@/app/utils/chat";
 import { nanoid } from "nanoid";
 import { RequestPayload } from "./openai";
 import { fetch } from "@/app/utils/stream";
+import { dedupeGoogleApiVersion } from "@/app/utils/google";
 
 export class GeminiProApi implements LLMApi {
   path(path: string, shouldStream = false): string {
@@ -51,7 +52,7 @@ export class GeminiProApi implements LLMApi {
 
     console.log("[Proxy Endpoint] ", baseUrl, path);
 
-    let chatPath = [baseUrl, path].join("/");
+    let chatPath = dedupeGoogleApiVersion([baseUrl, path].join("/"));
     if (shouldStream) {
       chatPath += chatPath.includes("?") ? "&alt=sse" : "?alt=sse";
     }
