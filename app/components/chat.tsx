@@ -136,6 +136,7 @@ const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
 
 const MCPAction = () => {
   const navigate = useNavigate();
+  const accessCode = useAccessStore((state) => state.accessCode);
   const [count, setCount] = useState<number>(0);
   const [mcpEnabled, setMcpEnabled] = useState(false);
 
@@ -144,12 +145,12 @@ const MCPAction = () => {
       const enabled = await isMcpEnabled();
       setMcpEnabled(enabled);
       if (enabled) {
-        const count = await getAvailableClientsCount();
+        const count = await getAvailableClientsCount(accessCode);
         setCount(count);
       }
     };
     checkMcpStatus();
-  }, []);
+  }, [accessCode]);
 
   if (!mcpEnabled) return null;
 

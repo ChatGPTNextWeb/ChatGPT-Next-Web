@@ -248,7 +248,7 @@ export function Home() {
         const enabled = await isMcpEnabled();
         if (enabled) {
           console.log("[MCP] initializing...");
-          await initializeMcpSystem();
+          await initializeMcpSystem(useAccessStore.getState().accessCode);
           console.log("[MCP] initialized");
         }
       } catch (err) {

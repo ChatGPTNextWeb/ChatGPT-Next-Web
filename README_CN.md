@@ -274,7 +274,8 @@ Stability API密钥
 
 ### `ENABLE_MCP` (optional)
 
-启用MCP（Model Context Protocol）功能
+启用 MCP（Model Context Protocol）功能。出于安全考虑，启用 MCP 时必须同时配置
+`CODE`，所有 MCP Server Action 都会校验该访问密码。
 
 ### `SILICONFLOW_API_KEY` (optional)
 

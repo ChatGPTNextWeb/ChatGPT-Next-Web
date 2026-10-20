@@ -32,6 +32,7 @@ import clsx from "clsx";
 import PlayIcon from "../icons/play.svg";
 import StopIcon from "../icons/pause.svg";
 import { Path } from "../constant";
+import { useAccessStore } from "../store";
 
 interface ConfigProperty {
   type: string;
@@ -42,6 +43,7 @@ interface ConfigProperty {
 
 export function McpMarketPage() {
   const navigate = useNavigate();
+  const accessCode = useAccessStore((state) => state.accessCode);
   const [mcpEnabled, setMcpEnabled] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [userConfig, setUserConfig] = useState<Record<string, any>>({});
@@ -76,7 +78,7 @@ export function McpMarketPage() {
     if (!mcpEnabled || !config) return;
 
     const updateStatuses = async () => {
-      const statuses = await getClientsStatus();
+      const statuses = await getClientsStatus(accessCode);
       setClientStatuses(statuses);
     };
 
@@ -86,7 +88,7 @@ export function McpMarketPage() {
     const timer = setInterval(updateStatuses, 1000);
 
     return () => clearInterval(timer);
-  }, [mcpEnabled, config]);
+  }, [mcpEnabled, config, accessCode]);
 
   // 加载预设服务器
   useEffect(() => {
@@ -116,11 +118,11 @@ export function McpMarketPage() {
       if (!mcpEnabled) return;
       try {
         setIsLoading(true);
-        const config = await getMcpConfigFromFile();
+        const config = await getMcpConfigFromFile(accessCode);
         setConfig(config);
 
         // 获取所有客户端的状态
-        const statuses = await getClientsStatus();
+        const statuses = await getClientsStatus(accessCode);
         setClientStatuses(statuses);
       } catch (error) {
         console.error("Failed to load initial state:", error);
@@ -130,7 +132,7 @@ export function McpMarketPage() {
       }
     };
     loadInitialState();
-  }, [mcpEnabled]);
+  }, [mcpEnabled, accessCode]);
 
   // 加载当前编辑服务器的配置
   useEffect(() => {
@@ -213,7 +215,11 @@ export function McpMarketPage() {
         ...(Object.keys(env).length > 0 ? { env } : {}),
       };
 
-      const newConfig = await addMcpServer(savingServerId, serverConfig);
+      const newConfig = await addMcpServer(
+        savingServerId,
+        serverConfig,
+        accessCode,
+      );
       setConfig(newConfig);
       showToast("Server configuration updated successfully");
     } catch (error) {
@@ -228,7 +234,7 @@ export function McpMarketPage() {
   // 获取服务器支持的 Tools
   const loadTools = async (id: string) => {
     try {
-      const result = await getClientTools(id);
+      const result = await getClientTools(id, accessCode);
       if (result) {
         setTools(result);
       } else {
@@ -263,11 +269,15 @@ export function McpMarketPage() {
           command: preset.command,
           args: [...preset.baseArgs],
         };
-        const newConfig = await addMcpServer(preset.id, serverConfig);
+        const newConfig = await addMcpServer(
+          preset.id,
+          serverConfig,
+          accessCode,
+        );
         setConfig(newConfig);
 
         // 更新状态
-        const statuses = await getClientsStatus();
+        const statuses = await getClientsStatus(accessCode);
         setClientStatuses(statuses);
       } finally {
         updateLoadingState(preset.id, null);
@@ -283,7 +293,7 @@ export function McpMarketPage() {
   const pauseServer = async (id: string) => {
     try {
       updateLoadingState(id, "Stopping server...");
-      const newConfig = await pauseMcpServer(id);
+      const newConfig = await pauseMcpServer(id, accessCode);
       setConfig(newConfig);
       showToast("Server stopped successfully");
     } catch (error) {
@@ -298,7 +308,7 @@ export function McpMarketPage() {
   const restartServer = async (id: string) => {
     try {
       updateLoadingState(id, "Starting server...");
-      await resumeMcpServer(id);
+      await resumeMcpServer(id, accessCode);
     } catch (error) {
       showToast(
         error instanceof Error
@@ -315,7 +325,7 @@ export function McpMarketPage() {
   const handleRestartAll = async () => {
     try {
       updateLoadingState("all", "Restarting all servers...");
-      const newConfig = await restartAllClients();
+      const newConfig = await restartAllClients(accessCode);
       setConfig(newConfig);
       showToast("Restarting all clients");
     } catch (error) {
